@@ -21,9 +21,7 @@ export const formSchema = z.object({
   // Venue and Event Details
   venue: z.string().min(1, "Venue is required"),
   venueCode: z.string().optional(),
-  weddingDate: z.date({
-    required_error: "Event date is required",
-  }),
+  weddingDate: z.date({ message: "Event date is required" }),
   eventStartTime: z.string().optional(),
   eventEndTime: z.string().optional(),
   setupTime: z.string().optional(),
@@ -318,6 +316,7 @@ export const defaultValues: FormData = {
   // Venue and Event Details
   venue: "",
   venueCode: "",
+  weddingDate: new Date(),
   eventStartTime: "",
   eventEndTime: "",
   setupTime: "",
