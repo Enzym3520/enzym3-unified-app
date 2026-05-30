@@ -41,7 +41,7 @@ export const SpotifySearch = ({
   const [searchResults, setSearchResults] = useState<Track[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [showResults, setShowResults] = useState(false);
-  const debounceTimer = useRef<ReturnType<typeof setTimeout>>();
+  const debounceTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const resultsRef = useRef<HTMLDivElement>(null);
 
   // Update local state when initial values change

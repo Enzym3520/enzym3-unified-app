@@ -236,7 +236,9 @@ export const useVibeSheet = () => {
             .in('status', ['confirmed', 'assigned', 'pending'])
             .limit(1)
             .maybeSingle();
-          if (assignmentData?.profiles?.email) setDjEmail(assignmentData.profiles.email);
+          const profiles = assignmentData?.profiles as { email?: string } | { email?: string }[] | null;
+          const profileEmail = Array.isArray(profiles) ? profiles[0]?.email : profiles?.email;
+          if (profileEmail) setDjEmail(profileEmail);
         }
       }
     } catch (error) {
