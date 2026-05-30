@@ -202,7 +202,7 @@ export const SpotifyPlaylistCreator = ({
 
       {creationResult && creationResult.tracksNotFound.length > 0 && (
         <Alert>
-          <AlertCircle className="h-4 w-4 text-warning" />
+          <AlertCircle className="h-4 w-4 text-amber-600" />
           <AlertDescription>
             <p className="font-medium mb-2">Some songs couldn't be found on Spotify:</p>
             <ul className="text-sm list-disc list-inside space-y-1">
