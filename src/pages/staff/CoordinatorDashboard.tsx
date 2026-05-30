@@ -1,0 +1,341 @@
+import React, { useMemo, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { CoordinatorApproval } from '@/components/staff/coordinator-approval/CoordinatorApproval';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Clock, CheckCircle, TrendingUp, FileText, Users, Upload, List, Calendar, MapPin } from 'lucide-react';
+import { UploadedFormsTable } from '@/components/staff/admin/UploadedFormsTable';
+import { EventReadinessOverview } from '@/components/staff/dashboard/EventReadinessOverview';
+import { EventListTab } from '@/components/staff/dashboard/EventListTab';
+import { PortalTour } from '@/components/vendor-onboarding/PortalTour';
+import { TOUR_VERSION } from '@/config/tourConfig';
+import { supabase } from '@/integrations/supabase/client';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { safeFormatDate } from '@/utils/dateHelpers';
+import { formatEventType } from '@/utils/notificationHelpers';
+import { toast } from 'sonner';
+
+export const CoordinatorDashboard: React.FC = () => {
+  const [timedOut, setTimedOut] = useState(false);
+  const navigate = useNavigate();
+  const isMobile = useIsMobile();
+  const [showTour, setShowTour] = useState(false);
+  const queryClient = useQueryClient();
+
+  // Fetch event notifications directly
+  const { data: notifications, isLoading: loading } = useQuery({
+    queryKey: ['coordinator-event-notifications'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('event_notification_history')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(200);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  // Tour version check
+  const { data: tourProfile } = useQuery({
+    queryKey: ['coordinator-tour-version'],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return null;
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('tour_version')
+        .eq('id', user.id)
+        .maybeSingle();
+      if (error) throw error;
+      return data ? { ...data, userId: user.id } : { tour_version: null, userId: user.id };
+    },
+  });
+
+  const completeTourMutation = useMutation({
+    mutationFn: async () => {
+      if (!tourProfile?.userId) return;
+      const { error } = await supabase
+        .from('profiles')
+        .update({ tour_version: TOUR_VERSION })
+        .eq('id', tourProfile.userId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['coordinator-tour-version'] });
+    },
+    onError: (err: Error) => {
+      toast.error('Could not save tour progress', { description: err.message });
+    },
+  });
+
+  const handleTourComplete = () => {
+    if (tourProfile?.userId) {
+      queryClient.setQueryData(['coordinator-tour-version'], {
+        ...tourProfile,
+        tour_version: TOUR_VERSION,
+      });
+    }
+
+    setShowTour(false);
+    completeTourMutation.mutate();
+  };
+
+  useEffect(() => {
+    if (!tourProfile) return;
+    setShowTour((tourProfile.tour_version ?? 0) < TOUR_VERSION);
+  }, [tourProfile]);
+
+  // 5-second timeout so dashboard never stalls forever
+  useEffect(() => {
+    if (loading) {
+      const timer = setTimeout(() => setTimedOut(true), 5000);
+      return () => clearTimeout(timer);
+    }
+    setTimedOut(false);
+  }, [loading]);
+
+  const showSkeleton = loading && !timedOut;
+  const safeNotifications = notifications ?? [];
+
+  // Memoize dashboard stats calculation
+  const dashboardStats = useMemo(() => {
+    const weekAgo = new Date();
+    weekAgo.setDate(weekAgo.getDate() - 7);
+
+    const thisWeekSubmissions = safeNotifications.filter(n => {
+      const createdAt = new Date(n.created_at);
+      return createdAt >= weekAgo;
+    }).length;
+
+    const pendingEvents = safeNotifications.filter(n => n.status === 'submitted').length;
+
+    return {
+      totalSubmissions: safeNotifications.length,
+      thisWeekSubmissions,
+      pendingEvents
+    };
+  }, [safeNotifications]);
+
+  // Memoize recent activity slice
+  const recentActivity = useMemo(() =>
+    safeNotifications.slice(0, 10),
+    [safeNotifications]
+  );
+
+  if (showSkeleton) {
+    return (
+      <div className="p-6">
+        <div className="animate-pulse space-y-6">
+          <div className="h-8 w-48 bg-muted rounded" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="h-32 bg-muted rounded" />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-3 md:p-6 space-y-6">
+      {showTour && (
+        <PortalTour role="coordinator" onComplete={handleTourComplete} />
+      )}
+      <div className="mb-8">
+        <h1 className="text-2xl md:text-3xl font-bold font-playfair text-primary mb-2">Event Planner Dashboard</h1>
+        <p className="text-muted-foreground">Manage event notifications and assignments</p>
+      </div>
+
+      {/* Quick Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Total Submissions</CardTitle>
+              <FileText className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{dashboardStats.totalSubmissions}</div>
+              <p className="text-xs text-muted-foreground">
+                {dashboardStats.thisWeekSubmissions} this week
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">This Week</CardTitle>
+              <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{dashboardStats.thisWeekSubmissions}</div>
+              <p className="text-xs text-muted-foreground">
+                New submissions
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Pending Events</CardTitle>
+              <Clock className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {dashboardStats.pendingEvents}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Awaiting action
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+
+        <Tabs defaultValue="overview" className="space-y-4">
+          <TabsList className="w-full overflow-x-auto">
+            <TabsTrigger value="overview" className="flex items-center gap-2">
+              <Users className="h-4 w-4" />
+              Overview
+            </TabsTrigger>
+            <TabsTrigger value="events" className="flex items-center gap-2">
+              <List className="h-4 w-4" />
+              Event Details
+            </TabsTrigger>
+            <TabsTrigger value="uploads" className="flex items-center gap-2">
+              <Upload className="h-4 w-4" />
+              Uploaded Forms
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="overview">
+            <Card>
+              <CardHeader>
+                <CardTitle>Recent Activity</CardTitle>
+              </CardHeader>
+              <CardContent className={isMobile ? undefined : 'p-0'}>
+                {recentActivity.length === 0 ? (
+                  <p className="text-center text-muted-foreground py-4">No recent activity</p>
+                ) : isMobile ? (
+                  <div className="space-y-2">
+                    {recentActivity.map((n) => (
+                      <Card
+                        key={n.id}
+                        className="cursor-pointer active:bg-muted/50"
+                        onClick={() => navigate(`/event/${n.id}`)}
+                      >
+                        <CardContent className="p-3">
+                          <div className="flex items-start justify-between gap-2 min-w-0">
+                            <div className="min-w-0 flex-1">
+                              <p className="font-medium truncate">{n.couple_name || 'Unknown'}</p>
+                              <p className="text-xs text-muted-foreground truncate">
+                                {formatEventType(n.event_type)}
+                              </p>
+                            </div>
+                            <Badge variant={
+                              n.status === 'completed' ? 'default' :
+                              n.status === 'in_progress' ? 'secondary' : 'outline'
+                            } className="shrink-0 text-xs">
+                              {n.status}
+                            </Badge>
+                          </div>
+                          <div className="flex items-center justify-between mt-2 flex-wrap gap-1">
+                            <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                              <Calendar className="h-3 w-3" />
+                              {safeFormatDate(n.event_date, 'MMM d, yyyy', '—')}
+                            </span>
+                            {n.venue && (
+                              <span className="flex items-center gap-1 text-xs text-muted-foreground truncate max-w-[140px]">
+                                <MapPin className="h-3 w-3 shrink-0" />
+                                {n.venue}
+                              </span>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Client</TableHead>
+                          <TableHead>Type</TableHead>
+                          <TableHead>Date</TableHead>
+                          <TableHead>Venue</TableHead>
+                          <TableHead>Status</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {recentActivity.map((n) => (
+                          <TableRow
+                            key={n.id}
+                            className="cursor-pointer"
+                            onClick={() => navigate(`/event/${n.id}`)}
+                          >
+                            <TableCell className="font-medium">{n.couple_name || 'Unknown'}</TableCell>
+                            <TableCell>{formatEventType(n.event_type)}</TableCell>
+                            <TableCell>
+                              <span className="flex items-center gap-1">
+                                <Calendar className="h-3 w-3 text-muted-foreground" />
+                                {safeFormatDate(n.event_date, 'MMM d, yyyy', '—')}
+                              </span>
+                            </TableCell>
+                            <TableCell>
+                              {n.venue ? (
+                                <span className="flex items-center gap-1">
+                                  <MapPin className="h-3 w-3 text-muted-foreground" />
+                                  {n.venue}
+                                </span>
+                              ) : '—'}
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant={
+                                n.status === 'completed' ? 'default' :
+                                n.status === 'in_progress' ? 'secondary' : 'outline'
+                              }>
+                                {n.status}
+                              </Badge>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="events">
+            <Card>
+              <CardHeader>
+                <CardTitle>All Events</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <EventListTab />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="uploads">
+            <Card>
+              <CardHeader>
+                <CardTitle>Uploaded Details Forms</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <UploadedFormsTable />
+              </CardContent>
+            </Card>
+          </TabsContent>
+      </Tabs>
+
+      {/* Readiness Overview */}
+      <EventReadinessOverview />
+    </div>
+  );
+};
