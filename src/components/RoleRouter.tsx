@@ -4,15 +4,16 @@ import { useUserRole } from '@/hooks/useUserRole';
 import { portalFromHostname } from '@/lib/portalFromHostname';
 export function RoleRouter() {
   const navigate = useNavigate();
-  const { role, loading } = useUserRole();
+  const { isAdmin, isVendor, isLoading } = useUserRole();
   useEffect(() => {
-    if (loading) return;
-    if (!role) { navigate('/login'); return; }
+    if (isLoading) return;
+    const noRole = !isAdmin && !isVendor;
+    if (noRole) { navigate('/login'); return; }
     const hp = portalFromHostname(window.location.hostname);
-    if (hp === 'client' || (!hp && role === 'client')) navigate('/app');
-    else if (hp === 'staff' || (!hp && role === 'admin')) navigate('/staff');
-    else if (hp === 'vendor' || (!hp && role === 'vendor')) navigate('/vendor');
+    if (hp === 'client' || (!hp && !isAdmin && !isVendor)) navigate('/app');
+    else if (hp === 'staff' || (!hp && isAdmin)) navigate('/staff');
+    else if (hp === 'vendor' || (!hp && isVendor)) navigate('/vendor');
     else navigate('/login');
-  }, [role, loading, navigate]);
+  }, [isAdmin, isVendor, isLoading, navigate]);
   return null;
 }
