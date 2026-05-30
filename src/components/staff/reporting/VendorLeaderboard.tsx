@@ -6,7 +6,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { useLeaderboard, type LeaderboardMetric } from '@/hooks/useLeaderboard';
 import { useRecentAchievements } from '@/hooks/useVendorAchievements';
-import { AchievementBadge } from '@/components/vendor/AchievementBadge';
+// AchievementBadge is a Plan 4 component — stubbed until implemented
 import { Trophy, Calendar, Star, Flame, Award } from 'lucide-react';
 import { format } from 'date-fns';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -165,7 +165,7 @@ export function VendorLeaderboard({ limit = 10 }: VendorLeaderboardProps) {
                     className="flex items-center justify-between p-3 rounded-lg bg-muted/50"
                   >
                     <div className="flex items-center gap-3">
-                      <AchievementBadge achievement={achievement} size="md" showTooltip={false} />
+                      <span>{achievement.achievement_name}</span>
                       <div>
                         <p className="font-medium">{vendorName}</p>
                         <p className="text-sm text-muted-foreground">

@@ -9,7 +9,7 @@ import { Clock, CheckCircle, TrendingUp, FileText, Users, Upload, List, Calendar
 import { UploadedFormsTable } from '@/components/staff/admin/UploadedFormsTable';
 import { EventReadinessOverview } from '@/components/staff/dashboard/EventReadinessOverview';
 import { EventListTab } from '@/components/staff/dashboard/EventListTab';
-import { PortalTour } from '@/components/vendor-onboarding/PortalTour';
+// PortalTour is a Plan 4 component — stubbed until implemented
 import { TOUR_VERSION } from '@/config/tourConfig';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -143,9 +143,7 @@ export const CoordinatorDashboard: React.FC = () => {
 
   return (
     <div className="p-3 md:p-6 space-y-6">
-      {showTour && (
-        <PortalTour role="coordinator" onComplete={handleTourComplete} />
-      )}
+      {/* PortalTour: Plan 4 — stub placeholder */}
       <div className="mb-8">
         <h1 className="text-2xl md:text-3xl font-bold font-playfair text-primary mb-2">Event Planner Dashboard</h1>
         <p className="text-muted-foreground">Manage event notifications and assignments</p>

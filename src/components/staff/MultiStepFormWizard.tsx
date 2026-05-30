@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FormWizardProvider, useFormWizard } from '@/contexts/FormWizardContext';
-import WizardProgressIndicator from '@/components/wizard/WizardProgressIndicator';
+import WizardProgressIndicator from '@/components/staff/wizard/WizardProgressIndicator';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { FileText, X, RotateCcw } from 'lucide-react';
 import { defaultValues } from '@/types/eventForm';
 
-import FormAnalytics from '@/components/form-fields/FormAnalytics';
-import Step1CoordinatorVendor from '@/components/steps/Step1CoordinatorVendor';
-import Step2EventDetails from '@/components/steps/Step2EventDetails';
-import Step3ContactDetails from '@/components/steps/Step3ContactDetails';
-import Step4ReviewSubmit from '@/components/steps/Step4ReviewSubmit';
+import FormAnalytics from '@/components/staff/form-fields/FormAnalytics';
+import Step1CoordinatorVendor from '@/components/staff/steps/Step1CoordinatorVendor';
+import Step2EventDetails from '@/components/staff/steps/Step2EventDetails';
+import Step3ContactDetails from '@/components/staff/steps/Step3ContactDetails';
+import Step4ReviewSubmit from '@/components/staff/steps/Step4ReviewSubmit';
 
 const stepTitles = ['Coordinator & Vendor', 'Event Details', 'Contact Info', 'Review & Submit'];
 

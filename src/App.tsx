@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ThemeProvider } from 'next-themes';
 import { Toaster } from 'sonner';
 import { RoleRouter } from '@/components/RoleRouter';
 import { RequireRole } from '@/components/RequireRole';
@@ -22,40 +23,78 @@ import Review from '@/pages/client/Review';
 import Settings from '@/pages/client/Settings';
 import { CartProvider } from '@/contexts/CartContext';
 import { KeyboardShortcutsProvider } from '@/contexts/KeyboardShortcutsContext';
+import { CoordinatorDashboard } from '@/pages/staff/CoordinatorDashboard';
+import EventNotificationForm from '@/pages/staff/EventNotificationForm';
+import NotificationHistory from '@/pages/staff/NotificationHistory';
+import NotificationsPage from '@/pages/staff/NotificationsPage';
+import RemindersPage from '@/pages/staff/RemindersPage';
+import CalendarPage from '@/pages/staff/CalendarPage';
+import ComprehensiveFormPage from '@/pages/staff/ComprehensiveFormPage';
+import ContactsPage from '@/pages/staff/ContactsPage';
+import EventDetailPage from '@/pages/staff/EventDetailPage';
+import MessagesPage from '@/pages/staff/MessagesPage';
+import VendorManagement from '@/pages/staff/VendorManagement';
+import VendorInvites from '@/pages/staff/VendorInvites';
+import SubmissionsDashboard from '@/pages/staff/SubmissionsDashboard';
+import SettingsPage from '@/pages/staff/SettingsPage';
+import AdminDashboard from '@/pages/staff/AdminDashboard';
+import ReportingDashboard from '@/pages/staff/ReportingDashboard';
+
 const queryClient = new QueryClient();
 function JoinByCodeStub() { return <div className="p-8 text-muted-foreground">Loading…</div>; }
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <CartProvider>
-        <KeyboardShortcutsProvider>
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<RoleRouter />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/reset-password" element={<ResetPassword />} />
-              <Route path="/join/:code" element={<JoinByCodeStub />} />
-              <Route path="/app" element={<RequireRole role="client"><ClientShell /></RequireRole>}>
-                <Route index element={<Navigate to="dashboard" replace />} />
-                <Route path="dashboard" element={<Dashboard />} />
-                <Route path="vibe-sheet" element={<VibeSheet />} />
-                <Route path="contract" element={<Contract />} />
-                <Route path="upgrades" element={<Upgrades />} />
-                <Route path="schedule" element={<Schedule />} />
-                <Route path="meeting" element={<Meeting />} />
-                <Route path="uploads" element={<Uploads />} />
-                <Route path="messages" element={<Messages />} />
-                <Route path="review" element={<Review />} />
-                <Route path="settings" element={<Settings />} />
-              </Route>
-              <Route path="/staff/*" element={<RequireRole role="admin"><StaffShell /></RequireRole>} />
-              <Route path="/vendor/*" element={<RequireRole role="vendor"><VendorShell /></RequireRole>} />
-            </Routes>
-          </BrowserRouter>
-        </KeyboardShortcutsProvider>
-      </CartProvider>
+      <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+        <CartProvider>
+          <KeyboardShortcutsProvider>
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<RoleRouter />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/join/:code" element={<JoinByCodeStub />} />
+                <Route path="/app" element={<RequireRole role="client"><ClientShell /></RequireRole>}>
+                  <Route index element={<Navigate to="dashboard" replace />} />
+                  <Route path="dashboard" element={<Dashboard />} />
+                  <Route path="vibe-sheet" element={<VibeSheet />} />
+                  <Route path="contract" element={<Contract />} />
+                  <Route path="upgrades" element={<Upgrades />} />
+                  <Route path="schedule" element={<Schedule />} />
+                  <Route path="meeting" element={<Meeting />} />
+                  <Route path="uploads" element={<Uploads />} />
+                  <Route path="messages" element={<Messages />} />
+                  <Route path="review" element={<Review />} />
+                  <Route path="settings" element={<Settings />} />
+                </Route>
+                <Route path="/staff" element={<RequireRole role="admin"><StaffShell /></RequireRole>}>
+                  <Route index element={<Navigate to="coordinator-dashboard" replace />} />
+                  <Route path="coordinator-dashboard" element={<CoordinatorDashboard />} />
+                  <Route path="event-notification" element={<EventNotificationForm />} />
+                  <Route path="event-notification/:stepParam" element={<EventNotificationForm />} />
+                  <Route path="notification-history" element={<NotificationHistory />} />
+                  <Route path="notifications" element={<NotificationsPage />} />
+                  <Route path="reminders" element={<RemindersPage />} />
+                  <Route path="calendar" element={<CalendarPage />} />
+                  <Route path="comprehensive-form" element={<ComprehensiveFormPage />} />
+                  <Route path="contacts" element={<ContactsPage />} />
+                  <Route path="event/:id" element={<EventDetailPage />} />
+                  <Route path="messages" element={<MessagesPage />} />
+                  <Route path="vendor-management" element={<VendorManagement />} />
+                  <Route path="vendor-invites" element={<VendorInvites />} />
+                  <Route path="submissions" element={<SubmissionsDashboard />} />
+                  <Route path="settings" element={<SettingsPage />} />
+                  <Route path="admin-dashboard" element={<AdminDashboard />} />
+                  <Route path="reporting" element={<ReportingDashboard />} />
+                </Route>
+                <Route path="/vendor/*" element={<RequireRole role="vendor"><VendorShell /></RequireRole>} />
+              </Routes>
+            </BrowserRouter>
+          </KeyboardShortcutsProvider>
+        </CartProvider>
+      </ThemeProvider>
       <Toaster richColors />
     </QueryClientProvider>
   );

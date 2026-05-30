@@ -9,11 +9,11 @@ import { FormData, formSchema, defaultValues } from '@/types/eventForm';
 import { useFormSubmission } from '@/hooks/useFormSubmission';
 import { useFormProgress } from '@/hooks/useFormProgress';
 import { useFormRateLimit } from '@/hooks/useFormRateLimit';
-import FormHeader from '@/components/form-fields/FormHeader';
-import EventDetailsSection from '@/components/form-fields/EventFieldsGroup';
-import ContactDetailsSection from '@/components/form-fields/ContactFieldsGroup';
-import EnhancedFileUpload from '@/components/form-fields/EnhancedFileUpload';
-import EnhancedSubmitButton from '@/components/form-fields/EnhancedSubmitButton';
+import FormHeader from '@/components/staff/form-fields/FormHeader';
+import EventDetailsSection from '@/components/staff/form-fields/EventFieldsGroup';
+import ContactDetailsSection from '@/components/staff/form-fields/ContactFieldsGroup';
+import EnhancedFileUpload from '@/components/staff/form-fields/EnhancedFileUpload';
+import EnhancedSubmitButton from '@/components/staff/form-fields/EnhancedSubmitButton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 

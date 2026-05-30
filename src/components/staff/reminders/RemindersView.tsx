@@ -12,7 +12,7 @@ import ReminderCard from './ReminderCard';
 import CreateReminderModal from './CreateReminderModal';
 import MessageGeneratorModal from './MessageGeneratorModal';
 import ContactSelector from './ContactSelector';
-import { NotificationSettings } from '@/components/NotificationSettings';
+import { NotificationSettings } from '@/components/staff/NotificationSettings';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 

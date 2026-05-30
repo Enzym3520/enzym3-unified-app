@@ -12,7 +12,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Contact } from '@/types/contact';
 import { getEventTypeIcon, formatEventType } from '@/utils/notificationHelpers';
-import NotificationStatusBadge from '@/components/notification/NotificationStatusBadge';
+// NotificationStatusBadge — inline stub (component not yet extracted to shared lib)
+const NotificationStatusBadge = ({ status }: { status: string }) => (
+  <Badge variant={status === 'completed' ? 'default' : status === 'in_progress' ? 'secondary' : 'outline'}>
+    {status}
+  </Badge>
+);
 import { EnhancedTag, getSmartTagConfig } from '@/components/ui/enhanced-tag';
 import { getTagDisplayName } from '@/utils/tagHelpers';
 import EditTagsModal from './EditTagsModal';

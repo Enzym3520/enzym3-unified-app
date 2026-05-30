@@ -1,7 +1,7 @@
 
 import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import MultiStepFormWizard from '@/components/MultiStepFormWizard';
+import MultiStepFormWizard from '@/components/staff/MultiStepFormWizard';
 
 const EventNotificationForm = () => {
   const { stepParam } = useParams();
