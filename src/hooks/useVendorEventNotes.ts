@@ -6,7 +6,7 @@ export function useVendorEventNotes(assignmentId: string | undefined) {
   const [notes, setNotes] = useState('');
   const [saving, setSaving] = useState(false);
   const [loaded, setLoaded] = useState(false);
-  const saveTimer = useRef<ReturnType<typeof setTimeout>>();
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const notesRef = useRef(notes);
   const { toast } = useToast();
 

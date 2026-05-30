@@ -150,7 +150,7 @@ export const useCoupleDataIntegration = ({
     const coupleFieldMappings = mapCoupleDataToFormFields(selectedCoupleData);
     
     // Merge with existing pre-population data (if any)
-    let finalFormData = { ...currentFormData };
+    let finalFormData: Record<string, any> = { ...currentFormData };
     
     if (prePopulationData) {
       
@@ -165,7 +165,7 @@ export const useCoupleDataIntegration = ({
     
     
     // Apply to form
-    form.reset(finalFormData);
+    form.reset(finalFormData as FormData);
     setLastAppliedCoupleId(selectedCoupleData.id);
     
   }, [selectedCoupleData, form, prePopulationData, lastAppliedCoupleId]);
