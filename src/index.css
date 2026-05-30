@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root { --radius: 0.5rem; --destructive: 0 84.2% 60.2%; --destructive-foreground: 0 0% 100%; }
+
+  .portal-client {
+    --background:30 35% 92%;--foreground:200 20% 20%;--card:0 0% 100%;--card-foreground:200 20% 20%;
+    --popover:0 0% 100%;--popover-foreground:200 20% 20%;--primary:200 65% 70%;--primary-foreground:0 0% 100%;
+    --secondary:30 35% 88%;--secondary-foreground:200 20% 20%;--muted:30 30% 90%;--muted-foreground:200 15% 50%;
+    --accent:200 60% 85%;--accent-foreground:200 20% 20%;--border:30 30% 85%;--input:30 30% 85%;--ring:200 65% 70%;
+    --sidebar-background:30 30% 88%;--sidebar-foreground:200 20% 20%;--sidebar-primary:200 65% 70%;
+    --sidebar-primary-foreground:0 0% 100%;--sidebar-accent:30 35% 88%;--sidebar-accent-foreground:200 20% 20%;
+    --sidebar-border:30 30% 85%;--sidebar-ring:200 65% 70%;
+  }
+  .portal-staff {
+    --background:43 18% 90%;--foreground:43 20% 15%;--card:43 15% 99%;--card-foreground:43 20% 15%;
+    --popover:43 15% 99%;--popover-foreground:43 20% 15%;--primary:0 72% 51%;--primary-foreground:0 0% 100%;
+    --secondary:43 18% 88%;--secondary-foreground:43 20% 15%;--muted:43 12% 90%;--muted-foreground:43 15% 45%;
+    --accent:43 25% 85%;--accent-foreground:43 20% 15%;--border:43 12% 85%;--input:43 12% 85%;--ring:0 72% 51%;
+    --sidebar-background:43 15% 92%;--sidebar-foreground:43 20% 15%;--sidebar-primary:0 72% 51%;
+    --sidebar-primary-foreground:0 0% 100%;--sidebar-accent:43 18% 88%;--sidebar-accent-foreground:43 20% 15%;
+    --sidebar-border:43 12% 85%;--sidebar-ring:0 72% 51%;
+  }
+  .portal-vendor {
+    --background:43 18% 81%;--foreground:43 20% 15%;--card:43 15% 93%;--card-foreground:43 20% 15%;
+    --popover:43 15% 93%;--popover-foreground:43 20% 15%;--primary:0 72% 51%;--primary-foreground:0 0% 100%;
+    --secondary:43 18% 76%;--secondary-foreground:43 20% 15%;--muted:43 12% 85%;--muted-foreground:43 15% 45%;
+    --accent:43 25% 77%;--accent-foreground:43 20% 15%;--border:43 12% 74%;--input:43 12% 74%;--ring:0 72% 51%;
+    --sidebar-background:43 15% 78%;--sidebar-foreground:43 20% 15%;--sidebar-primary:0 72% 51%;
+    --sidebar-primary-foreground:0 0% 100%;--sidebar-accent:43 18% 76%;--sidebar-accent-foreground:43 20% 15%;
+    --sidebar-border:43 12% 74%;--sidebar-ring:0 72% 51%;
+  }
+  html, body { overflow-x: hidden; width: 100%; }
+}
