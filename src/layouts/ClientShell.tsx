@@ -47,7 +47,7 @@ export function ClientShell() {
 
   const navigate = useNavigate();
   const location = useLocation();
-  useAuth(); // subscribes to auth state changes
+  const { signOut } = useAuth();
   const { cart, setCartOpen, cartOpen } = useCart();
   const { isLocked } = usePaymentStatus();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -66,7 +66,7 @@ export function ClientShell() {
 
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
+    await signOut();
     navigate('/');
   };
 

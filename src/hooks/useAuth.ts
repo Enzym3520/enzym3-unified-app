@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import type { Session, User } from '@supabase/supabase-js';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-interface AuthState { session: Session | null; user: User | null; loading: boolean; }
+interface AuthState { session: Session | null; user: User | null; loading: boolean; signOut: () => Promise<void>; }
 export function useAuth(): AuthState {
   const queryClient = useQueryClient();
   const [state, setState] = useState<AuthState>({ session: null, user: null, loading: true });
@@ -16,5 +16,6 @@ export function useAuth(): AuthState {
     });
     return () => subscription.unsubscribe();
   }, [queryClient]);
-  return state;
+  const signOut = async () => { await supabase.auth.signOut(); };
+  return { ...state, signOut };
 }
