@@ -9,21 +9,16 @@ import { Clock, CheckCircle, TrendingUp, FileText, Users, Upload, List, Calendar
 import { UploadedFormsTable } from '@/components/staff/admin/UploadedFormsTable';
 import { EventReadinessOverview } from '@/components/staff/dashboard/EventReadinessOverview';
 import { EventListTab } from '@/components/staff/dashboard/EventListTab';
-// PortalTour is a Plan 4 component — stubbed until implemented
-import { TOUR_VERSION } from '@/config/tourConfig';
 import { supabase } from '@/integrations/supabase/client';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { safeFormatDate } from '@/utils/dateHelpers';
 import { formatEventType } from '@/utils/notificationHelpers';
-import { toast } from 'sonner';
 
 export const CoordinatorDashboard: React.FC = () => {
   const [timedOut, setTimedOut] = useState(false);
   const navigate = useNavigate();
   const isMobile = useIsMobile();
-  const [showTour, setShowTour] = useState(false);
-  const queryClient = useQueryClient();
 
   // Fetch event notifications directly
   const { data: notifications, isLoading: loading } = useQuery({
@@ -39,55 +34,11 @@ export const CoordinatorDashboard: React.FC = () => {
     },
   });
 
-  // Tour version check
-  const { data: tourProfile } = useQuery({
-    queryKey: ['coordinator-tour-version'],
-    queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return null;
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('tour_version')
-        .eq('id', user.id)
-        .maybeSingle();
-      if (error) throw error;
-      return data ? { ...data, userId: user.id } : { tour_version: null, userId: user.id };
-    },
-  });
-
-  const completeTourMutation = useMutation({
-    mutationFn: async () => {
-      if (!tourProfile?.userId) return;
-      const { error } = await supabase
-        .from('profiles')
-        .update({ tour_version: TOUR_VERSION })
-        .eq('id', tourProfile.userId);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['coordinator-tour-version'] });
-    },
-    onError: (err: Error) => {
-      toast.error('Could not save tour progress', { description: err.message });
-    },
-  });
-
-  const handleTourComplete = () => {
-    if (tourProfile?.userId) {
-      queryClient.setQueryData(['coordinator-tour-version'], {
-        ...tourProfile,
-        tour_version: TOUR_VERSION,
-      });
-    }
-
-    setShowTour(false);
-    completeTourMutation.mutate();
-  };
-
-  useEffect(() => {
-    if (!tourProfile) return;
-    setShowTour((tourProfile.tour_version ?? 0) < TOUR_VERSION);
-  }, [tourProfile]);
+  // Plan 4: PortalTour — restore when implemented
+  // const [showTour, setShowTour] = useState(false);
+  // useEffect to setShowTour based on tourProfile.tour_version vs TOUR_VERSION
+  // handleTourComplete — marks tour complete via completeTourMutation
+  // completeTourMutation — persists tour_version to profiles table
 
   // 5-second timeout so dashboard never stalls forever
   useEffect(() => {

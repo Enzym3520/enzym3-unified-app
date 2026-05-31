@@ -98,7 +98,7 @@ async function fetchDashboardData() {
         title: `Pending confirmation: ${event.couple_name}`,
         subtitle: 'Vendor has not confirmed assignment',
         date: safeFormatDate(event.event_date, 'MMM d, yyyy'),
-        action: '/vendor-management',
+        action: '/staff/vendor-management',
       });
     }
   });

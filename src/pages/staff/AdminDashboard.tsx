@@ -18,7 +18,6 @@ import {
 } from 'lucide-react';
 import AdminAssignmentsDashboard from '@/components/staff/vendor-management/AdminAssignmentsDashboard';
 import { FeedbackDashboard } from '@/components/staff/feedback/FeedbackDashboard';
-import { format } from 'date-fns';
 import { safeFormatDate } from '@/utils/dateHelpers';
 import { useClientReviews } from '@/hooks/useClientReviews';
 import { formatEventType } from '@/utils/notificationHelpers';
@@ -80,15 +79,15 @@ export default function AdminDashboard() {
           <p className="text-muted-foreground">Full system overview and management</p>
         </div>
         <div className="flex gap-2 flex-wrap">
-          <Button onClick={() => navigate('/event-notification/step-1')} size="sm">
+          <Button onClick={() => navigate('/staff/event-notification/step-1')} size="sm">
             <Plus className="h-4 w-4 mr-2" />
             Create Event
           </Button>
-          <Button onClick={() => navigate('/vendor-management')} variant="outline" size="sm">
+          <Button onClick={() => navigate('/staff/vendor-management')} variant="outline" size="sm">
             <UserPlus className="h-4 w-4 mr-2" />
             Invite Vendor
           </Button>
-          <Button onClick={() => navigate('/calendar')} variant="outline" size="sm">
+          <Button onClick={() => navigate('/staff/calendar')} variant="outline" size="sm">
             <CalendarDays className="h-4 w-4 mr-2" />
             Calendar
           </Button>
@@ -155,7 +154,7 @@ export default function AdminDashboard() {
               <CardTitle>Upcoming Events</CardTitle>
               <CardDescription>Events in the next 30 days</CardDescription>
             </div>
-            <Button variant="ghost" size="sm" onClick={() => navigate('/calendar')}>
+            <Button variant="ghost" size="sm" onClick={() => navigate('/staff/calendar')}>
               View All <ArrowRight className="h-4 w-4 ml-1" />
             </Button>
           </CardHeader>
@@ -177,7 +176,7 @@ export default function AdminDashboard() {
                   <div 
                     key={event.id} 
                     className="flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors cursor-pointer"
-                    onClick={() => navigate('/notification-history')}
+                    onClick={() => navigate('/staff/notification-history')}
                   >
                     <div className="flex items-center gap-3">
                       <div className="p-2 rounded-full bg-primary/10">
