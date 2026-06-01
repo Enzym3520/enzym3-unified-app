@@ -54,6 +54,21 @@ serve(async (req: Request) => {
       );
     }
 
+    // Verify caller is staff (admin or super_admin)
+    const { data: roleRow } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", user.id)
+      .in("role", ["admin", "super_admin"])
+      .maybeSingle();
+
+    if (!roleRow) {
+      return new Response(
+        JSON.stringify({ error: "Forbidden: staff access required" }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
     const { vendor_email, vendor_name, vendor_type, invite_code: providedCode } = await req.json() as {
       vendor_email: string;
       vendor_name: string;
@@ -64,6 +79,13 @@ serve(async (req: Request) => {
     if (!vendor_email || !vendor_name) {
       return new Response(
         JSON.stringify({ error: "vendor_email and vendor_name are required" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
+    if (!vendor_email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(vendor_email)) {
+      return new Response(
+        JSON.stringify({ error: "Invalid vendor_email format" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
