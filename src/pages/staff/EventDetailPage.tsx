@@ -21,6 +21,7 @@ import { EventMeetingsSection } from '@/components/staff/event-detail/EventMeeti
 import { EventActivityTimeline } from '@/components/staff/event-detail/EventActivityTimeline';
 import { VenuePartnerInvoiceCard } from '@/components/staff/event-detail/VenuePartnerInvoiceCard';
 import { WeddingMessagesPanel } from '@/components/staff/messaging/WeddingMessagesPanel';
+import { VibeSheetReview } from '@/components/staff/event-detail/VibeSheetReview';
 import { useEventReadiness } from '@/hooks/useEventReadiness';
 import { getEventStartTime, formatEventTime } from '@/utils/eventTimeHelpers';
 
@@ -95,6 +96,7 @@ const EventDetailPage: React.FC = () => {
           <TabsTrigger value="vendors">Vendors</TabsTrigger>
           <TabsTrigger value="messages">Messages</TabsTrigger>
           <TabsTrigger value="music">Music Sheet</TabsTrigger>
+          <TabsTrigger value="vibe-sheet">Vibe Sheet</TabsTrigger>
           <TabsTrigger value="meetings">Meetings</TabsTrigger>
           <TabsTrigger value="payments">Payments</TabsTrigger>
           <TabsTrigger value="activity">Activity</TabsTrigger>
@@ -259,6 +261,10 @@ const EventDetailPage: React.FC = () => {
 
         <TabsContent value="music">
           <EventMusicSummary weddingId={event.id} />
+        </TabsContent>
+
+        <TabsContent value="vibe-sheet">
+          <VibeSheetReview eventId={id!} eventType={event.event_type || ''} clientEmail={event.contact_email} />
         </TabsContent>
 
         <TabsContent value="meetings">
