@@ -120,14 +120,28 @@ async function handleCheckoutSessionCompleted(
   const paymentType = session.metadata?.payment_type;
 
   // amount_total is in cents — convert to dollars
-  const amountTotalCents = session.amount_total ?? 0;
-  const amountPaidDollars = amountTotalCents / 100;
+  if (session.amount_total === null || session.amount_total === undefined) {
+    console.error(`stripe-webhook: amount_total is null for session ${session.id} — skipping`);
+    return;
+  }
+  const amountPaidDollars = session.amount_total / 100;
 
   if (paymentType) {
     // Deposit / full / balance payment
     console.log(
       `stripe-webhook: deposit payment completed — wedding_id=${weddingId}, payment_type=${paymentType}, amount=$${amountPaidDollars}, session=${session.id}`,
     );
+
+    const { data: existingEvent } = await supabase
+      .from("event_notification_history")
+      .select("deposit_paid")
+      .eq("id", weddingId)
+      .maybeSingle();
+
+    if (existingEvent?.deposit_paid === true) {
+      console.log(`stripe-webhook: deposit already processed for wedding_id=${weddingId}, skipping`);
+      return;
+    }
 
     const { error } = await supabase.functions.invoke("confirm-deposit", {
       body: {
@@ -151,6 +165,17 @@ async function handleCheckoutSessionCompleted(
     console.log(
       `stripe-webhook: upgrade payment completed — wedding_id=${weddingId}, session=${session.id}`,
     );
+
+    const { data: existingOrder } = await supabase
+      .from("upgrade_orders")
+      .select("payment_status")
+      .eq("stripe_session_id", session.id)
+      .maybeSingle();
+
+    if (existingOrder?.payment_status === "paid") {
+      console.log(`stripe-webhook: upgrade already processed for session ${session.id}, skipping`);
+      return;
+    }
 
     const { error } = await supabase.functions.invoke("send-upgrade-confirmation", {
       body: {
