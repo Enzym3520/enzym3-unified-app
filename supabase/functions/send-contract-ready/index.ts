@@ -92,8 +92,7 @@ serve(async (req: Request) => {
       );
     }
 
-    const origin = req.headers.get("origin") || "https://app.enzym3.com";
-    const contractLink = `${origin}/app/contract`;
+    const contractLink = "https://app.enzym3.com/app/contract";
     const formattedDate = formatDate(event.event_date);
 
     const html = `<!DOCTYPE html>

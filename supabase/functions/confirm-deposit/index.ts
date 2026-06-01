@@ -25,8 +25,8 @@ function formatDate(dateStr: string | null | undefined): string {
   }
 }
 
-function formatDollars(cents: number): string {
-  return `$${(cents).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+function formatDollars(dollars: number): string {
+  return `$${(dollars).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 serve(async (req: Request) => {
