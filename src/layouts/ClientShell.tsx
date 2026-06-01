@@ -33,7 +33,7 @@ import { useKeyboardShortcutsContext } from "@/contexts/KeyboardShortcutsContext
 import { KeyboardShortcutsHelp } from "@/components/KeyboardShortcutsHelp";
 import { TourButton } from "@/components/TourButton";
 import { TourWelcomeDialog } from "@/components/TourWelcomeDialog";
-import { PaymentGate } from "@/components/PaymentGate";
+import { PortalGate } from "@/components/client/PortalGate";
 import { useNotifications } from "@/hooks/useNotifications";
 import { toast } from "sonner";
 
@@ -333,9 +333,9 @@ export function ClientShell() {
 
         {/* Main Content */}
         <main className="flex-1 min-h-[calc(100vh-(4rem+env(safe-area-inset-top)))] landscape:min-h-[calc(100vh-(3rem+env(safe-area-inset-top)))] p-4 md:p-6 lg:p-8">
-          <PaymentGate>
+          <PortalGate>
             <Outlet />
-          </PaymentGate>
+          </PortalGate>
         </main>
       </div>
 
