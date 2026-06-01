@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from 'next-themes';
 import { Toaster } from 'sonner';
 import { RoleRouter } from '@/components/RoleRouter';
+import HomePage from '@/pages/HomePage';
 import { RequireRole } from '@/components/RequireRole';
 import { ClientShell } from '@/layouts/ClientShell';
 import { StaffShell } from '@/layouts/StaffShell';
@@ -70,7 +71,7 @@ export default function App() {
           <KeyboardShortcutsProvider>
             <BrowserRouter>
               <Routes>
-                <Route path="/" element={<RoleRouter />} />
+                <Route path="/" element={<HomePage />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
