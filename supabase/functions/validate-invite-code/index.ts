@@ -25,42 +25,83 @@ serve(async (req: Request) => {
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
-    const { data: row, error: dbError } = await supabase
+    // First: check dj_codes
+    const { data: djRow, error: djDbError } = await supabase
       .from("dj_codes")
       .select("id, code, active, expires_at, used_at")
       .eq("code", code.trim())
       .maybeSingle();
 
-    if (dbError) {
-      console.error("dj_codes lookup error:", dbError.message);
+    if (djDbError) {
+      console.error("dj_codes lookup error:", djDbError.message);
       return new Response(
         JSON.stringify({ valid: false, error: "Something went wrong. Please try again." }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
 
-    if (!row) {
+    if (djRow) {
+      // Found in dj_codes — validate it
+      if (!djRow.active) {
+        return new Response(
+          JSON.stringify({ valid: false, error: "This invite code has been deactivated." }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+      if (djRow.used_at) {
+        return new Response(
+          JSON.stringify({ valid: false, error: "This invite link has already been used." }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+      if (djRow.expires_at && new Date(djRow.expires_at) < new Date()) {
+        return new Response(
+          JSON.stringify({ valid: false, error: "This invite link has expired." }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+      return new Response(
+        JSON.stringify({ valid: true, source: "dj_codes" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
+    // Fallback: check couple_codes
+    const { data: coupleRow, error: coupleDbError } = await supabase
+      .from("couple_codes")
+      .select("id, code, wedding_id, active, expires_at, used_at")
+      .eq("code", code.trim())
+      .maybeSingle();
+
+    if (coupleDbError) {
+      console.error("couple_codes lookup error:", coupleDbError.message);
+      return new Response(
+        JSON.stringify({ valid: false, error: "Something went wrong. Please try again." }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
+    if (!coupleRow) {
       return new Response(
         JSON.stringify({ valid: false, error: "Invalid invite code" }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
 
-    if (!row.active) {
+    // Validate couple_codes row
+    if (!coupleRow.active) {
       return new Response(
         JSON.stringify({ valid: false, error: "This invite code has been deactivated." }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
-
-    if (row.used_at) {
+    if (coupleRow.used_at) {
       return new Response(
         JSON.stringify({ valid: false, error: "This invite link has already been used." }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
-
-    if (row.expires_at && new Date(row.expires_at) < new Date()) {
+    if (coupleRow.expires_at && new Date(coupleRow.expires_at) < new Date()) {
       return new Response(
         JSON.stringify({ valid: false, error: "This invite link has expired." }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } },
@@ -68,7 +109,7 @@ serve(async (req: Request) => {
     }
 
     return new Response(
-      JSON.stringify({ valid: true }),
+      JSON.stringify({ valid: true, source: "couple_codes", wedding_id: coupleRow.wedding_id }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (err) {

@@ -59,9 +59,9 @@ import VendorEmailTemplate from '@/pages/vendor/EmailTemplatePage';
 import VendorMyPage from '@/pages/vendor/MyPagePage';
 import PublicVendorPage from '@/pages/vendor/PublicVendorPage';
 import PublicSignPage from '@/pages/vendor/PublicSignPage';
+import JoinByCode from '@/pages/JoinByCode';
 
 const queryClient = new QueryClient();
-function JoinByCodeStub() { return <div className="p-8 text-muted-foreground">Loading…</div>; }
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -75,7 +75,7 @@ export default function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
-                <Route path="/join/:code" element={<JoinByCodeStub />} />
+                <Route path="/join/:code" element={<JoinByCode />} />
                 <Route path="/app" element={<RequireRole role="client"><ClientShell /></RequireRole>}>
                   <Route index element={<Navigate to="dashboard" replace />} />
                   <Route path="dashboard" element={<Dashboard />} />

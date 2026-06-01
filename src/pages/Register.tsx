@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,8 +17,12 @@ const schema = z.object({
 type F = z.infer<typeof schema>;
 export default function Register() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
-  const { register, handleSubmit, formState: { errors } } = useForm<F>({ resolver: zodResolver(schema) });
+  const { register, handleSubmit, formState: { errors } } = useForm<F>({
+    resolver: zodResolver(schema),
+    defaultValues: { inviteCode: searchParams.get('code') || '' },
+  });
   const onSubmit = async ({ inviteCode, email, password }: F) => {
     setLoading(true);
     const { data: valid, error: codeErr } = await supabase.functions.invoke('validate-invite-code', { body: { code: inviteCode } });
@@ -27,6 +31,8 @@ export default function Register() {
       setLoading(false);
       return;
     }
+    // Capture the source from validation so we know which table to update
+    const validationSource: 'dj_codes' | 'couple_codes' = valid?.source ?? 'dj_codes';
     const { error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: window.location.origin, data: { invite_code: inviteCode } } });
     if (error) {
       console.error('Sign up error:', error);
@@ -34,11 +40,19 @@ export default function Register() {
     } else {
       // Mark invite as used so it cannot be reused
       const { data: { user } } = await supabase.auth.getUser();
-      await supabase
-        .from('dj_codes')
-        .update({ used_at: new Date().toISOString(), used_by: user?.id ?? null })
-        .eq('code', inviteCode)
-        .is('used_at', null);
+      if (validationSource === 'couple_codes') {
+        await supabase
+          .from('couple_codes')
+          .update({ used_at: new Date().toISOString(), used_by: user?.id ?? null })
+          .eq('code', inviteCode)
+          .is('used_at', null);
+      } else {
+        await supabase
+          .from('dj_codes')
+          .update({ used_at: new Date().toISOString(), used_by: user?.id ?? null })
+          .eq('code', inviteCode)
+          .is('used_at', null);
+      }
       toast.success('Check your email to confirm');
       navigate('/login');
     }
