@@ -111,6 +111,18 @@ serve(async (req: Request) => {
     const resolvedEmail = client_email || event.contact_email;
     const resolvedName = client_name || event.couple_name || "there";
 
+    function safeLinkUrl(url: string): string {
+      const normalized = url.trim().toLowerCase();
+      if (!normalized.startsWith("https://") && !normalized.startsWith("http://")) {
+        return "";
+      }
+      return url;
+    }
+
+    function safeSubjectValue(s: string): string {
+      return s.replace(/[\r\n]/g, " ");
+    }
+
     if (!resolvedEmail) {
       return new Response(
         JSON.stringify({ error: "No client email available" }),
@@ -121,11 +133,12 @@ serve(async (req: Request) => {
     const formattedEventDate = formatDate(event.event_date);
     const formattedMeetingDate = formatDate(meeting_date);
 
-    const meetingLinkHtml = meeting_link
+    const safeClientLink = meeting_link ? safeLinkUrl(meeting_link) : "";
+    const meetingLinkHtml = safeClientLink
       ? `<tr><td style="padding:6px 0;">
           <p style="margin:0;font-size:14px;color:#666;">Meeting Link</p>
           <p style="margin:4px 0 0;font-size:15px;color:#2D2921;font-weight:bold;">
-            <a href="${esc(meeting_link)}" style="color:#2D2921;">${esc(meeting_link)}</a>
+            <a href="${esc(safeClientLink)}" style="color:#2D2921;">${esc(safeClientLink)}</a>
           </p>
         </td></tr>`
       : "";
@@ -185,11 +198,12 @@ serve(async (req: Request) => {
 </html>`;
 
     // Coordinator notification HTML
-    const coordMeetingLinkHtml = meeting_link
+    const safeCoordLink = meeting_link ? safeLinkUrl(meeting_link) : "";
+    const coordMeetingLinkHtml = safeCoordLink
       ? `<tr><td style="padding:6px 0;">
           <p style="margin:0;font-size:14px;color:#666;">Meeting Link</p>
           <p style="margin:4px 0 0;font-size:15px;color:#2D2921;font-weight:bold;">
-            <a href="${esc(meeting_link)}" style="color:#2D2921;">${esc(meeting_link)}</a>
+            <a href="${esc(safeCoordLink)}" style="color:#2D2921;">${esc(safeCoordLink)}</a>
           </p>
         </td></tr>`
       : "";
@@ -286,7 +300,7 @@ serve(async (req: Request) => {
       body: JSON.stringify({
         from: "Enzym3 Entertainment <booking@enzym3.com>",
         to: "booking@enzym3.com",
-        subject: `Meeting booked: ${resolvedName} — ${meeting_date}`,
+        subject: `Meeting booked: ${safeSubjectValue(resolvedName)} — ${safeSubjectValue(meeting_date)}`,
         html: coordHtml,
       }),
     });
