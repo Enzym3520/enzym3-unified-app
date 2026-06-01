@@ -19,6 +19,7 @@ import { EventPaymentSection } from '@/components/staff/event-detail/EventPaymen
 import { EventMusicSummary } from '@/components/staff/event-detail/EventMusicSummary';
 import { EventMeetingsSection } from '@/components/staff/event-detail/EventMeetingsSection';
 import { EventActivityTimeline } from '@/components/staff/event-detail/EventActivityTimeline';
+import { VenuePartnerInvoiceCard } from '@/components/staff/event-detail/VenuePartnerInvoiceCard';
 import { WeddingMessagesPanel } from '@/components/staff/messaging/WeddingMessagesPanel';
 import { useEventReadiness } from '@/hooks/useEventReadiness';
 import { getEventStartTime, formatEventTime } from '@/utils/eventTimeHelpers';
@@ -265,11 +266,16 @@ const EventDetailPage: React.FC = () => {
         </TabsContent>
 
         <TabsContent value="payments">
-          {readiness ? (
-            <EventPaymentSection readiness={readiness} />
-          ) : (
-            <Card><CardContent className="py-6 text-center text-sm text-muted-foreground">No payment data available</CardContent></Card>
-          )}
+          <div className="space-y-4">
+            {event.booking_source === 'venue_partner' && (
+              <VenuePartnerInvoiceCard eventId={event.id} venueName={event.venue} />
+            )}
+            {readiness ? (
+              <EventPaymentSection readiness={readiness} />
+            ) : (
+              <Card><CardContent className="py-6 text-center text-sm text-muted-foreground">No payment data available</CardContent></Card>
+            )}
+          </div>
         </TabsContent>
 
         <TabsContent value="activity">
