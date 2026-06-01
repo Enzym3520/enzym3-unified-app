@@ -21,7 +21,7 @@ const vendorProfileSchema = z.object({
   website: z.string().url('Please enter a valid URL').optional().or(z.literal('')),
   instagramHandle: z.string().optional(),
   equipmentNotes: z.string().optional(),
-  startingPrice: z.coerce.number().optional().or(z.literal('')),
+  startingPrice: z.string().optional(),
   priceType: z.string().optional(),
 });
 
@@ -59,7 +59,7 @@ export function VendorProfileSettings() {
       website: profile?.website || '',
       instagramHandle: profile?.instagram_handle || '',
       equipmentNotes: profile?.equipment_notes || '',
-      startingPrice: profile?.starting_price ?? '',
+      startingPrice: profile?.starting_price != null ? String(profile.starting_price) : '',
       priceType: profile?.price_type || '',
     },
   });
@@ -80,7 +80,7 @@ export function VendorProfileSettings() {
           website: data.website || null,
           instagram_handle: data.instagramHandle || null,
           equipment_notes: data.equipmentNotes || null,
-          starting_price: data.startingPrice !== '' ? data.startingPrice : null,
+          starting_price: data.startingPrice ? parseFloat(data.startingPrice) : null,
           price_type: data.priceType || null,
         })
         .eq('id', user.id);
@@ -268,8 +268,8 @@ export function VendorProfileSettings() {
                           {...field}
                           type="number"
                           placeholder="250"
-                          value={field.value === '' ? '' : field.value}
-                          onChange={(e) => field.onChange(e.target.value === '' ? '' : e.target.value)}
+                          value={field.value ?? ''}
+                          onChange={(e) => field.onChange(e.target.value)}
                         />
                       </FormControl>
                       <FormMessage />
