@@ -57,7 +57,7 @@ function wrapper(headerSubtitle: string, body: string): string {
 
 function btn(href: string, label: string): string {
   return `<div style="text-align:center;margin:24px 0;">
-    <a href="${href}" style="background:#2D2921;color:#85D4FA;text-decoration:none;padding:14px 32px;border-radius:6px;font-size:15px;font-weight:bold;display:inline-block;letter-spacing:0.5px;">${label}</a>
+    <a href="${esc(href)}" style="background:#2D2921;color:#85D4FA;text-decoration:none;padding:14px 32px;border-radius:6px;font-size:15px;font-weight:bold;display:inline-block;letter-spacing:0.5px;">${label}</a>
   </div>`;
 }
 
@@ -107,7 +107,7 @@ export function clientInviteEmail(params: {
     ${btn(params.inviteLink, "Access Your Portal")}
     <p style="margin:16px 0 0 0;font-size:13px;color:#888888;">
       If the button doesn't work, copy and paste this link into your browser:<br />
-      <a href="${params.inviteLink}" style="color:#85D4FA;word-break:break-all;">${esc(params.inviteLink)}</a>
+      <a href="${esc(params.inviteLink)}" style="color:#85D4FA;word-break:break-all;">${esc(params.inviteLink)}</a>
     </p>
     ${divider()}
     <p style="margin:0;font-size:13px;color:#888888;">
@@ -143,7 +143,7 @@ export function contractReadyEmail(params: {
     ${btn(params.contractLink, "Review &amp; Sign Contract")}
     <p style="margin:16px 0 0 0;font-size:13px;color:#888888;">
       If the button doesn't work, copy and paste this link into your browser:<br />
-      <a href="${params.contractLink}" style="color:#85D4FA;word-break:break-all;">${esc(params.contractLink)}</a>
+      <a href="${esc(params.contractLink)}" style="color:#85D4FA;word-break:break-all;">${esc(params.contractLink)}</a>
     </p>
     ${divider()}
     <p style="margin:0;font-size:13px;color:#888888;">
@@ -213,7 +213,7 @@ export function venuePartnerAccessEmail(params: {
     ${btn(params.portalLink, "Access Your Portal")}
     <p style="margin:16px 0 0 0;font-size:13px;color:#888888;">
       If the button doesn't work, copy and paste this link into your browser:<br />
-      <a href="${params.portalLink}" style="color:#85D4FA;word-break:break-all;">${esc(params.portalLink)}</a>
+      <a href="${esc(params.portalLink)}" style="color:#85D4FA;word-break:break-all;">${esc(params.portalLink)}</a>
     </p>
     ${divider()}
     <p style="margin:0;font-size:13px;color:#888888;">
@@ -318,7 +318,7 @@ export function meetingScheduledEmail(params: {
   meetingLink?: string | null;
 }): string {
   const linkRow = params.meetingLink
-    ? detailRow("Meeting Link:", `<a href="${params.meetingLink}" style="color:#85D4FA;">${esc(params.meetingLink)}</a>`)
+    ? detailRow("Meeting Link:", `<a href="${esc(params.meetingLink)}" style="color:#85D4FA;">${esc(params.meetingLink)}</a>`)
     : "";
 
   const body = `
@@ -362,7 +362,7 @@ export function vendorInviteEmail(params: {
     ${btn(params.inviteLink, "Accept Invitation")}
     <p style="margin:16px 0 0 0;font-size:13px;color:#888888;">
       If the button doesn't work, copy and paste this link into your browser:<br />
-      <a href="${params.inviteLink}" style="color:#85D4FA;word-break:break-all;">${esc(params.inviteLink)}</a>
+      <a href="${esc(params.inviteLink)}" style="color:#85D4FA;word-break:break-all;">${esc(params.inviteLink)}</a>
     </p>
     ${divider()}
     <p style="margin:0;font-size:13px;color:#888888;">
