@@ -95,7 +95,14 @@ export function ScheduleMeetingModal({ isOpen, onClose, weddingId: propWeddingId
       handleClose();
     },
     onError: (error: Error) => {
-      toast.error(error.message || 'Failed to schedule meeting');
+      // Validation errors surfaced to user; DB/network errors sanitized
+      const validationErrors = ['Please fill all required fields'];
+      if (validationErrors.includes(error.message)) {
+        toast.error(error.message);
+      } else {
+        console.error('Schedule meeting error:', error);
+        toast.error('Failed to schedule meeting. Please try again.');
+      }
     },
   });
 

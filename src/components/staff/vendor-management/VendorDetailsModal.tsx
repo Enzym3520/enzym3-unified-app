@@ -86,7 +86,8 @@ export function VendorDetailsModal({ vendor, open, onOpenChange }: VendorDetails
       toast.success('Vendor information updated');
     },
     onError: (error: any) => {
-      toast.error(error.message || 'Failed to update vendor');
+      console.error('Vendor update error:', error);
+      toast.error('Failed to update vendor. Please try again.');
     },
   });
 

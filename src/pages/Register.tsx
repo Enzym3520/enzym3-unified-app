@@ -22,9 +22,26 @@ export default function Register() {
   const onSubmit = async ({ inviteCode, email, password }: F) => {
     setLoading(true);
     const { data: valid, error: codeErr } = await supabase.functions.invoke('validate-invite-code', { body: { code: inviteCode } });
-    if (codeErr || !valid?.valid) { toast.error('Invalid invite code'); setLoading(false); return; }
+    if (codeErr || !valid?.valid) {
+      toast.error(valid?.error || 'Invalid invite code');
+      setLoading(false);
+      return;
+    }
     const { error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: window.location.origin, data: { invite_code: inviteCode } } });
-    if (error) toast.error(error.message); else { toast.success('Check your email to confirm'); navigate('/login'); }
+    if (error) {
+      console.error('Sign up error:', error);
+      toast.error('Something went wrong. Please try again.');
+    } else {
+      // Mark invite as used so it cannot be reused
+      const { data: { user } } = await supabase.auth.getUser();
+      await supabase
+        .from('dj_codes')
+        .update({ used_at: new Date().toISOString(), used_by: user?.id ?? null })
+        .eq('code', inviteCode)
+        .is('used_at', null);
+      toast.success('Check your email to confirm');
+      navigate('/login');
+    }
     setLoading(false);
   };
   return (

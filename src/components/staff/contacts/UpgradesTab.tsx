@@ -44,9 +44,10 @@ export const UpgradesTab = ({ upgrades, loading }: UpgradesTabProps) => {
       });
     },
     onError: (error) => {
+      console.error('Payment status update error:', error);
       toast({
         title: 'Error updating payment status',
-        description: error.message,
+        description: 'Something went wrong. Please try again.',
         variant: 'destructive',
       });
     },
@@ -71,9 +72,10 @@ export const UpgradesTab = ({ upgrades, loading }: UpgradesTabProps) => {
       setUpgradeToDelete(null);
     },
     onError: (error) => {
+      console.error('Delete upgrade error:', error);
       toast({
         title: 'Error deleting upgrade',
-        description: error.message,
+        description: 'Something went wrong. Please try again.',
         variant: 'destructive',
       });
     },

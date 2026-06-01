@@ -111,7 +111,8 @@ export default function ProfilePage() {
       .upload(path, file, { upsert: true });
 
     if (uploadError) {
-      toast.error("Upload failed: " + uploadError.message);
+      console.error("Avatar upload error:", uploadError);
+      toast.error("Upload failed. Please try again.");
       setUploading(false);
       return;
     }
@@ -171,7 +172,7 @@ export default function ProfilePage() {
     setChangingPassword(true);
     const { error } = await supabase.auth.updateUser({ password: newPassword });
     setChangingPassword(false);
-    if (error) toast.error(error.message);
+    if (error) { console.error("Password change error:", error); toast.error("Something went wrong. Please try again."); }
     else {
       toast.success("Password updated!");
       setNewPassword("");

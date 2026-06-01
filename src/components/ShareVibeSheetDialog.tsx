@@ -129,7 +129,7 @@ export function ShareVibeSheetDialog({
       console.error("Error sending email:", error);
       toast({
         title: "Failed to Send Email",
-        description: error.message || "An error occurred while sending the email",
+        description: "Something went wrong. Please try again.",
         variant: "destructive",
       });
     } finally {

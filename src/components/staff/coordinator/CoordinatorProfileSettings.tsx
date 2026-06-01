@@ -79,7 +79,8 @@ export function CoordinatorProfileSettings() {
       toast.success('Profile updated successfully!');
     },
     onError: (error: any) => {
-      toast.error(error.message || 'Failed to update profile');
+      console.error('Profile update error:', error);
+      toast.error('Failed to update profile. Please try again.');
     },
   });
 

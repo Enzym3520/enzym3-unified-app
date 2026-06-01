@@ -19,7 +19,7 @@ export default function ResetPassword() {
   const onSubmit = async ({ password }: F) => {
     setLoading(true);
     const { error } = await supabase.auth.updateUser({ password });
-    if (error) toast.error(error.message); else { toast.success('Password updated'); navigate('/login'); }
+    if (error) { console.error('Password update error:', error); toast.error('Something went wrong. Please try again.'); } else { toast.success('Password updated'); navigate('/login'); }
     setLoading(false);
   };
   if (!ready) return <div className="min-h-screen flex items-center justify-center bg-background"><p className="text-muted-foreground text-sm">Loading…</p></div>;

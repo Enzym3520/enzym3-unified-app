@@ -42,7 +42,7 @@ export default function DocumentsPage() {
 
   const downloadDoc = async (doc: VendorDocument) => {
     const { data, error } = await supabase.storage.from("vendor-uploads").createSignedUrl(doc.file_path, 300);
-    if (error) { toast.error(error.message || "Failed to generate download link"); return; }
+    if (error) { console.error("Download link error:", error); toast.error("Failed to generate download link"); return; }
     if (data?.signedUrl) window.open(data.signedUrl, "_blank");
     else toast.error("Failed to generate download link");
   };

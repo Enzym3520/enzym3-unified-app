@@ -147,7 +147,7 @@ export function useContract() {
       await handlePayDeposit();
     } catch (error: any) {
       console.error('Error signing contract:', error);
-      toast.error(error.message || "Failed to sign contract");
+      toast.error("Failed to sign contract. Please try again.");
       setSubmitting(false);
     }
   };
@@ -199,7 +199,7 @@ export function useContract() {
       setSubmitting(false);
     } catch (error: any) {
       console.error('Error creating payment:', error);
-      toast.error(error.message || "Failed to create payment");
+      toast.error("Failed to create payment. Please try again.");
       setSubmitting(false);
     }
   };

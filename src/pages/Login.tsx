@@ -17,7 +17,7 @@ export default function Login() {
   const onSubmit = async ({ email, password }: F) => {
     setLoading(true);
     const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) toast.error(error.message); else navigate('/');
+    if (error) { console.error('Sign in error:', error); toast.error('Something went wrong. Please try again.'); } else navigate('/');
     setLoading(false);
   };
   return (

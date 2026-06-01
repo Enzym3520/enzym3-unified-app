@@ -1,11 +1,5 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
-
-function sanitizeHtml(html: string): string {
-  return html
-    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
-    .replace(/\bon\w+\s*=\s*["'][^"']*["']/gi, "")
-    .replace(/<iframe\b[^>]*>.*?<\/iframe>/gi, "");
-}
+import DOMPurify from "dompurify";
 import { useEmailTemplate, useSaveEmailTemplate, EmailTemplate } from "@/hooks/use-email-template";
 import { useProfile } from "@/hooks/use-profile";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -394,7 +388,7 @@ export default function EmailTemplatePage() {
 
                   <div
                     dangerouslySetInnerHTML={{
-                      __html: sanitizeHtml(replaceMergeTags(form.body_html, vendorName)),
+                      __html: DOMPurify.sanitize(replaceMergeTags(form.body_html, vendorName)),
                     }}
                   />
 
