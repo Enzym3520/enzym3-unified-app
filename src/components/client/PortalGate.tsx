@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Lock } from "lucide-react";
+import { Lock, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEventAccess } from "@/hooks/useEventAccess";
 
@@ -10,7 +10,13 @@ interface PortalGateProps {
 export function PortalGate({ children }: PortalGateProps) {
   const { depositPaid, isVenuePartner, isLoading } = useEventAccess();
 
-  if (isLoading) return null;
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
 
   if (depositPaid || isVenuePartner) {
     return <>{children}</>;
