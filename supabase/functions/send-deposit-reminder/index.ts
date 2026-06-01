@@ -23,7 +23,7 @@ const brandColors = {
 };
 
 const logoUrl = 'https://ytembomoyhuwdtrzlwbi.supabase.co/storage/v1/object/public/email-assets/logo-blue.png?v=1';
-const portalUrl = 'https://vibeplanner.enzym3entertainment.vip';
+const portalUrl = 'https://plan.enzym3entertainment.vip';
 
 // Input validation
 const DepositReminderSchema = z.object({

@@ -73,10 +73,10 @@ export default function JoinByCode() {
             </p>
             <div className="pt-2 border-t border-[#DBD4C3] space-y-1">
               <p className="text-sm text-[#2D2921]">
-                <a href="mailto:booking@enzym3.com" className="hover:underline">booking@enzym3.com</a>
+                <a href="mailto:booking@enzym3entertainment.vip" className="hover:underline">booking@enzym3entertainment.vip</a>
               </p>
               <p className="text-sm text-[#2D2921]">
-                <a href="tel:+17703129619" className="hover:underline">(770) 312-9619</a>
+                <a href="tel:+15204068600" className="hover:underline">(520) 406-8600</a>
               </p>
             </div>
           </CardContent>

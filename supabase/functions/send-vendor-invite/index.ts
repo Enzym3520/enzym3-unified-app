@@ -159,7 +159,7 @@ serve(async (req: Request) => {
         <!-- Footer -->
         <tr>
           <td style="background:#f9f6f2;padding:24px 40px;text-align:center;">
-            <p style="margin:0;font-size:13px;color:#888;">(770) 312-9619 &bull; booking@enzym3.com</p>
+            <p style="margin:0;font-size:13px;color:#888;">(520) 406-8600 &bull; booking@enzym3entertainment.vip</p>
             <p style="margin:8px 0 0;font-size:12px;color:#aaa;">&copy; 2026 Enzym3 Entertainment</p>
           </td>
         </tr>

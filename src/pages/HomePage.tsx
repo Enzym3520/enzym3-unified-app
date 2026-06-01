@@ -75,7 +75,7 @@ export default function HomePage() {
               Sign contracts, manage payments, plan your music, and stay connected with your DJ team — all in one place.
             </p>
             <div className="pt-4 space-y-2 text-sm text-[#DBD4C3]/70">
-              <p>(770) 312-9619</p>
+              <p>(520) 406-8600</p>
               <p>booking@enzym3.com</p>
             </div>
           </div>
@@ -161,7 +161,7 @@ export default function HomePage() {
 
             {/* Mobile contact */}
             <div className="md:hidden text-center text-xs text-[#2D2921]/40 pt-4 space-y-1">
-              <p>(770) 312-9619 &bull; booking@enzym3.com</p>
+              <p>(520) 406-8600 &bull; booking@enzym3.com</p>
               <p>&copy; {new Date().getFullYear()} Enzym3 Entertainment</p>
             </div>
 

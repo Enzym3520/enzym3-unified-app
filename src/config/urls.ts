@@ -3,7 +3,7 @@
 
 export const ADMIN_VENDOR_PORTAL_URL = 'https://coordination.enzym3entertainment.vip';
 export const ADMIN_VENDOR_PORTAL_FALLBACK_URL = 'https://coordination.enzym3entertainment.vip';
-export const COUPLE_PORTAL_URL = 'https://booking.enzym3entertainment.vip';
+export const COUPLE_PORTAL_URL = 'https://plan.enzym3entertainment.vip';
 export const VENDOR_APP_URL = 'https://vendor.enzym3entertainment.vip';
 
 // Registration paths

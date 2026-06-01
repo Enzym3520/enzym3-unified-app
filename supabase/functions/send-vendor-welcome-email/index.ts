@@ -227,7 +227,7 @@ Deno.serve(async (req) => {
         "Your Vendor";
 
       // Generate invite token for Vibe Planner join flow
-      const PORTAL_URL = "https://vibeplanner.enzym3entertainment.vip";
+      const PORTAL_URL = "https://plan.enzym3entertainment.vip";
       const { data: tokenRow, error: tokenErr } = await adminClient
         .from("booking_invite_tokens")
         .insert({
@@ -420,7 +420,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    const PORTAL_URL = "https://vibeplanner.enzym3entertainment.vip";
+    const PORTAL_URL = "https://plan.enzym3entertainment.vip";
     const mergeVars: Record<string, string> = {
       "{{client_name}}": event.couple_name || "there",
       "{{event_date}}": formatDate(event.event_date),

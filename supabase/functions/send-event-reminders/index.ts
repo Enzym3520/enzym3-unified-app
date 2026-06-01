@@ -104,7 +104,7 @@ function buildEmailHtml(event: Record<string, unknown>, daysUntil: number): stri
                 <p style="margin:0 0 8px;color:#2D2921;font-size:15px;font-weight:600;">Questions? We're here to help.</p>
                 <p style="margin:0;color:#555;font-size:14px;line-height:1.7;">
                   Reach your coordinator at
-                  <a href="tel:+17703129619" style="color:#2D2921;font-weight:600;">(770) 312-9619</a>
+                  <a href="tel:+15204068600" style="color:#2D2921;font-weight:600;">(520) 406-8600</a>
                   or
                   <a href="mailto:booking@enzym3.com" style="color:#2D2921;font-weight:600;">booking@enzym3.com</a>.
                 </p>
@@ -117,7 +117,7 @@ function buildEmailHtml(event: Record<string, unknown>, daysUntil: number): stri
           <tr>
             <td style="background:#2D2921;padding:20px 40px;text-align:center;">
               <p style="margin:0;color:#c8b99a;font-size:13px;">
-                Enzym3 Entertainment &nbsp;•&nbsp; (770) 312-9619 &nbsp;•&nbsp;
+                Enzym3 Entertainment &nbsp;•&nbsp; (520) 406-8600 &nbsp;•&nbsp;
                 <a href="mailto:booking@enzym3.com" style="color:#c8b99a;">booking@enzym3.com</a>
               </p>
             </td>

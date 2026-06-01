@@ -28,7 +28,7 @@ const brandColors = {
 };
 
 const logoUrl = "https://ytembomoyhuwdtrzlwbi.supabase.co/storage/v1/object/public/email-assets/logo-blue.png?v=1";
-const portalReviewUrl = "https://vibeplanner.enzym3entertainment.vip/app/review";
+const portalReviewUrl = "https://plan.enzym3entertainment.vip/app/review";
 const defaultGoogleReviewUrl = "https://g.page/r/enzym3entertainment/review";
 
 serve(async (req: Request): Promise<Response> => {

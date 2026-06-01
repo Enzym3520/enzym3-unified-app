@@ -72,7 +72,7 @@ const handler = async (req: Request): Promise<Response> => {
     const secondaryContactEmail = event.secondary_contact_email || event.groom_email;
 
     // Vendor portal URL
-    const vendorPortalUrl = "https://vibeplanner.enzym3entertainment.vip/vendor";
+    const vendorPortalUrl = "https://vendor.enzym3entertainment.vip";
 
     // Send email notification with new branding
     const emailHtml = `

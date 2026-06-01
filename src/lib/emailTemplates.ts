@@ -45,7 +45,7 @@ function wrapper(headerSubtitle: string, body: string): string {
           </div>
           <!-- Footer -->
           <div style="background:#f5f5f5;padding:16px 24px;text-align:center;font-size:12px;color:#888888;border-top:1px solid #e0e0e0;">
-            Enzym3 Entertainment &bull; (770) 312-9619 &bull; booking@enzym3.com
+            Enzym3 Entertainment &bull; (520) 406-8600 &bull; booking@enzym3.com
           </div>
         </div>
       </td>
@@ -111,7 +111,7 @@ export function clientInviteEmail(params: {
     </p>
     ${divider()}
     <p style="margin:0;font-size:13px;color:#888888;">
-      Questions? Reply to this email or call us at (770) 312-9619.
+      Questions? Reply to this email or call us at (520) 406-8600.
     </p>
   `;
   return wrapper("Your portal is ready", body);
@@ -147,7 +147,7 @@ export function contractReadyEmail(params: {
     </p>
     ${divider()}
     <p style="margin:0;font-size:13px;color:#888888;">
-      Questions? Reply to this email or call us at (770) 312-9619.
+      Questions? Reply to this email or call us at (520) 406-8600.
     </p>
   `;
   return wrapper("Your contract is ready to sign", body);
@@ -180,7 +180,7 @@ export function depositConfirmedEmail(params: {
     ${btn(params.portalLink, "View Your Portal")}
     ${divider()}
     <p style="margin:0;font-size:13px;color:#888888;">
-      Questions? Reply to this email or call us at (770) 312-9619.
+      Questions? Reply to this email or call us at (520) 406-8600.
     </p>
   `;
   return wrapper("You're booked!", body);
@@ -217,7 +217,7 @@ export function venuePartnerAccessEmail(params: {
     </p>
     ${divider()}
     <p style="margin:0;font-size:13px;color:#888888;">
-      Questions? Reply to this email or call us at (770) 312-9619.
+      Questions? Reply to this email or call us at (520) 406-8600.
     </p>
   `;
   return wrapper("Your portal is ready", body);
@@ -299,7 +299,7 @@ export function upgradePurchasedEmail(params: {
     ${itemsTable}
     ${divider()}
     <p style="margin:0;font-size:13px;color:#888888;">
-      Questions? Reply to this email or call us at (770) 312-9619.
+      Questions? Reply to this email or call us at (520) 406-8600.
     </p>
   `;
   return wrapper("Upgrade confirmed", body);
@@ -336,7 +336,7 @@ export function meetingScheduledEmail(params: {
     ${params.meetingLink ? btn(params.meetingLink, "Join Meeting") : ""}
     ${divider()}
     <p style="margin:0;font-size:13px;color:#888888;">
-      Questions? Reply to this email or call us at (770) 312-9619.
+      Questions? Reply to this email or call us at (520) 406-8600.
     </p>
   `;
   return wrapper("Meeting scheduled", body);
@@ -366,7 +366,7 @@ export function vendorInviteEmail(params: {
     </p>
     ${divider()}
     <p style="margin:0;font-size:13px;color:#888888;">
-      Questions? Reply to this email or call us at (770) 312-9619.
+      Questions? Reply to this email or call us at (520) 406-8600.
     </p>
   `;
   return wrapper("Vendor network invitation", body);
@@ -425,7 +425,7 @@ export function eventReminderEmail(params: {
     </ul>
     ${divider()}
     <p style="margin:0;font-size:13px;color:#888888;">
-      Questions? Reply to this email or call us at (770) 312-9619.
+      Questions? Reply to this email or call us at (520) 406-8600.
     </p>
   `;
   return wrapper(`${String(params.daysUntil)} days to go!`, body);

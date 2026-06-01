@@ -178,8 +178,8 @@ export const VibeSheetEmail = ({
           <Text style={footerText}>PDF attachment included with complete details.</Text>
           <Text style={footerLink}>
             Questions?{" "}
-            <a href="mailto:booking@enzym3.com" style={{ color: brandColors.accent }}>
-              booking@enzym3.com
+            <a href="mailto:booking@enzym3entertainment.vip" style={{ color: brandColors.accent }}>
+              booking@enzym3entertainment.vip
             </a>
           </Text>
         </Section>

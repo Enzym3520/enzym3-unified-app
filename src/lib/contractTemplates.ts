@@ -60,7 +60,7 @@ export function generateWeddingContract(event: WeddingDetails): string {
       <p style="color: rgba(255,255,255,0.85); margin: 0; font-size: 13px;">DJ Services Agreement — Wedding</p>
     </div>
     <p style="font-size: 11px; color: #9ca3af; margin: 10px 0 0 0;">
-      (770) 312-9619 &bull; booking@enzym3.com
+      (520) 406-8600 &bull; booking@enzym3.com
     </p>
     <div style="height: 2px; background-color: rgba(107,163,190,0.3); margin-top: 10px;"></div>
   </div>
@@ -229,7 +229,7 @@ export function generateWeddingContract(event: WeddingDetails): string {
   <!-- Footer -->
   <div style="margin-top: 28px; padding-top: 14px; border-top: 1px solid #e5e7eb; text-align: center;">
     <p style="font-size: 11px; color: #9ca3af; margin: 0;">
-      Enzym3 Entertainment &bull; (770) 312-9619 &bull; booking@enzym3.com
+      Enzym3 Entertainment &bull; (520) 406-8600 &bull; booking@enzym3.com
     </p>
   </div>
 
@@ -274,7 +274,7 @@ export function generateDJAgreement(event: WeddingDetails): string {
       <p style="color: rgba(255,255,255,0.85); margin: 0; font-size: 13px;">DJ Services Agreement</p>
     </div>
     <p style="font-size: 11px; color: #9ca3af; margin: 10px 0 0 0;">
-      (770) 312-9619 &bull; booking@enzym3.com
+      (520) 406-8600 &bull; booking@enzym3.com
     </p>
     <div style="height: 2px; background-color: rgba(107,163,190,0.3); margin-top: 10px;"></div>
   </div>
@@ -470,7 +470,7 @@ export function generateDJAgreement(event: WeddingDetails): string {
   <!-- Footer -->
   <div style="margin-top: 28px; padding-top: 14px; border-top: 1px solid #e5e7eb; text-align: center;">
     <p style="font-size: 11px; color: #9ca3af; margin: 0;">
-      Enzym3 Entertainment &bull; (770) 312-9619 &bull; booking@enzym3.com
+      Enzym3 Entertainment &bull; (520) 406-8600 &bull; booking@enzym3.com
     </p>
   </div>
 

@@ -62,7 +62,7 @@ Deno.serve(async (req) => {
     if (!contract.signer_email) throw new Error("No client email on contract");
 
     // Build signing URL
-    const appUrl = Deno.env.get("APP_URL") || "https://vibeplanner.enzym3entertainment.vip";
+    const appUrl = Deno.env.get("APP_URL") || "https://plan.enzym3entertainment.vip";
     const signUrl = `${appUrl}/sign/${contract.sign_token}`;
 
     const vendorName = contract.vendor

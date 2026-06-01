@@ -1,6 +1,6 @@
 import { EventNotification } from '@/types/notification';
 
-const PORTAL_URL = 'https://booking.enzym3entertainment.vip';
+const PORTAL_URL = 'https://plan.enzym3entertainment.vip';
 
 const EVENT_CONFIG: Record<string, {
   emoji: string;
