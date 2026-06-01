@@ -28,11 +28,12 @@ interface CeremonyTimelineProps {
 }
 
 const DEFAULT_EVENTS: CeremonyTimelineEvent[] = [
-  { id: crypto.randomUUID(), order: 1, event_name: 'Parents/Grandparents Processional', song: '', artist: '' },
-  { id: crypto.randomUUID(), order: 2, event_name: "Groom's Entrance", song: '', artist: '' },
+  { id: crypto.randomUUID(), order: 1, event_name: "Groom's Entrance", song: '', artist: '' },
+  { id: crypto.randomUUID(), order: 2, event_name: 'Parents/Grandparents Processional', song: '', artist: '' },
   { id: crypto.randomUUID(), order: 3, event_name: 'Bridal Party Processional', song: '', artist: '' },
   { id: crypto.randomUUID(), order: 4, event_name: "Bride's Entrance", song: '', artist: '' },
   { id: crypto.randomUUID(), order: 5, event_name: 'Recessional', song: '', artist: '' },
+  { id: crypto.randomUUID(), order: 6, event_name: 'Cocktail Hour', song: '', artist: '' },
 ];
 
 export const CeremonyTimeline = ({ events, onEventsChange }: CeremonyTimelineProps) => {
