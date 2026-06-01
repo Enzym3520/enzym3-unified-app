@@ -37,7 +37,7 @@ function wrapper(headerSubtitle: string, body: string): string {
           <!-- Header -->
           <div style="background:#2D2921;padding:32px 24px;text-align:center;">
             <div style="color:#ffffff;font-size:22px;font-weight:bold;letter-spacing:1px;">Enzym3 Entertainment</div>
-            ${headerSubtitle ? `<div style="color:#85D4FA;font-size:14px;margin-top:6px;">${headerSubtitle}</div>` : ""}
+            ${headerSubtitle ? `<div style="color:#85D4FA;font-size:14px;margin-top:6px;">${esc(headerSubtitle)}</div>` : ""}
           </div>
           <!-- Body -->
           <div style="padding:32px 24px;color:#333333;font-size:15px;line-height:1.6;">
@@ -140,7 +140,7 @@ export function contractReadyEmail(params: {
       detailRow("Event Type:", esc(params.eventType)) +
       venueRow
     )}
-    ${btn(params.contractLink, "Review &amp; Sign Contract")}
+    ${btn(params.contractLink, "Review & Sign Contract")}
     <p style="margin:16px 0 0 0;font-size:13px;color:#888888;">
       If the button doesn't work, copy and paste this link into your browser:<br />
       <a href="${esc(params.contractLink)}" style="color:#85D4FA;word-break:break-all;">${esc(params.contractLink)}</a>
@@ -428,5 +428,5 @@ export function eventReminderEmail(params: {
       Questions? Reply to this email or call us at (770) 312-9619.
     </p>
   `;
-  return wrapper(`${esc(String(params.daysUntil))} days to go!`, body);
+  return wrapper(`${String(params.daysUntil)} days to go!`, body);
 }
