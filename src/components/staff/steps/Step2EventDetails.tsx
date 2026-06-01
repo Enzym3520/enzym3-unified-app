@@ -19,7 +19,7 @@ const Step2EventDetails = () => {
   // Keep bookingSource in sync with payment_type so ContractPackageFields renders correctly
   useEffect(() => {
     form.setValue('bookingSource', paymentType === 'venue_partner' ? 'venue_partner' : 'independent');
-  }, [paymentType, form]);
+  }, [paymentType, form.setValue]);
 
   const validateStep = async () => {
     const result = await form.trigger(['weddingDate', 'numberOfGuests']);

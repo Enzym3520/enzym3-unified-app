@@ -155,12 +155,13 @@ export const useFormSubmission = () => {
         || (sanitizedData as any).groomName
         || (sanitizedData as any).contactName
         || (sanitizedData as any).parentName
-        || '';
-      if (contactEmail && contactEmail !== 'unknown@example.com') {
+        || 'Valued Client';
+      const clientEmail = contactEmail;
+      if (clientEmail && clientEmail !== 'unknown@example.com') {
         supabase.functions.invoke('send-client-invite', {
           body: {
             wedding_id: notificationId,
-            client_email: contactEmail,
+            client_email: clientEmail,
             client_name: clientName,
           }
         }).catch((err) => console.error('send-client-invite failed (non-fatal):', err));
@@ -171,9 +172,12 @@ export const useFormSubmission = () => {
         localStorage.setItem('lastCoordinatorName', data.from);
       }
 
+      const toastDescription = clientEmail && clientEmail !== 'unknown@example.com'
+        ? `Event created and invite sent to ${clientEmail}`
+        : 'Event created successfully.';
       toast({
         title: "✅ Event Notification Sent!",
-        description: `Event created and invite sent to ${contactEmail !== 'unknown@example.com' ? contactEmail : 'client'}`,
+        description: toastDescription,
       });
       
       return true;
