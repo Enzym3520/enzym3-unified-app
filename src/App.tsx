@@ -39,6 +39,26 @@ import SubmissionsDashboard from '@/pages/staff/SubmissionsDashboard';
 import SettingsPage from '@/pages/staff/SettingsPage';
 import AdminDashboard from '@/pages/staff/AdminDashboard';
 import ReportingDashboard from '@/pages/staff/ReportingDashboard';
+import { AuthProvider } from '@/contexts/AuthContext';
+import VendorDashboard from '@/pages/vendor/DashboardPage';
+import VendorCalendar from '@/pages/vendor/CalendarPage';
+import VendorMeetings from '@/pages/vendor/MeetingsPage';
+import VendorMessages from '@/pages/vendor/MessagesPage';
+import VendorNotifications from '@/pages/vendor/NotificationsPage';
+import VendorProfile from '@/pages/vendor/ProfilePage';
+import VendorAvailability from '@/pages/vendor/AvailabilityPage';
+import VendorClients from '@/pages/vendor/ClientsPage';
+import VendorServices from '@/pages/vendor/ServicesPage';
+import VendorEarnings from '@/pages/vendor/EarningsPage';
+import VendorDocuments from '@/pages/vendor/DocumentsPage';
+import VendorBookingRequests from '@/pages/vendor/BookingRequestsPage';
+import VendorNewBooking from '@/pages/vendor/NewBookingPage';
+import VendorContracts from '@/pages/vendor/ContractsPage';
+import VendorEventHistory from '@/pages/vendor/EventHistoryPage';
+import VendorEmailTemplate from '@/pages/vendor/EmailTemplatePage';
+import VendorMyPage from '@/pages/vendor/MyPagePage';
+import PublicVendorPage from '@/pages/vendor/PublicVendorPage';
+import PublicSignPage from '@/pages/vendor/PublicSignPage';
 
 const queryClient = new QueryClient();
 function JoinByCodeStub() { return <div className="p-8 text-muted-foreground">Loading…</div>; }
@@ -89,7 +109,32 @@ export default function App() {
                   <Route path="admin-dashboard" element={<AdminDashboard />} />
                   <Route path="reporting" element={<ReportingDashboard />} />
                 </Route>
-                <Route path="/vendor/*" element={<RequireRole role="vendor"><VendorShell /></RequireRole>} />
+                <Route path="/v/:handle" element={<PublicVendorPage />} />
+                <Route path="/sign/:id" element={<PublicSignPage />} />
+                <Route path="/vendor" element={
+                  <AuthProvider>
+                    <RequireRole role="vendor"><VendorShell /></RequireRole>
+                  </AuthProvider>
+                }>
+                  <Route index element={<Navigate to="dashboard" replace />} />
+                  <Route path="dashboard" element={<VendorDashboard />} />
+                  <Route path="calendar" element={<VendorCalendar />} />
+                  <Route path="meetings" element={<VendorMeetings />} />
+                  <Route path="messages" element={<VendorMessages />} />
+                  <Route path="notifications" element={<VendorNotifications />} />
+                  <Route path="profile" element={<VendorProfile />} />
+                  <Route path="availability" element={<VendorAvailability />} />
+                  <Route path="clients" element={<VendorClients />} />
+                  <Route path="services" element={<VendorServices />} />
+                  <Route path="earnings" element={<VendorEarnings />} />
+                  <Route path="documents" element={<VendorDocuments />} />
+                  <Route path="booking-requests" element={<VendorBookingRequests />} />
+                  <Route path="new-booking" element={<VendorNewBooking />} />
+                  <Route path="contracts" element={<VendorContracts />} />
+                  <Route path="event-history" element={<VendorEventHistory />} />
+                  <Route path="email-template" element={<VendorEmailTemplate />} />
+                  <Route path="my-page" element={<VendorMyPage />} />
+                </Route>
               </Routes>
             </BrowserRouter>
           </KeyboardShortcutsProvider>
