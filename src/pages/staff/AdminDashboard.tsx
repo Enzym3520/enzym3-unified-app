@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 import BulkClientImport from '@/components/staff/admin/BulkClientImport';
 import { VendorPageApprovals } from '@/components/staff/admin/VendorPageApprovals';
 import { UpdateRequestsPanel } from '@/components/staff/admin/UpdateRequestsPanel';
@@ -44,6 +46,26 @@ export default function AdminDashboard() {
   };
 
   const { stats, recentEvents, pendingItems, isLoading } = useAdminDashboardData();
+
+  // Revenue / payment summary data
+  const { data: paymentEvents = [] } = useQuery({
+    queryKey: ['admin-payment-summary'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('event_notification_history')
+        .select('id, deposit_paid, booking_source');
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const revenueSummary = useMemo(() => {
+    const depositsCollected = paymentEvents.filter(e => e.deposit_paid).length;
+    const venuePartnerGigs = paymentEvents.filter(e => e.booking_source === 'venue_partner').length;
+    const independentGigs = paymentEvents.filter(e => e.booking_source === 'independent').length;
+    const otherGigs = paymentEvents.length - venuePartnerGigs - independentGigs;
+    return { depositsCollected, venuePartnerGigs, independentGigs, otherGigs, total: paymentEvents.length };
+  }, [paymentEvents]);
 
   const getEventTypeIcon = (type: string) => {
     switch (type?.toLowerCase()) {
@@ -144,6 +166,51 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Revenue Summary Card */}
+      <Card className="border-primary/20">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <TrendingUp className="h-5 w-5 text-primary" />
+            Revenue & Booking Summary
+          </CardTitle>
+          <CardDescription>Payment status and booking source breakdown across all events</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="space-y-1">
+              <p className="text-xs text-muted-foreground uppercase tracking-wide">Deposits Collected</p>
+              <p className="text-2xl font-bold text-green-700">{revenueSummary.depositsCollected}</p>
+              <Badge className="bg-green-500/10 text-green-700 border-green-300 text-xs">
+                Deposit Paid
+              </Badge>
+            </div>
+            <div className="space-y-1">
+              <p className="text-xs text-muted-foreground uppercase tracking-wide">Awaiting Deposit</p>
+              <p className="text-2xl font-bold text-yellow-700">
+                {revenueSummary.total - revenueSummary.depositsCollected - revenueSummary.venuePartnerGigs}
+              </p>
+              <Badge className="bg-yellow-500/10 text-yellow-700 border-yellow-300 text-xs">
+                Awaiting Deposit
+              </Badge>
+            </div>
+            <div className="space-y-1">
+              <p className="text-xs text-muted-foreground uppercase tracking-wide">Venue Partner Gigs</p>
+              <p className="text-2xl font-bold text-blue-700">{revenueSummary.venuePartnerGigs}</p>
+              <Badge className="bg-blue-500/10 text-blue-700 border-blue-300 text-xs">
+                Venue Partner
+              </Badge>
+            </div>
+            <div className="space-y-1">
+              <p className="text-xs text-muted-foreground uppercase tracking-wide">Independent Gigs</p>
+              <p className="text-2xl font-bold">{revenueSummary.independentGigs}</p>
+              <Badge variant="outline" className="text-xs">
+                Independent
+              </Badge>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

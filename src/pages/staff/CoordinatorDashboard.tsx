@@ -17,6 +17,7 @@ import { formatEventType } from '@/utils/notificationHelpers';
 
 export const CoordinatorDashboard: React.FC = () => {
   const [timedOut, setTimedOut] = useState(false);
+  const [paymentFilter, setPaymentFilter] = useState<'all' | 'deposit_paid' | 'awaiting_deposit' | 'venue_partner'>('all');
   const navigate = useNavigate();
   const isMobile = useIsMobile();
 
@@ -76,6 +77,14 @@ export const CoordinatorDashboard: React.FC = () => {
     safeNotifications.slice(0, 10),
     [safeNotifications]
   );
+
+  // Filter notifications by payment status for the events tab
+  const filteredNotifications = useMemo(() => {
+    if (paymentFilter === 'deposit_paid') return safeNotifications.filter(n => n.deposit_paid);
+    if (paymentFilter === 'awaiting_deposit') return safeNotifications.filter(n => !n.deposit_paid && n.booking_source !== 'venue_partner');
+    if (paymentFilter === 'venue_partner') return safeNotifications.filter(n => n.booking_source === 'venue_partner');
+    return safeNotifications;
+  }, [safeNotifications, paymentFilter]);
 
   if (showSkeleton) {
     return (
@@ -265,8 +274,38 @@ export const CoordinatorDashboard: React.FC = () => {
               <CardHeader>
                 <CardTitle>All Events</CardTitle>
               </CardHeader>
-              <CardContent>
-                <EventListTab />
+              <CardContent className="space-y-4">
+                {/* Payment filter chips */}
+                <div className="flex flex-wrap gap-2">
+                  {([
+                    { value: 'all', label: 'All' },
+                    { value: 'deposit_paid', label: 'Deposit Paid' },
+                    { value: 'awaiting_deposit', label: 'Awaiting Deposit' },
+                    { value: 'venue_partner', label: 'Venue Partner' },
+                  ] as const).map(({ value, label }) => (
+                    <Badge
+                      key={value}
+                      onClick={() => setPaymentFilter(value)}
+                      className={
+                        paymentFilter === value
+                          ? 'cursor-pointer bg-primary text-primary-foreground border-primary'
+                          : 'cursor-pointer bg-muted/50 text-muted-foreground border-border hover:bg-muted'
+                      }
+                    >
+                      {label}
+                      {value !== 'all' && (
+                        <span className="ml-1 opacity-70">
+                          ({value === 'deposit_paid'
+                            ? safeNotifications.filter(n => n.deposit_paid).length
+                            : value === 'awaiting_deposit'
+                            ? safeNotifications.filter(n => !n.deposit_paid && n.booking_source !== 'venue_partner').length
+                            : safeNotifications.filter(n => n.booking_source === 'venue_partner').length})
+                        </span>
+                      )}
+                    </Badge>
+                  ))}
+                </div>
+                <EventListTab externalEvents={filteredNotifications} />
               </CardContent>
             </Card>
           </TabsContent>

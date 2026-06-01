@@ -17,7 +17,22 @@ import { useIsMobile } from '@/hooks/use-mobile';
 type SortField = 'couple_name' | 'event_date' | 'event_type' | 'status';
 type SortDirection = 'asc' | 'desc';
 
-export const EventListTab: React.FC = () => {
+interface EventListTabProps {
+  externalEvents?: Array<{
+    id: string;
+    couple_name?: string | null;
+    event_type?: string | null;
+    event_date?: string | null;
+    venue?: string | null;
+    status: string;
+    guest_count?: number | null;
+    package_type?: string | null;
+    deposit_paid?: boolean | null;
+    booking_source?: string | null;
+  }>;
+}
+
+export const EventListTab: React.FC<EventListTabProps> = ({ externalEvents }) => {
   const [search, setSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
@@ -26,18 +41,21 @@ export const EventListTab: React.FC = () => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
 
-  const { data: events = [], isLoading } = useQuery({
+  const { data: fetchedEvents = [], isLoading } = useQuery({
     queryKey: ['event-list-tab'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('event_notification_history')
-        .select('id, couple_name, event_type, event_date, venue, status, guest_count, package_type')
+        .select('id, couple_name, event_type, event_date, venue, status, guest_count, package_type, deposit_paid, booking_source')
         .order('event_date', { ascending: false })
         .limit(2000);
       if (error) throw error;
       return data;
     },
+    enabled: !externalEvents,
   });
+
+  const events = externalEvents ?? fetchedEvents;
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
@@ -86,6 +104,28 @@ export const EventListTab: React.FC = () => {
     if (s === 'completed') return 'default' as const;
     if (s === 'in_progress') return 'secondary' as const;
     return 'outline' as const;
+  };
+
+  const paymentBadge = (event: { deposit_paid?: boolean | null; booking_source?: string | null }) => {
+    if (event.deposit_paid) {
+      return (
+        <Badge className="bg-green-500/10 text-green-700 border-green-300 text-xs">
+          Deposit Paid
+        </Badge>
+      );
+    }
+    if (event.booking_source === 'venue_partner') {
+      return (
+        <Badge className="bg-blue-500/10 text-blue-700 border-blue-300 text-xs">
+          Venue Partner
+        </Badge>
+      );
+    }
+    return (
+      <Badge className="bg-yellow-500/10 text-yellow-700 border-yellow-300 text-xs">
+        Awaiting Deposit
+      </Badge>
+    );
   };
 
   if (isLoading) {
@@ -148,9 +188,12 @@ export const EventListTab: React.FC = () => {
                     <p className="font-medium truncate">{event.couple_name || 'Unknown'}</p>
                     <p className="text-xs text-muted-foreground truncate">{formatEventType(event.event_type)}</p>
                   </div>
-                  <Badge variant={statusVariant(event.status)} className="shrink-0 text-xs">
-                    {event.status}
-                  </Badge>
+                  <div className="flex flex-col items-end gap-1 shrink-0">
+                    <Badge variant={statusVariant(event.status)} className="text-xs">
+                      {event.status}
+                    </Badge>
+                    {paymentBadge(event)}
+                  </div>
                 </div>
                 <div className="flex items-center justify-between mt-2 flex-wrap gap-1">
                   <span className="flex items-center gap-1 text-xs text-muted-foreground">
@@ -199,6 +242,7 @@ export const EventListTab: React.FC = () => {
                     </TableHead>
                     <TableHead>Venue</TableHead>
                     <TableHead>Guests</TableHead>
+                    <TableHead>Payment</TableHead>
                     <TableHead>
                       <Button variant="ghost" onClick={() => handleSort('status')} className="flex items-center gap-2 h-auto p-0 font-medium">
                         Status {getSortIcon('status')}
@@ -237,6 +281,7 @@ export const EventListTab: React.FC = () => {
                           </span>
                         ) : '—'}
                       </TableCell>
+                      <TableCell>{paymentBadge(event)}</TableCell>
                       <TableCell>
                         <Badge variant={statusVariant(event.status)}>
                           {event.status}
