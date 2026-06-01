@@ -215,6 +215,7 @@ serve(async (req: Request) => {
         .eq("contact_email", event.contact_email)
         .eq("reminder_type", reminderType)
         .eq("status", "completed")
+        .eq("scheduled_date", scheduledDate)
         .maybeSingle();
 
       if (existingReminder) {
