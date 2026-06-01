@@ -1,6 +1,6 @@
 import { useUserRole } from '@/hooks/useUserRole';
-// VendorProfileSettings is a Plan 4 component — stubbed until implemented
 import { CoordinatorProfileSettings } from '@/components/staff/coordinator/CoordinatorProfileSettings';
+import { VendorProfileSettings } from '@/components/staff/coordinator/VendorProfileSettings';
 import { NotificationSettings } from '@/components/staff/NotificationSettings';
 import { Loader2 } from 'lucide-react';
 
@@ -18,7 +18,7 @@ export default function SettingsPage() {
   return (
     <div className="space-y-6">
       <h1 className="text-2xl md:text-3xl font-bold font-playfair text-primary">Profile & Settings</h1>
-      {isVendor && !isAdmin && !isModerator ? <div>Vendor profile settings coming soon</div> : <CoordinatorProfileSettings />}
+      {isVendor && !isAdmin && !isModerator ? <VendorProfileSettings /> : <CoordinatorProfileSettings />}
       <NotificationSettings />
     </div>
   );
