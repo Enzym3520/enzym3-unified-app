@@ -94,13 +94,27 @@ const Upgrades = () => {
       <div className="space-y-6">
         {/* Package Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" data-tour="package-options">
-          {upgradePackages.map((pkg) => (
+          {upgradePackages.map((pkg) => {
+            const purchasedOrder = upgradeOrders.find(
+              (o) =>
+                (o.selected_package?.toLowerCase() === pkg.name.toLowerCase() ||
+                  (Array.isArray(o.items) && o.items.some((i: any) => i.name?.toLowerCase() === pkg.name.toLowerCase()))) &&
+                (o.payment_status === 'paid' || o.payment_status === 'pending')
+            );
+            const isPurchased = !!purchasedOrder;
+            return (
             <Card key={pkg.name} className="hover:shadow-xl transition-shadow flex flex-col h-full overflow-hidden">
               <div className="relative">
                 <AspectRatio ratio={16 / 9}>
                   <img src={pkg.image} alt={`${pkg.name} package preview`} className="object-cover w-full h-full" />
                 </AspectRatio>
                 <Badge className="absolute top-3 right-3 text-lg px-3 py-1 bg-background/90 text-foreground backdrop-blur-sm">${pkg.price}</Badge>
+                {isPurchased && (
+                  <Badge className="absolute top-3 left-3 gap-1 bg-green-600 text-white border-green-700">
+                    <CheckCircle2 className="h-3 w-3" />
+                    {purchasedOrder.payment_status === 'paid' ? 'Purchased' : 'Pending'}
+                  </Badge>
+                )}
               </div>
               <CardHeader className="pb-2">
                 <div className="flex items-center gap-2">
@@ -124,16 +138,19 @@ const Upgrades = () => {
                     if (pkg.name === 'Emerald') openEmeraldDialog();
                     else addToCart({ id: `${pkg.name.toLowerCase()}-package`, type: 'package', name: pkg.name, price: pkg.price });
                   }}
-                  disabled={isInCart(`${pkg.name.toLowerCase()}-package`) || isInCart('emerald-package')}
+                  disabled={isPurchased || isInCart(`${pkg.name.toLowerCase()}-package`) || isInCart('emerald-package')}
                   data-tour={pkg.name === 'Ruby' ? 'cart-system' : undefined}
                 >
-                  {(isInCart(`${pkg.name.toLowerCase()}-package`) || (pkg.name === 'Emerald' && isInCart('emerald-package')))
+                  {isPurchased
+                    ? <><CheckCircle2 className="mr-2 h-4 w-4" />{purchasedOrder.payment_status === 'paid' ? 'Purchased' : 'Pending'}</>
+                    : (isInCart(`${pkg.name.toLowerCase()}-package`) || (pkg.name === 'Emerald' && isInCart('emerald-package')))
                     ? <><CheckCircle2 className="mr-2 h-4 w-4" />In Cart</>
                     : 'Add to Cart'}
                 </Button>
               </CardContent>
             </Card>
-          ))}
+            );
+          })}
         </div>
 
         {/* Uplight Color Options */}
