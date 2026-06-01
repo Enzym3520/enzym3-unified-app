@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { format } from 'date-fns';
 import { parseLocalDate } from '@/utils/dateHelpers';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,9 +9,17 @@ import WizardNavigation from '@/components/staff/wizard/WizardNavigation';
 import ContractPackageFields from '@/components/staff/form-fields/ContractPackageFields';
 import { useFormWizard } from '@/contexts/FormWizardContext';
 import DressCodeField from '@/components/staff/form-fields/DressCodeField';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
 
 const Step2EventDetails = () => {
   const { form } = useFormWizard();
+  const paymentType = form.watch('payment_type');
+
+  // Keep bookingSource in sync with payment_type so ContractPackageFields renders correctly
+  useEffect(() => {
+    form.setValue('bookingSource', paymentType === 'venue_partner' ? 'venue_partner' : 'independent');
+  }, [paymentType, form]);
 
   const validateStep = async () => {
     const result = await form.trigger(['weddingDate', 'numberOfGuests']);
@@ -97,6 +105,36 @@ const Step2EventDetails = () => {
               </div>
             </div>
             <div className="animate-fade-in border-t border-border/20 pt-6" style={{ animationDelay: '0.2s' }}>
+              <FormField
+                control={form.control}
+                name="payment_type"
+                render={({ field }) => (
+                  <FormItem className="mb-6">
+                    <FormLabel className="font-poppins font-medium">Payment Type</FormLabel>
+                    <FormControl>
+                      <RadioGroup
+                        value={field.value || 'independent'}
+                        onValueChange={field.onChange}
+                        className="flex flex-col sm:flex-row gap-4 mt-2"
+                      >
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="independent" id="payment-independent" />
+                          <Label htmlFor="payment-independent" className="font-poppins cursor-pointer">
+                            Independent Booking (client pays)
+                          </Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="venue_partner" id="payment-venue-partner" />
+                          <Label htmlFor="payment-venue-partner" className="font-poppins cursor-pointer">
+                            Venue Partner (venue pays)
+                          </Label>
+                        </div>
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <ContractPackageFields form={form} />
             </div>
             <div className="animate-fade-in" style={{ animationDelay: '0.3s' }}>

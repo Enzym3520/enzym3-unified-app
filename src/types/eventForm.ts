@@ -289,6 +289,9 @@ export const formSchema = z.object({
   wedding_id: z.string().optional(),
   assignedVendorId: z.string().uuid().optional(),
   
+  // Payment type (how the client pays — mirrors bookingSource for UI clarity)
+  payment_type: z.enum(['independent', 'venue_partner']).optional(),
+
   // Booking Type & Pricing (for differentiating venue partner vs independent gigs)
   bookingSource: z.enum(['venue_partner', 'independent']).optional(),
   pricingType: z.enum(['hourly', 'flat_rate']).optional(),
@@ -577,8 +580,11 @@ export const defaultValues: FormData = {
   wedding_id: "",
   assignedVendorId: undefined,
   
+  // Payment type
+  payment_type: 'independent' as const,
+
   // Booking Type & Pricing
-  bookingSource: undefined,
+  bookingSource: 'independent' as const,
   pricingType: undefined,
   hoursBooked: undefined,
   hourlyRate: undefined,

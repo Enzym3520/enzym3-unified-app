@@ -150,6 +150,22 @@ export const useFormSubmission = () => {
         console.log('Invoked process-form-submission:', { processResult, processError });
       }
 
+      // Fire-and-forget: invite client by email
+      const clientName = (sanitizedData as any).brideName
+        || (sanitizedData as any).groomName
+        || (sanitizedData as any).contactName
+        || (sanitizedData as any).parentName
+        || '';
+      if (contactEmail && contactEmail !== 'unknown@example.com') {
+        supabase.functions.invoke('send-client-invite', {
+          body: {
+            wedding_id: notificationId,
+            client_email: contactEmail,
+            client_name: clientName,
+          }
+        }).catch((err) => console.error('send-client-invite failed (non-fatal):', err));
+      }
+
       // Persist coordinator name for future form autofill
       if (data.from) {
         localStorage.setItem('lastCoordinatorName', data.from);
@@ -157,7 +173,7 @@ export const useFormSubmission = () => {
 
       toast({
         title: "✅ Event Notification Sent!",
-        description: "Your submission was saved and is being processed.",
+        description: `Event created and invite sent to ${contactEmail !== 'unknown@example.com' ? contactEmail : 'client'}`,
       });
       
       return true;
