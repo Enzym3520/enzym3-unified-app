@@ -285,6 +285,11 @@ export const useVibeSheet = () => {
       if (!silent) {
         await loadVibeSheetData();
         toast.success(submit ? "Vibe sheet submitted!" : "Progress saved!");
+        if (submit) {
+          supabase.functions.invoke('notify-vibe-sheet-submitted', {
+            body: { wedding_id: wedding.id }
+          }).catch(() => {/* non-critical — don't block the UI */});
+        }
         if (user) {
           const action = submit ? "submitted vibe sheet" : "saved vibe sheet";
           await logAction(wedding.id, action, user.id, user.email || "Unknown", "Vibe Sheet");
