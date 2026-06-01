@@ -1,22 +1,24 @@
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { 
-  FileText, 
-  DollarSign, 
-  Music, 
+import {
+  FileText,
+  DollarSign,
+  Music,
   Sparkles,
   Check,
-  Circle
+  Circle,
+  PartyPopper
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { parseLocalDate } from "@/lib/formatters";
 
 interface Milestone {
   id: string;
   label: string;
   description: string;
   completed: boolean;
-  path: string;
+  path?: string;
   icon: React.ElementType;
 }
 
@@ -28,6 +30,7 @@ interface ProgressTrackerProps {
   paymentRequired?: boolean;
   hasUnpaidUpgrades?: boolean;
   hasUpgrades?: boolean;
+  eventDate?: string | null;
 }
 
 const ProgressTracker = ({
@@ -38,6 +41,7 @@ const ProgressTracker = ({
   paymentRequired,
   hasUnpaidUpgrades = false,
   hasUpgrades = false,
+  eventDate,
 }: ProgressTrackerProps) => {
   const navigate = useNavigate();
 
@@ -86,6 +90,17 @@ const ProgressTracker = ({
     });
   }
 
+  if (eventDate) {
+    const eventDayPassed = new Date() >= parseLocalDate(eventDate);
+    milestones.push({
+      id: "event-day",
+      label: eventDayPassed ? "Event Complete" : "Event Day",
+      description: "Your big day",
+      completed: eventDayPassed,
+      icon: PartyPopper,
+    });
+  }
+
   const completedCount = milestones.filter((m) => m.completed).length;
   const progressPercent = Math.round((completedCount / milestones.length) * 100);
 
@@ -105,16 +120,8 @@ const ProgressTracker = ({
         <div className="space-y-1">
           {milestones.map((milestone) => {
             const Icon = milestone.icon;
-            return (
-              <button
-                key={milestone.id}
-                onClick={() => navigate(milestone.path)}
-                className={cn(
-                  "flex items-center gap-3 w-full text-left p-2.5 rounded-lg transition-colors",
-                  "hover:bg-accent/50",
-                  milestone.completed && "opacity-80"
-                )}
-              >
+            const innerContent = (
+              <>
                 <div
                   className={cn(
                     "flex items-center justify-center h-7 w-7 rounded-full flex-shrink-0",
@@ -151,6 +158,34 @@ const ProgressTracker = ({
                     </p>
                   </div>
                 </div>
+              </>
+            );
+
+            if (!milestone.path) {
+              return (
+                <div
+                  key={milestone.id}
+                  className={cn(
+                    "flex items-center gap-3 w-full text-left p-2.5 rounded-lg",
+                    milestone.completed && "opacity-80"
+                  )}
+                >
+                  {innerContent}
+                </div>
+              );
+            }
+
+            return (
+              <button
+                key={milestone.id}
+                onClick={() => navigate(milestone.path!)}
+                className={cn(
+                  "flex items-center gap-3 w-full text-left p-2.5 rounded-lg transition-colors",
+                  "hover:bg-accent/50",
+                  milestone.completed && "opacity-80"
+                )}
+              >
+                {innerContent}
               </button>
             );
           })}

@@ -329,6 +329,7 @@ const Dashboard = () => {
         paymentRequired={wedding?.payment_required}
         hasUpgrades={upgradeOrders.length > 0}
         hasUnpaidUpgrades={upgradeOrders.some((o: any) => o.payment_status !== 'paid')}
+        eventDate={wedding?.event_date}
       />
 
       {/* Tour step: portalTourSteps.ts — "Your Event Details" */}
