@@ -13,7 +13,13 @@ serve(async (req: Request) => {
   }
 
   try {
-    const apiKey = Deno.env.get("RESEND_API_KEY")!;
+    const apiKey = Deno.env.get("RESEND_API_KEY");
+    if (!apiKey) {
+      return new Response(
+        JSON.stringify({ error: "RESEND_API_KEY is not configured" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
 
     const { to, subject, html } = await req.json() as {
       to: string | string[];

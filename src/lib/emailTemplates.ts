@@ -57,7 +57,7 @@ function wrapper(headerSubtitle: string, body: string): string {
 
 function btn(href: string, label: string): string {
   return `<div style="text-align:center;margin:24px 0;">
-    <a href="${esc(href)}" style="background:#2D2921;color:#85D4FA;text-decoration:none;padding:14px 32px;border-radius:6px;font-size:15px;font-weight:bold;display:inline-block;letter-spacing:0.5px;">${label}</a>
+    <a href="${esc(href)}" style="background:#2D2921;color:#85D4FA;text-decoration:none;padding:14px 32px;border-radius:6px;font-size:15px;font-weight:bold;display:inline-block;letter-spacing:0.5px;">${esc(label)}</a>
   </div>`;
 }
 
@@ -71,7 +71,7 @@ function divider(): string {
 
 function detailRow(label: string, value: string): string {
   return `<tr>
-    <td style="padding:6px 12px 6px 0;color:#888888;font-size:13px;white-space:nowrap;vertical-align:top;">${label}</td>
+    <td style="padding:6px 12px 6px 0;color:#888888;font-size:13px;white-space:nowrap;vertical-align:top;">${esc(label)}</td>
     <td style="padding:6px 0;font-size:14px;color:#333333;vertical-align:top;">${value}</td>
   </tr>`;
 }
