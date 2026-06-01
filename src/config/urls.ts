@@ -2,7 +2,7 @@
 // These ensure consistent links across all components and edge functions
 
 export const ADMIN_VENDOR_PORTAL_URL = 'https://coordination.enzym3entertainment.vip';
-export const ADMIN_VENDOR_PORTAL_FALLBACK_URL = 'https://e3ecoordination.lovable.app';
+export const ADMIN_VENDOR_PORTAL_FALLBACK_URL = 'https://coordination.enzym3entertainment.vip';
 export const COUPLE_PORTAL_URL = 'https://booking.enzym3entertainment.vip';
 export const VENDOR_APP_URL = 'https://vendor.enzym3entertainment.vip';
 

@@ -118,7 +118,7 @@ export function generateWelcomeEmailHtml(notification: EventNotification): strin
           <!-- Header: Logo -->
           <tr>
             <td align="center" style="padding: 40px 30px 24px; background-color: #DBD4C3;">
-              <img src="https://e3ecoordination.lovable.app/lovable-uploads/logo_transparent_background-3.png"
+              <img src="https://ytembomoyhuwdtrzlwbi.supabase.co/storage/v1/object/public/email-assets/logo-blue.png?v=1"
                    alt="Enzym3 Entertainment" width="200"
                    style="display: block; margin: 0 auto;" />
             </td>
