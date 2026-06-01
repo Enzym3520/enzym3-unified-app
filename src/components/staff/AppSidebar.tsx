@@ -1,4 +1,5 @@
 import React from 'react';
+import logoRed from '@/assets/logo-red.png';
 import { NavLink, useLocation, useSearchParams } from 'react-router-dom';
 import { Home, FileText, History, Users, X, Calendar, Ban, User, Package, Bell, BarChart3, Shield, MessageSquare, Settings, Video, Download } from 'lucide-react';
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, useSidebar } from '@/components/ui/sidebar';
@@ -92,14 +93,9 @@ export function AppSidebar() {
       <SidebarHeader className="border-b border-border bg-background pt-[env(safe-area-inset-top)]">
         <div className="flex items-center justify-between h-16 md:h-20 px-4">
           <img
-            src="/lovable-uploads/logo_transparent_background-3.png"
+            src={logoRed}
             alt="Enzym3 Entertainment"
-            className="h-10 md:h-16 w-auto max-w-full object-scale-down dark:hidden"
-          />
-          <img
-            src="/lovable-uploads/white_logo_transparent_background.png"
-            alt="Enzym3 Entertainment"
-            className="h-10 md:h-16 w-auto max-w-full object-scale-down hidden dark:block"
+            className="h-10 md:h-16 w-auto max-w-full object-scale-down"
           />
           {isMobile && (
             <Button

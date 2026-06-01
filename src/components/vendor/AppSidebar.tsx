@@ -1,3 +1,4 @@
+import logoRed from '@/assets/logo-red.png';
 import {
   LayoutDashboard, Calendar, Users, MessageSquare, CalendarOff,
   Package, DollarSign, FileText, Globe, UserCircle, Bell, Briefcase,
@@ -63,13 +64,13 @@ export function AppSidebar() {
       <SidebarHeader className="p-2 pt-[env(safe-area-inset-top)]">
         {!collapsed && (
           <div className="flex items-center gap-2">
-            <img src="/logo-tan.png" alt="Enzym3 Entertainment" className="h-12 w-auto" />
+            <img src={logoRed} alt="Enzym3 Entertainment" className="h-12 w-auto" />
             <span className="font-display text-lg font-semibold">Vendor</span>
           </div>
         )}
         {collapsed && (
           <div className="flex justify-center">
-            <img src="/logo-tan.png" alt="E3E" className="h-10 w-auto" />
+            <img src={logoRed} alt="E3E" className="h-10 w-auto" />
           </div>
         )}
       </SidebarHeader>
