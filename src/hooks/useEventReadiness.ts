@@ -51,7 +51,10 @@ export const useEventReadiness = (eventId?: string) => {
         p_limit: 1,
       });
 
-      if (error) throw error;
+      if (error) {
+        if (error.message?.includes('Access denied')) return null;
+        throw error;
+      }
       const rows = data as unknown as EventReadiness[];
       return rows?.[0] ?? null;
     },
@@ -70,7 +73,10 @@ export const useUpcomingReadiness = (limit = 10) => {
         p_limit: limit,
       });
 
-      if (error) throw error;
+      if (error) {
+        if (error.message?.includes('Access denied')) return [];
+        throw error;
+      }
       return (data || []) as unknown as EventReadiness[];
     },
   });
