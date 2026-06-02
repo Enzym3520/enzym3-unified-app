@@ -28,7 +28,7 @@ export default function Login() {
     if (roles.length === 0) return;
     if (isAdmin || isModerator) navigate('/staff', { replace: true });
     else if (isVendor) navigate('/vendor', { replace: true });
-    else if (roles.includes('client')) navigate('/app', { replace: true });
+    else navigate('/app', { replace: true });
   }, [isAdmin, isModerator, isVendor, isLoading, roles, navigate]);
 
   const { register, handleSubmit, formState: { errors } } = useForm<F>({

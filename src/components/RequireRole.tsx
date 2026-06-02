@@ -11,7 +11,7 @@ export function RequireRole({ role, children }: Props) {
     let allowed = false;
     if (role === 'admin') allowed = isAdmin || isModerator;
     else if (role === 'vendor') allowed = isVendor;
-    else if (role === 'client') allowed = roles.includes('client');
+    else if (role === 'client') allowed = !isAdmin && !isModerator && !isVendor;
     if (!allowed) navigate('/login');
   }, [isAdmin, isModerator, isVendor, isLoading, roles, role, navigate]);
   if (isLoading) return null;
