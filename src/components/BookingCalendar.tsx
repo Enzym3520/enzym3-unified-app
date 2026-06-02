@@ -69,7 +69,7 @@ export const BookingCalendar = ({ onDateSelect, selectedDate }: BookingCalendarP
       <div className="text-xs text-muted-foreground space-y-1">
         <p>• Available: Tuesday - Saturday</p>
         <p>• Bookable up to 90 days in advance</p>
-        <p>• Need a different day? <Link to="/app/contact" className="text-primary hover:underline">Contact us</Link></p>
+        <p>• Need a different day? <Link to="/app/messages" className="text-primary hover:underline">Message us</Link></p>
       </div>
     </div>
   );

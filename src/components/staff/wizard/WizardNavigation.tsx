@@ -34,16 +34,15 @@ const WizardNavigation = ({
     });
     setUploadedFiles([]);
     setCurrentStep(1);
-    navigate('/event-notification/step-1');
+    navigate('/staff/event-notification/step-1');
   };
 
   const handleSaveForLater = () => {
-    // Draft is already auto-saved, just confirm and navigate away
     toast({
       title: "Draft saved!",
       description: "You can resume anytime within 24 hours.",
     });
-    navigate('/');
+    navigate('/staff/coordinator-dashboard');
   };
 
   // Determine validity for current step
@@ -92,7 +91,7 @@ const WizardNavigation = ({
     if (currentStep < totalSteps) {
       const nextStep = currentStep + 1;
       setCurrentStep(nextStep);
-      navigate(`/event-notification/step-${nextStep}`);
+      navigate(`/staff/event-notification/step-${nextStep}`);
     }
   };
 
@@ -104,7 +103,7 @@ const WizardNavigation = ({
     if (currentStep > 1) {
       const previousStep = currentStep - 1;
       setCurrentStep(previousStep);
-      navigate(`/event-notification/step-${previousStep}`);
+      navigate(`/staff/event-notification/step-${previousStep}`);
     }
   };
 

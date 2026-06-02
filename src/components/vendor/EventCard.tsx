@@ -94,7 +94,7 @@ export function EventCard({ assignment, onViewDetails }: EventCardProps) {
           </div>
           <div className="flex flex-wrap gap-2 pt-2 border-t" onClick={(e) => e.stopPropagation()}>
             {isGigDay && assignment.status === "confirmed" && (
-              <Button size="sm" onClick={() => navigate(`/vendor/gig/${assignment.id}`)} className="flex-1 bg-destructive hover:bg-destructive/90">
+              <Button size="sm" onClick={() => navigate(`/vendor/event-history`)} className="flex-1 bg-destructive hover:bg-destructive/90">
                 <Zap className="mr-2 h-4 w-4" /> Gig Mode
               </Button>
             )}

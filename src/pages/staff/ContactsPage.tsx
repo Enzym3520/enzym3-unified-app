@@ -43,7 +43,7 @@ const ContactsPage = () => {
     setSelectedContact(null);
     // Clear URL params when closing modal
     if (weddingIdFromUrl) {
-      navigate('/contacts', { replace: true });
+      navigate('/staff/contacts', { replace: true });
     }
   };
 

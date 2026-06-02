@@ -26,17 +26,17 @@ export function VendorWelcomeHeader({ firstName, pendingCount, upcomingCount }: 
       <div className="flex flex-wrap gap-2">
         {pendingCount > 0 && (
           <Button variant="default" size="sm" className="text-xs h-8 gap-1.5" asChild>
-            <Link to="/"><CheckCircle className="h-3.5 w-3.5" /> Confirm Events ({pendingCount})</Link>
+            <Link to="/vendor/booking-requests"><CheckCircle className="h-3.5 w-3.5" /> Confirm Events ({pendingCount})</Link>
           </Button>
         )}
         <Button variant="outline" size="sm" className="text-xs h-8 gap-1.5" asChild>
-          <Link to="/documents"><FileText className="h-3.5 w-3.5" /> Documents</Link>
+          <Link to="/vendor/documents"><FileText className="h-3.5 w-3.5" /> Documents</Link>
         </Button>
         <Button variant="outline" size="sm" className="text-xs h-8 gap-1.5" asChild>
-          <Link to="/earnings"><DollarSign className="h-3.5 w-3.5" /> Earnings</Link>
+          <Link to="/vendor/earnings"><DollarSign className="h-3.5 w-3.5" /> Earnings</Link>
         </Button>
         <Button variant="outline" size="sm" className="text-xs h-8 gap-1.5" asChild>
-          <Link to="/availability"><CalendarOff className="h-3.5 w-3.5" /> Availability</Link>
+          <Link to="/vendor/availability"><CalendarOff className="h-3.5 w-3.5" /> Availability</Link>
         </Button>
       </div>
     </div>

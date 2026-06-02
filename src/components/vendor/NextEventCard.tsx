@@ -77,7 +77,7 @@ export function NextEventCard({ assignments, onViewDetails }: NextEventCardProps
           </div>
           <div className="flex gap-2 pt-2 border-t" onClick={(e) => e.stopPropagation()}>
             {isUrgent && (
-              <Button size="sm" className="flex-1 bg-destructive hover:bg-destructive/90" onClick={() => navigate(`/vendor/gig/${nextAssignment.id}`)}>
+              <Button size="sm" className="flex-1 bg-destructive hover:bg-destructive/90" onClick={() => navigate(`/vendor/event-history`)}>
                 <Zap className="mr-2 h-4 w-4" /> Gig Mode
               </Button>
             )}
