@@ -156,20 +156,20 @@ export default function HomePage() {
 
       {/* ── HERO ── */}
       <section className="relative h-screen flex flex-col items-center justify-center overflow-hidden">
-        {/* Drop public/hero-video.mp4 in to activate video background */}
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-        >
-          <source src="/hero-video.mp4" type="video/mp4" />
-        </video>
-
-        {/* Background gradient (shows when no video) */}
+        {/* Background gradient fallback (shows while video loads / if blocked) */}
         <div className="absolute inset-0 bg-gradient-to-br from-[#0a0806] via-[#161210] to-[#2D2921]" />
-        {/* Dark overlay on top of video */}
+
+        {/* Vimeo background video */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <iframe
+            src="https://player.vimeo.com/video/1166132336?background=1&autoplay=1&loop=1&muted=1&controls=0"
+            allow="autoplay; fullscreen"
+            title="Enzym3 Entertainment"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-[177.77vh] min-h-[56.25vw] w-[100vw] h-[100vh] border-0"
+          />
+        </div>
+
+        {/* Dark overlay for text legibility */}
         <div className="absolute inset-0 bg-black/50" />
 
         <div className="relative z-10 text-center px-6 max-w-3xl mx-auto space-y-6">
