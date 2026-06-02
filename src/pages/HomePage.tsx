@@ -155,19 +155,9 @@ export default function HomePage() {
         </div>
       </nav>
 
-      {/* ── HERO (with background video) ── */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-6">
-        <video
-          src={heroVideoAsset.url}
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover z-0"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0806]/70 via-[#0a0806]/50 to-[#0a0806]/80 z-10" />
-
-        <div className="relative z-20 text-center max-w-3xl mx-auto space-y-6 py-28">
+      {/* ── INTRO (text above video) ── */}
+      <section className="relative pt-28 pb-10 px-6 bg-gradient-to-br from-[#0a0806] via-[#161210] to-[#2D2921]">
+        <div className="text-center max-w-3xl mx-auto space-y-6">
           <p className="text-[#85D4FA] text-xs font-semibold tracking-[5px] uppercase">
             Tucson, Arizona
           </p>
@@ -191,10 +181,19 @@ export default function HomePage() {
             </Link>
           </div>
         </div>
+      </section>
 
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 animate-bounce z-20 pointer-events-none">
-          <ChevronDown className="h-6 w-6 text-white/60" />
-        </div>
+      {/* ── HERO VIDEO (clean, no overlay) ── */}
+      <section className="relative w-full bg-[#0a0806]">
+        <video
+          src={heroVideoAsset.url}
+          autoPlay
+          loop
+          muted
+          playsInline
+          controls
+          className="w-full h-auto block"
+        />
       </section>
 
 
