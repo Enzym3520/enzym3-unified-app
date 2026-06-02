@@ -125,7 +125,7 @@ const Upgrades = () => {
             );
             const isPurchased = !!purchasedOrder;
             return (
-            <Card key={pkg.name} className="hover:shadow-xl transition-shadow flex flex-col h-full overflow-hidden">
+            <Card key={pkg.name} className="card-luxury flex flex-col h-full overflow-hidden">
               <div className="relative">
                 <AspectRatio ratio={16 / 9}>
                   <img src={pkg.image} alt={`${pkg.name} package preview`} className="object-cover w-full h-full" />
@@ -141,7 +141,7 @@ const Upgrades = () => {
               <CardHeader className="pb-2">
                 <div className="flex items-center gap-2">
                   <Sparkles className="h-6 w-6 text-primary" />
-                  <CardTitle className="text-2xl">{pkg.name}</CardTitle>
+                  <CardTitle className="font-display text-2xl">{pkg.name}</CardTitle>
                 </div>
                 <CardDescription>{pkg.description}</CardDescription>
               </CardHeader>
@@ -176,7 +176,7 @@ const Upgrades = () => {
         </div>
 
         {/* Uplight Color Options */}
-        <Card>
+        <Card className="card-luxury">
           <CardHeader>
             <CardTitle>Uplight Color Options</CardTitle>
             <CardDescription>Browse the wide range of colors available for your uplighting</CardDescription>
@@ -216,7 +216,7 @@ const Upgrades = () => {
         </Card>
 
         {/* A La Carte */}
-        <Card>
+        <Card className="card-luxury">
           <CardHeader>
             <CardTitle>A La Carte Options</CardTitle>
             <CardDescription>Individual upgrades available for custom packages</CardDescription>
@@ -226,7 +226,7 @@ const Upgrades = () => {
               {alaCarte.map((item) => {
                 const inCart = isInCart(item.id);
                 return (
-                  <Card key={item.id} className={`cursor-pointer transition-all hover:shadow-md ${inCart ? 'ring-2 ring-primary' : ''}`}
+                  <Card key={item.id} className={`card-luxury cursor-pointer ${inCart ? 'ring-2 ring-primary' : ''}`}
                     onClick={() => addToCart({ id: item.id, type: 'alacarte', name: item.name, price: item.price })}>
                     <CardContent className="p-4">
                       <div className="flex items-center justify-between">
@@ -248,7 +248,7 @@ const Upgrades = () => {
         </Card>
 
         {/* Learn More */}
-        <Card>
+        <Card className="card-luxury">
           <CardHeader>
             <CardTitle>Learn More</CardTitle>
             <CardDescription>See our upgrades in action — browse colors, watch demos, and design your monogram</CardDescription>
@@ -268,7 +268,7 @@ const Upgrades = () => {
         </Card>
 
         {/* Monogram Designer */}
-        <Card>
+        <Card className="card-luxury">
           <CardHeader>
             <CardTitle>Design Your Monogram</CardTitle>
             <CardDescription>Create a custom projected monogram for your event using the designer below</CardDescription>

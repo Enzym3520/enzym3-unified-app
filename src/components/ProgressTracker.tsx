@@ -106,7 +106,7 @@ const ProgressTracker = ({
 
   return (
     // Tour step: portalTourSteps.ts — "Your Progress Checklist"
-    <Card data-tour="progress-tracker">
+    <Card className="card-luxury" data-tour="progress-tracker">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg">Your Progress</CardTitle>

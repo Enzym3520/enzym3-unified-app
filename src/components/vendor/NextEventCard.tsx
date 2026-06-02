@@ -34,15 +34,15 @@ export function NextEventCard({ assignments, onViewDetails }: NextEventCardProps
   const mapsUrl = event.venue ? getMapsUrl(event.venue) : null;
 
   return (
-    <Card className={`border-2 cursor-pointer hover:shadow-md transition-shadow ${isUrgent ? "border-destructive/50 bg-destructive/5" : "border-primary/30 bg-primary/5"}`} onClick={() => onViewDetails?.(nextAssignment)}>
+    <Card className={`card-luxury cursor-pointer ${isUrgent ? "border-destructive/50 bg-destructive/5" : "border-primary/30 bg-primary/5"}`} onClick={() => onViewDetails?.(nextAssignment)}>
       <CardContent className="p-5">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-bold text-foreground">Next Event</h3>
+          <h3 className="font-display text-lg font-bold text-foreground">Next Event</h3>
           <Badge variant={isUrgent ? "destructive" : "default"} className="text-xs font-bold">{urgencyLabel}</Badge>
         </div>
         <div className="space-y-3">
           <div>
-            <p className="text-xl font-semibold text-foreground">{event.couple_name || "Unknown Client"}</p>
+            <p className="font-display text-xl font-semibold text-foreground">{event.couple_name || "Unknown Client"}</p>
             <p className="text-sm text-muted-foreground">{formatEventType(event.event_type)}</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
