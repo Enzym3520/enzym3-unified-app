@@ -5,15 +5,15 @@ import { useUserRole } from '@/hooks/useUserRole';
 interface Props { role: 'admin' | 'vendor' | 'client'; children: ReactNode; }
 export function RequireRole({ role, children }: Props) {
   const navigate = useNavigate();
-  const { isAdmin, isVendor, isLoading } = useUserRole();
+  const { isAdmin, isVendor, isLoading, roles } = useUserRole();
   useEffect(() => {
     if (isLoading) return;
     let allowed = false;
     if (role === 'admin') allowed = isAdmin;
     else if (role === 'vendor') allowed = isVendor;
-    else if (role === 'client') allowed = !isAdmin && !isVendor;
+    else if (role === 'client') allowed = roles.includes('client');
     if (!allowed) navigate('/login');
-  }, [isAdmin, isVendor, isLoading, role, navigate]);
+  }, [isAdmin, isVendor, isLoading, roles, role, navigate]);
   if (isLoading) return null;
   return <>{children}</>;
 }

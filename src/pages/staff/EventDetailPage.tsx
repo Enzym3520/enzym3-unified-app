@@ -61,7 +61,7 @@ const EventDetailPage: React.FC = () => {
     return (
       <div className="text-center py-12">
         <p className="text-muted-foreground">Event not found</p>
-        <Link to="/notification-history">
+        <Link to="/staff/notification-history">
           <Button variant="link" className="mt-2">Back to History</Button>
         </Link>
       </div>
@@ -73,7 +73,7 @@ const EventDetailPage: React.FC = () => {
       {/* Header */}
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-3">
-          <Link to="/notification-history">
+          <Link to="/staff/notification-history">
             <Button variant="ghost" size="icon"><ArrowLeft className="w-5 h-5" /></Button>
           </Link>
           <div>

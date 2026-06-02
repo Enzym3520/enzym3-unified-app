@@ -12,7 +12,7 @@ import { CheckCircle2, AlertTriangle } from "lucide-react";
 import DOMPurify from "dompurify";
 
 export default function PublicSignPage() {
-  const { token } = useParams<{ token: string }>();
+  const { id: token } = useParams<{ id: string }>();
   const { data: contract, isLoading, error } = usePublicContract(token);
   const signMutation = useSignContract();
 

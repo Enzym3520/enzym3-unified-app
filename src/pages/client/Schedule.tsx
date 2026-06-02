@@ -114,8 +114,8 @@ const Schedule = () => {
             <p className="text-muted-foreground max-w-sm mx-auto">
               Before you can schedule a meeting, we need a few details about your event.
             </p>
-            <Link to="/app/profile-setup">
-              <Button className="mt-2">Complete Profile Setup</Button>
+            <Link to="/app/settings">
+              <Button className="mt-2">Go to Settings</Button>
             </Link>
           </CardContent>
         </Card>

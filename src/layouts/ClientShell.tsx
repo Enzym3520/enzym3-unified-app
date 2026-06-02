@@ -80,7 +80,6 @@ export function ClientShell() {
     { path: '/app/uploads', label: 'Uploads', icon: Upload, shortcut: ['g', 'l'] },
     { path: '/app/messages', label: 'Messages', icon: MessageCircle, shortcut: ['g', 'm'] },
     { path: '/app/review', label: 'Review', icon: Star, shortcut: ['g', 'r'] },
-    { path: '/app/help', label: 'Help', icon: HelpCircle, shortcut: ['g', 'h'] },
     { path: '/app/settings', label: 'Settings', icon: Settings, shortcut: ['g', 't'] },
   ];
 

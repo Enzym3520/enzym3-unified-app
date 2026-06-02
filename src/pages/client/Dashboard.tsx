@@ -190,7 +190,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (!eventLoading && !wedding) {
-      navigate('/app/profile-setup', { replace: true });
+      navigate('/app/settings', { replace: true });
     }
   }, [eventLoading, wedding, navigate]);
 
