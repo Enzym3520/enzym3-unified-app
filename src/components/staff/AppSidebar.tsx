@@ -1,7 +1,7 @@
 import React from 'react';
 import logoRed from '@/assets/logo-red.png';
 import { NavLink, useLocation, useSearchParams } from 'react-router-dom';
-import { Home, FileText, History, Users, X, Calendar, Ban, User, Package, Bell, BarChart3, Shield, MessageSquare, Settings, Video, Download } from 'lucide-react';
+import { Home, FileText, History, Users, X, Calendar, Ban, User, Package, Bell, BarChart3, Shield, MessageSquare, Settings, Video, Download, Sparkles } from 'lucide-react';
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, useSidebar } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -41,6 +41,7 @@ export function AppSidebar() {
       { title: 'Messages', url: '/staff/messages', icon: MessageSquare },
       { title: 'Reminders', url: '/staff/reminders', icon: Bell },
       { title: 'Submissions', url: '/staff/submissions', icon: Package },
+      { title: 'Upgrades', url: '/staff/upgrades', icon: Sparkles },
       ...(isSuperAdmin ? [{ title: 'Reporting', url: '/staff/reporting', icon: BarChart3 }] : []),
     ],
 

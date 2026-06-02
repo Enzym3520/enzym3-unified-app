@@ -15,6 +15,8 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Sparkles, CheckCircle2, Plus, Trash2, CreditCard, Loader2, ExternalLink, Info } from "lucide-react";
 import { CartSheet } from "@/components/CartSheet";
 import { useUpgrades } from "@/hooks/useUpgrades";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 import upgradeRubyImg from "@/assets/upgrade-ruby.jpg";
 import upgradeEmeraldImg from "@/assets/upgrade-emerald.jpg";
@@ -55,12 +57,13 @@ const uplightColors = [
   { name: "Turquoise", hex: "#40E0D0" }, { name: "Salmon", hex: "#FA8072" },
 ];
 
-const alaCarte = [
-  { name: "Projector Monogram", price: 300, description: "Custom monogram projected onto your dance floor" },
-  { name: "Cloud 9", price: 350, description: "Low-lying fog that creates a dreamy 'dancing on clouds' effect" },
-  { name: "Cold Sparks", price: 400, description: "Dramatic indoor spark fountains for grand moments" },
-  { name: "Videography - Reception Only", price: 1000, description: "Professional video coverage of your reception" },
-  { name: "Videography - Ceremony + Reception", price: 1500, description: "Full video coverage from ceremony through reception" }
+// Fallback a-la-carte list used while DB loads or if DB is empty
+const alaCarteFallback = [
+  { id: "projector-monogram", name: "Projector Monogram", price: 300, description: "Custom monogram projected onto your dance floor" },
+  { id: "cloud-9", name: "Cloud 9", price: 350, description: "Low-lying fog that creates a dreamy 'dancing on clouds' effect" },
+  { id: "cold-sparks", name: "Cold Sparks", price: 400, description: "Dramatic indoor spark fountains for grand moments" },
+  { id: "videography-reception", name: "Videography - Reception Only", price: 1000, description: "Professional video coverage of your reception" },
+  { id: "videography-full", name: "Videography - Ceremony + Reception", price: 1500, description: "Full video coverage from ceremony through reception" },
 ];
 
 const learnMoreLinks = [
@@ -80,6 +83,25 @@ const Upgrades = () => {
     handleSubmitOrder, handlePayWithCard, handleDeleteRequest, openDeleteDialog,
     cart, addToCart, cartTotal, isInCart,
   } = useUpgrades();
+
+  const [alaCarte, setAlaCarte] = useState(alaCarteFallback);
+
+  useEffect(() => {
+    supabase
+      .from('upgrades')
+      .select('id, name, description, price')
+      .order('created_at', { ascending: true })
+      .then(({ data }) => {
+        if (data && data.length > 0) {
+          setAlaCarte(data.map((u) => ({
+            id: u.id,
+            name: u.name,
+            price: parseFloat(String(u.price)),
+            description: u.description ?? '',
+          })));
+        }
+      });
+  }, []);
 
   if (loading) return <div className="text-center py-12">Loading...</div>;
   if (!wedding) return <div className="text-center py-12">No wedding found</div>;
@@ -202,11 +224,10 @@ const Upgrades = () => {
           <CardContent>
             <div className="grid md:grid-cols-2 gap-4">
               {alaCarte.map((item) => {
-                const itemId = item.name.toLowerCase().replace(/\s+/g, '-');
-                const inCart = isInCart(itemId);
+                const inCart = isInCart(item.id);
                 return (
-                  <Card key={item.name} className={`cursor-pointer transition-all hover:shadow-md ${inCart ? 'ring-2 ring-primary' : ''}`}
-                    onClick={() => addToCart({ id: itemId, type: 'alacarte', name: item.name, price: item.price })}>
+                  <Card key={item.id} className={`cursor-pointer transition-all hover:shadow-md ${inCart ? 'ring-2 ring-primary' : ''}`}
+                    onClick={() => addToCart({ id: item.id, type: 'alacarte', name: item.name, price: item.price })}>
                     <CardContent className="p-4">
                       <div className="flex items-center justify-between">
                         <div className="flex-1">

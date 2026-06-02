@@ -38,6 +38,7 @@ import VendorManagement from '@/pages/staff/VendorManagement';
 import VendorInvites from '@/pages/staff/VendorInvites';
 import SubmissionsDashboard from '@/pages/staff/SubmissionsDashboard';
 import SettingsPage from '@/pages/staff/SettingsPage';
+import UpgradesManagement from '@/pages/staff/UpgradesManagement';
 import AdminDashboard from '@/pages/staff/AdminDashboard';
 import ReportingDashboard from '@/pages/staff/ReportingDashboard';
 import { AuthProvider } from '@/contexts/AuthContext';
@@ -106,6 +107,7 @@ export default function App() {
                   <Route path="vendor-management" element={<VendorManagement />} />
                   <Route path="vendor-invites" element={<VendorInvites />} />
                   <Route path="submissions" element={<SubmissionsDashboard />} />
+                  <Route path="upgrades" element={<UpgradesManagement />} />
                   <Route path="settings" element={<SettingsPage />} />
                   <Route path="admin-dashboard" element={<AdminDashboard />} />
                   <Route path="reporting" element={<ReportingDashboard />} />

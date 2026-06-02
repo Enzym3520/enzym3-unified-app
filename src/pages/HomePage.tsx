@@ -177,10 +177,10 @@ export default function HomePage() {
             Tucson, Arizona
           </p>
           <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold text-white leading-tight tracking-tight">
-            Your Event.<br />Our Expertise.
+            One Team.<br />Everything Handled.
           </h1>
           <p className="text-[#DBD4C3] text-lg md:text-xl leading-relaxed max-w-xl mx-auto">
-            Premium DJ services and event coordination for weddings, quinceañeras, and every celebration in between.
+            DJ, lighting, and coordination — all under one roof. From contract to last dance, we own every detail so you can just show up and celebrate.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
             <button
