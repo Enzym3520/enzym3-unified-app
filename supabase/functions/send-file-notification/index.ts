@@ -316,7 +316,7 @@ serve(async (req) => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            from: 'File Notification <files@enzym3entertainment.vip>',
+            from: "Enzym3 Entertainment <booking@enzym3.com>",
             to: [profile.email],
             subject: emailSubject,
             html: emailHtml,

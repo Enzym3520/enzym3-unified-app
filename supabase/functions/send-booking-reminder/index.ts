@@ -193,7 +193,7 @@ serve(async (req: Request): Promise<Response> => {
     `;
 
     const emailResult = await resend.emails.send({
-      from: 'Enzym3 Entertainment <reminders@enzym3entertainment.vip>',
+      from: "Enzym3 Entertainment <booking@enzym3.com>",
       to: [data.contact_email],
       subject: `📅 Meeting Reminder - ${formattedType} on ${formattedDate}`,
       html: htmlContent,

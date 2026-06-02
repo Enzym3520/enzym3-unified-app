@@ -218,7 +218,7 @@ serve(async (req: Request): Promise<Response> => {
 
     // Send email via Resend
     const emailResult = await resend.emails.send({
-      from: 'Enzym3 Entertainment <notifications@enzym3entertainment.vip>',
+      from: "Enzym3 Entertainment <booking@enzym3.com>",
       to: ['help@enzym3entertainment.vip'],
       subject: subject,
       html: htmlContent,

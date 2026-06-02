@@ -150,7 +150,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'Enzym3 Entertainment <notifications@enzym3entertainment.vip>',
+        from: "Enzym3 Entertainment <booking@enzym3.com>",
         to: [vendor.email],
         subject: `${actionLabel}: ${event?.couple_name || 'Client'} — ${meetingDate}`,
         html: emailHtml,

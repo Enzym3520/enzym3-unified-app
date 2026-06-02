@@ -126,7 +126,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send email
     const emailResponse = await resend.emails.send({
-      from: "Enzym3 Entertainment <booking@enzym3entertainment.vip>",
+      from: "Enzym3 Entertainment <booking@enzym3.com>",
       to: [reminder.contact_email],
       subject: `Reminder: ${reminder.reminder_type.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}`,
       html,

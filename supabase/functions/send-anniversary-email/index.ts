@@ -205,7 +205,7 @@ serve(async (req: Request): Promise<Response> => {
       `;
 
       const emailResult = await resend.emails.send({
-        from: 'Enzym3 Entertainment <hello@enzym3entertainment.vip>',
+        from: "Enzym3 Entertainment <booking@enzym3.com>",
         to: Array.from(recipients),
         subject: `🎉 Happy ${ordinal} Anniversary, ${event.couple_name}!`,
         html: htmlContent,

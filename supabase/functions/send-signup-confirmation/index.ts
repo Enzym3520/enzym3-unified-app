@@ -90,7 +90,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Sending confirmation email to:", email, "Role:", role);
 
     const emailResponse = await resend.emails.send({
-      from: "Enzym3 Entertainment <events@enzym3.com>",
+      from: "Enzym3 Entertainment <booking@enzym3.com>",
       to: [email],
       subject: "Confirm Your Email - Enzym3 Entertainment",
       html: emailHtml,

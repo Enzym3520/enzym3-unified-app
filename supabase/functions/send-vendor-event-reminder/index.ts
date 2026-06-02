@@ -156,7 +156,7 @@ Deno.serve(async (req) => {
     console.log(`[reminder] Sending ${milestone} to ${vendor.email.substring(0, 3)}*** for assignment ${assignmentId}`)
 
     const { error: sendErr } = await resend.emails.send({
-      from: 'Enzym3 Entertainment <booking@enzym3entertainment.vip>',
+      from: "Enzym3 Entertainment <booking@enzym3.com>",
       to: [vendor.email],
       subject,
       html,

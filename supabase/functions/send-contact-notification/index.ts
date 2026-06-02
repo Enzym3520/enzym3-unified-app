@@ -208,7 +208,7 @@ Reply directly to the customer at: ${contactMessage.email}
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            from: 'Help Desk <help@enzym3entertainment.vip>',
+            from: "Enzym3 Entertainment <booking@enzym3.com>",
             to: [profile.email],
             subject: emailSubject,
             html: emailHtml,

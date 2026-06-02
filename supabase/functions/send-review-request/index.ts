@@ -126,7 +126,7 @@ serve(async (req: Request): Promise<Response> => {
     `;
 
     const emailResult = await resend.emails.send({
-      from: "JJ at Enzym3 Entertainment <reviews@enzym3entertainment.vip>",
+      from: "Enzym3 Entertainment <booking@enzym3.com>",
       to: [data.contact_email],
       subject: `⭐ ${data.couple_name}, how was your ${data.event_type}?`,
       html: htmlContent,

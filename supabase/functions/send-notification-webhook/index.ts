@@ -468,7 +468,7 @@ const handler = async (req: Request): Promise<Response> => {
     });
 
     const adminEmailResponse = await resend.emails.send({
-      from: 'Enzym3 Notifications <onboarding@resend.dev>',
+      from: "Enzym3 Entertainment <booking@enzym3.com>",
       to: ['jj.madison17@gmail.com'],
       subject: emailTemplate.subject,
       html: emailTemplate.html,
@@ -522,7 +522,7 @@ const handler = async (req: Request): Promise<Response> => {
         });
 
         const coupleEmailResponse = await resend.emails.send({
-          from: 'JJ at Enzym3 <onboarding@resend.dev>',
+          from: "Enzym3 Entertainment <booking@enzym3.com>",
           to: recipients,
           subject: coupleEmailTemplate.subject,
           html: coupleEmailTemplate.html,
