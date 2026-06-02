@@ -37,18 +37,18 @@ const WeddingContactFields = ({ form }: WeddingContactFieldsProps) => {
         <SmartInputField
           form={form}
           name="brideName"
-          label="Bride's Name *"
-          placeholder="Enter bride's full name"
-          tooltip="Full name of the bride"
+          label="Bride's Full Name *"
+          placeholder="e.g. Lisa Wilson"
+          tooltip="First and last name of the bride"
           suggestions={brideNameSuggestions}
         />
 
         <SmartInputField
           form={form}
           name="groomName"
-          label="Groom's Name *"
-          placeholder="Enter groom's full name"
-          tooltip="Full name of the groom"
+          label="Groom's Full Name *"
+          placeholder="e.g. James Krinkel"
+          tooltip="First and last name of the groom"
           suggestions={groomNameSuggestions}
         />
       </div>

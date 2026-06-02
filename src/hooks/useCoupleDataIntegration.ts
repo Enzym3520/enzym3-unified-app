@@ -60,10 +60,17 @@ export const useCoupleDataIntegration = ({
     mappings.vendorType = coupleData.dj_name ? 'dj' : 'other';
     
     // Parse couple names for bride/groom fields
+    // Only pre-populate if the parsed value looks like a full name (has a space).
+    // Single-word results are almost always last names from old data — skip them
+    // so the coordinator isn't confused by a pre-filled last name.
     if (coupleData.couple_name) {
       const parsedNames = parseCoupleName(coupleData.couple_name);
-      mappings.brideName = parsedNames.brideName;
-      mappings.groomName = parsedNames.groomName;
+      if (parsedNames.brideName && parsedNames.brideName.includes(' ')) {
+        mappings.brideName = parsedNames.brideName;
+      }
+      if (parsedNames.groomName && parsedNames.groomName.includes(' ')) {
+        mappings.groomName = parsedNames.groomName;
+      }
     }
     
     return validatePrePopulationData(mappings);
