@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import logoBlue from '@/assets/logo-blue.png';
+import heroVideoAsset from '@/assets/hero-video.asset.json';
 import { useUserRole } from '@/hooks/useUserRole';
 import { Loader2, Star, Phone, Mail, ChevronDown, FileText, Music, Calendar, Heart } from 'lucide-react';
 
