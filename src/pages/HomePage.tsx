@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import logoBlue from '@/assets/logo-blue.png';
+import heroVideoAsset from '@/assets/hero-video.asset.json';
 import { useUserRole } from '@/hooks/useUserRole';
 import { Loader2, Star, Phone, Mail, ChevronDown, FileText, Music, Calendar, Heart } from 'lucide-react';
 
@@ -154,25 +155,9 @@ export default function HomePage() {
         </div>
       </nav>
 
-      {/* ── HERO ── */}
-      <section className="relative h-screen flex flex-col items-center justify-center overflow-hidden">
-        {/* Drop public/hero-video.mp4 in to activate video background */}
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-        >
-          <source src="/hero-video.mp4" type="video/mp4" />
-        </video>
-
-        {/* Background gradient (shows when no video) */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0a0806] via-[#161210] to-[#2D2921]" />
-        {/* Dark overlay on top of video */}
-        <div className="absolute inset-0 bg-black/50" />
-
-        <div className="relative z-10 text-center px-6 max-w-3xl mx-auto space-y-6">
+      {/* ── INTRO (text above video) ── */}
+      <section className="relative pt-28 pb-10 px-6 bg-gradient-to-br from-[#0a0806] via-[#161210] to-[#2D2921]">
+        <div className="text-center max-w-3xl mx-auto space-y-6">
           <p className="text-[#85D4FA] text-xs font-semibold tracking-[5px] uppercase">
             Tucson, Arizona
           </p>
@@ -196,11 +181,20 @@ export default function HomePage() {
             </Link>
           </div>
         </div>
-
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-          <ChevronDown className="h-6 w-6 text-white/30" />
-        </div>
       </section>
+
+      {/* ── HERO VIDEO (clean, no overlay) ── */}
+      <section className="relative w-full bg-[#0a0806]">
+        <video
+          src={heroVideoAsset.url}
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-auto block"
+        />
+      </section>
+
 
       {/* ── HOW IT WORKS ── */}
       <section className="py-24 px-6 md:px-12 bg-[#f9f6f2]">
