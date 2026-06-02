@@ -94,9 +94,12 @@ export default function Contract() {
         wedding={c.wedding}
         submitting={c.submitting}
         onPayDeposit={c.handlePayDeposit}
-        onVerified={c.refetch}
+        onVerified={c.handlePaymentVerified}
         paymentType={c.paymentType}
         onPaymentTypeChange={c.setPaymentType}
+        paymentProcessing={c.paymentProcessing}
+        paymentCancelled={c.paymentCancelled}
+        onDismissCancelled={() => c.setPaymentCancelled(false)}
       />
     );
   }

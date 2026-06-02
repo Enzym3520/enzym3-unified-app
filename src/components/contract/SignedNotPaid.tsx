@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { getPortalDisplayName, getClientLabel } from "@/lib/eventUtils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, FileSignature, CreditCard, AlertCircle, Heart, Calendar } from "lucide-react";
+import { Loader2, FileSignature, CreditCard, AlertCircle, Heart, Calendar, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import ContractPricingCard from "@/components/ContractPricingCard";
@@ -20,11 +20,16 @@ interface SignedNotPaidProps {
   onVerified: () => Promise<void>;
   paymentType: PaymentType;
   onPaymentTypeChange: (type: PaymentType) => void;
+  paymentProcessing?: boolean;
+  paymentCancelled?: boolean;
+  onDismissCancelled?: () => void;
 }
 
-export function SignedNotPaid({ wedding, submitting, onPayDeposit, onVerified, paymentType, onPaymentTypeChange }: SignedNotPaidProps) {
+export function SignedNotPaid({ wedding, submitting, onPayDeposit, onVerified, paymentType, onPaymentTypeChange, paymentProcessing = false, paymentCancelled = false, onDismissCancelled }: SignedNotPaidProps) {
   const [checking, setChecking] = useState(false);
   const autoCheckedRef = useRef(false);
+  const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const pollAttemptsRef = useRef(0);
   const weddingPricingType = (wedding.pricing_type as PricingType) || 'hourly';
   const pricing = calculatePricing(wedding.hours_booked ?? 0, wedding.hourly_rate ?? 0, weddingPricingType, wedding.total_price);
 
@@ -41,9 +46,13 @@ export function SignedNotPaid({ wedding, submitting, onPayDeposit, onVerified, p
       });
       if (error) throw error;
       if (data?.verified) {
+        if (pollingRef.current) {
+          clearInterval(pollingRef.current);
+          pollingRef.current = null;
+        }
         toast.success("Payment confirmed!");
         await onVerified();
-        return;
+        return true;
       }
       if (!isAuto) {
         toast.info("No completed payment found yet. If you just paid, please wait a moment and try again.");
@@ -54,13 +63,48 @@ export function SignedNotPaid({ wedding, submitting, onPayDeposit, onVerified, p
     } finally {
       setChecking(false);
     }
+    return false;
   }, [wedding.id, onVerified]);
 
+  // When paymentProcessing becomes true, poll every 3s for up to 60s (20 attempts)
   useEffect(() => {
+    if (!paymentProcessing) return;
+
+    // Clear any existing interval
+    if (pollingRef.current) {
+      clearInterval(pollingRef.current);
+    }
+    pollAttemptsRef.current = 0;
+
+    // Run an immediate check first
+    verifyPayment(true);
+
+    pollingRef.current = setInterval(async () => {
+      pollAttemptsRef.current += 1;
+      if (pollAttemptsRef.current >= 20) {
+        clearInterval(pollingRef.current!);
+        pollingRef.current = null;
+        toast.error("Could not verify payment automatically. Please refresh the page or use the 'Already paid?' link below.");
+        return;
+      }
+      await verifyPayment(true);
+    }, 3000);
+
+    return () => {
+      if (pollingRef.current) {
+        clearInterval(pollingRef.current);
+        pollingRef.current = null;
+      }
+    };
+  }, [paymentProcessing, verifyPayment]);
+
+  // Single auto-check on mount when NOT coming from a fresh payment redirect
+  useEffect(() => {
+    if (paymentProcessing) return; // polling handles it instead
     if (autoCheckedRef.current) return;
     autoCheckedRef.current = true;
     verifyPayment(true);
-  }, [verifyPayment]);
+  }, [verifyPayment, paymentProcessing]);
 
   const heading = isBalanceMode ? 'Pay Remaining Balance' : 'Complete Your Booking';
   const subheading = isBalanceMode
@@ -86,7 +130,49 @@ export function SignedNotPaid({ wedding, submitting, onPayDeposit, onVerified, p
         <p className="text-muted-foreground">{subheading}</p>
         {!isBalanceMode && <ProgressSteps currentStep={3} />}
       </div>
-      {checking && (
+
+      {/* Persistent processing card — shown after Stripe redirect until DB confirms */}
+      {paymentProcessing && (
+        <Card className="border-[#85D4FA]/50 bg-[#85D4FA]/10">
+          <CardContent className="py-5">
+            <div className="flex items-center gap-4">
+              <Loader2 className="h-6 w-6 animate-spin text-[#85D4FA] flex-shrink-0" />
+              <div>
+                <h3 className="font-semibold text-foreground">Confirming your payment...</h3>
+                <p className="text-sm text-muted-foreground">
+                  We received your payment. This usually takes 10–30 seconds to confirm. Please don't close this page.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Dismissible cancellation banner */}
+      {paymentCancelled && !paymentProcessing && (
+        <Card className="border-amber-200 bg-amber-50/80">
+          <CardContent className="py-4">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-amber-800 flex-1">
+                Payment was cancelled — your card was not charged. Try again when you're ready.
+              </p>
+              {onDismissCancelled && (
+                <button
+                  onClick={onDismissCancelled}
+                  className="text-amber-500 hover:text-amber-700 transition-colors flex-shrink-0"
+                  aria-label="Dismiss"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Inline checking indicator — only when manual or initial auto-check (not during processing polling) */}
+      {checking && !paymentProcessing && (
         <Card className="border-primary/30 bg-primary/5">
           <CardContent className="py-4 flex items-center gap-3">
             <Loader2 className="h-5 w-5 animate-spin text-primary" />
@@ -158,13 +244,15 @@ export function SignedNotPaid({ wedding, submitting, onPayDeposit, onVerified, p
         <ContractPricingCard hours={wedding.hours_booked ?? 0} hourlyRate={wedding.hourly_rate ?? 0} paymentType={paymentType} onPaymentTypeChange={onPaymentTypeChange} pricingType={weddingPricingType} totalPrice={wedding.total_price} />
       )}
 
-      <Button onClick={onPayDeposit} size="lg" className="w-full h-14 text-lg" disabled={submitting || checking}>
-        {submitting ? <Loader2 className="h-5 w-5 mr-2 animate-spin" /> : <CreditCard className="h-5 w-5 mr-2" />}
-        {isBalanceMode
-          ? `Pay Remaining Balance - ${formatCurrency(remainingBalance)}`
-          : paymentType === 'full'
-            ? `Pay in Full - ${formatCurrency(pricing.total)}`
-            : `Pay Deposit - ${formatCurrency(pricing.deposit)}`}
+      <Button onClick={onPayDeposit} size="lg" className="w-full h-14 text-lg" disabled={submitting || checking || paymentProcessing}>
+        {(submitting || paymentProcessing) ? <Loader2 className="h-5 w-5 mr-2 animate-spin" /> : <CreditCard className="h-5 w-5 mr-2" />}
+        {paymentProcessing
+          ? 'Confirming Payment...'
+          : isBalanceMode
+            ? `Pay Remaining Balance - ${formatCurrency(remainingBalance)}`
+            : paymentType === 'full'
+              ? `Pay in Full - ${formatCurrency(pricing.total)}`
+              : `Pay Deposit - ${formatCurrency(pricing.deposit)}`}
       </Button>
       <div className="text-center">
         <Button variant="link" onClick={() => verifyPayment(false)} disabled={checking} className="text-sm">

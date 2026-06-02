@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useClientEvent } from "@/hooks/useClientEvent";
@@ -55,6 +55,9 @@ export function useContract() {
   const [paymentType, setPaymentType] = useState<PaymentType>("deposit");
   const [quickMsgOpen, setQuickMsgOpen] = useState(false);
   const [quickMsgContext, setQuickMsgContext] = useState("");
+  const [paymentProcessing, setPaymentProcessing] = useState(false);
+  const [paymentCancelled, setPaymentCancelled] = useState(false);
+  const paymentHandledRef = useRef(false);
 
   const paymentStatus = searchParams.get('payment');
 
@@ -67,37 +70,22 @@ export function useContract() {
     if (wedding.dj_meal_included) setDjMealIncluded(wedding.dj_meal_included);
   }, [wedding]);
 
-  // Handle payment redirect
+  // Handle payment redirect — runs once per session when Stripe returns
   useEffect(() => {
+    if (paymentHandledRef.current) return;
     if (paymentStatus === 'success' && wedding?.id) {
-      toast.success("Payment successful! Verifying your deposit...");
+      paymentHandledRef.current = true;
+      setPaymentProcessing(true);
+      setPaymentCancelled(false);
+      toast.success("Payment received! Confirming with Stripe...");
       navigate('/app/contract', { replace: true });
-
-      const verifyPayment = async () => {
-        for (let attempt = 0; attempt < 3; attempt++) {
-          try {
-            const { data, error } = await supabase.functions.invoke('verify-deposit-payment', {
-              body: { wedding_id: wedding.id },
-            });
-            if (error) throw error;
-            if (data?.verified) {
-              toast.success("Deposit confirmed! Your portal is now unlocked.");
-              await refetch();
-              return;
-            }
-          } catch (err) {
-            console.error('Verify attempt failed:', err);
-          }
-          await new Promise(resolve => setTimeout(resolve, 2000));
-        }
-        toast.error("Could not verify payment automatically. Please refresh the page.");
-      };
-      verifyPayment();
     } else if (paymentStatus === 'cancelled') {
-      toast.error("Payment was cancelled. Please try again.");
+      paymentHandledRef.current = true;
+      setPaymentCancelled(true);
+      setPaymentProcessing(false);
       navigate('/app/contract', { replace: true });
     }
-  }, [paymentStatus, wedding?.id, refetch, navigate]);
+  }, [paymentStatus, wedding?.id, navigate]);
 
   // Derived values
   const isVenuePartnerBooking = wedding?.booking_source === 'venue_partner' || wedding?.payment_required === false;
@@ -204,6 +192,11 @@ export function useContract() {
     }
   };
 
+  const handlePaymentVerified = useCallback(async () => {
+    await refetch();
+    setPaymentProcessing(false);
+  }, [refetch]);
+
   return {
     wedding,
     loading,
@@ -219,6 +212,10 @@ export function useContract() {
     paymentType, setPaymentType,
     quickMsgOpen, setQuickMsgOpen,
     quickMsgContext, setQuickMsgContext,
+    // Payment session state
+    paymentProcessing,
+    paymentCancelled,
+    setPaymentCancelled,
     // Derived
     isVenuePartnerBooking,
     effectiveOvertimeRate,
@@ -228,5 +225,6 @@ export function useContract() {
     handleSignContract,
     handlePayDeposit,
     refetch,
+    handlePaymentVerified,
   };
 }
