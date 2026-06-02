@@ -21,15 +21,15 @@ type F = z.infer<typeof schema>;
 export default function Login() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const { isAdmin, isVendor, isLoading, roles } = useUserRole();
+  const { isAdmin, isModerator, isVendor, isLoading, roles } = useUserRole();
 
   useEffect(() => {
     if (isLoading) return;
     if (roles.length === 0) return;
-    if (isAdmin) navigate('/staff', { replace: true });
+    if (isAdmin || isModerator) navigate('/staff', { replace: true });
     else if (isVendor) navigate('/vendor', { replace: true });
-    else navigate('/app', { replace: true });
-  }, [isAdmin, isVendor, isLoading, roles, navigate]);
+    else if (roles.includes('client')) navigate('/app', { replace: true });
+  }, [isAdmin, isModerator, isVendor, isLoading, roles, navigate]);
 
   const { register, handleSubmit, formState: { errors } } = useForm<F>({
     resolver: zodResolver(schema),
