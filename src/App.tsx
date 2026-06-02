@@ -24,6 +24,7 @@ import Review from '@/pages/client/Review';
 import Settings from '@/pages/client/Settings';
 import { CartProvider } from '@/contexts/CartContext';
 import { KeyboardShortcutsProvider } from '@/contexts/KeyboardShortcutsContext';
+import { PortalTourProvider } from '@/contexts/PortalTourContext';
 import { CoordinatorDashboard } from '@/pages/staff/CoordinatorDashboard';
 import EventNotificationForm from '@/pages/staff/EventNotificationForm';
 import NotificationHistory from '@/pages/staff/NotificationHistory';
