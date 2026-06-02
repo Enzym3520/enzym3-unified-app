@@ -71,7 +71,7 @@ const VibeSheet = () => {
     <div className="container mx-auto px-4 space-y-6 max-w-full overflow-x-hidden" data-tour="vibe-sheet-intro">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Your Vibe Sheet</h1>
+          <h1 className="font-display text-3xl font-bold">Your Vibe Sheet</h1>
           <p className="text-muted-foreground mt-1">{getVibeSheetSubtitle(vs.wedding.event_type)}</p>
         </div>
         {vs.vibeSheet?.submitted_at && (

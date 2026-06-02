@@ -285,7 +285,7 @@ const Uploads = () => {
     // Tour step: portalTourSteps.ts — "Upload Files & Links"
     <div className="container mx-auto px-4 space-y-6" data-tour="uploads-intro">
       <div>
-        <h1 className="text-3xl font-bold">Files & Links</h1>
+        <h1 className="font-display text-3xl font-bold">Files & Links</h1>
         <p className="text-muted-foreground mt-1">
           Share documents, photos, and links securely with your DJ
         </p>

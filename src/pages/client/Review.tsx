@@ -166,7 +166,7 @@ const Review = () => {
   return (
     <div className="max-w-lg mx-auto mt-8 space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Leave a Review</h1>
+        <h1 className="font-display text-2xl font-bold">Leave a Review</h1>
         <p className="text-muted-foreground mt-1">
           We'd love to hear about your experience with Enzym3 Entertainment!
         </p>

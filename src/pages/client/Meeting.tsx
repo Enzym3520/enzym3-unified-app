@@ -59,7 +59,7 @@ const Meeting = () => {
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
-      <h1 className="text-2xl font-bold">Meeting Room</h1>
+      <h1 className="font-display text-2xl font-bold">Meeting Room</h1>
 
       {/* Upcoming/Today OR Schedule CTA */}
       {upcomingState !== "none" && upcomingBooking ? (

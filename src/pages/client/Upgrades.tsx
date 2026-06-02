@@ -109,7 +109,7 @@ const Upgrades = () => {
   return (
     <div className="container mx-auto px-4 space-y-6" data-tour="upgrades-intro">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold">Upgrade Packages</h1>
+        <h1 className="font-display text-3xl font-bold">Upgrade Packages</h1>
         <p className="text-muted-foreground mt-1">Enhance your wedding experience with our premium upgrades</p>
       </div>
 
