@@ -46,15 +46,6 @@ export const useFormPrePopulation = () => {
       return context;
     }
     
-    if (urlParams.get('from_couple')) {
-      return {
-        source: 'event_notification',
-        id: urlParams.get('from_couple')!,
-        email: urlParams.get('email') || undefined,
-        contactName: urlParams.get('contact_name') || undefined
-      };
-    }
-    
     if (urlParams.get('from_submission')) {
       return {
         source: 'form_submission',
@@ -220,8 +211,12 @@ export const useFormPrePopulation = () => {
           };
 
           const parsedNames = parseCoupleName(sourceData.couple_name);
-          mappings.brideName = parsedNames.brideName;
-          mappings.groomName = parsedNames.groomName;
+          if (parsedNames.brideName && parsedNames.brideName.includes(' ')) {
+            mappings.brideName = parsedNames.brideName;
+          }
+          if (parsedNames.groomName && parsedNames.groomName.includes(' ')) {
+            mappings.groomName = parsedNames.groomName;
+          }
           logger.debug('Parsed names');
         }
         
