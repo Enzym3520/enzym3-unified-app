@@ -37,7 +37,7 @@ export function VendorDashboardStats({ vendorId }: VendorDashboardStatsProps) {
 
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4 overflow-hidden">
-      <Card className="min-w-0">
+      <Card className="card-luxury min-w-0">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Upcoming Events</CardTitle>
           <Calendar className="h-4 w-4 text-muted-foreground" />
@@ -48,7 +48,7 @@ export function VendorDashboardStats({ vendorId }: VendorDashboardStatsProps) {
         </CardContent>
       </Card>
 
-      <Card className="min-w-0">
+      <Card className="card-luxury min-w-0">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Pending</CardTitle>
           <Clock className="h-4 w-4 text-muted-foreground" />
@@ -59,7 +59,7 @@ export function VendorDashboardStats({ vendorId }: VendorDashboardStatsProps) {
         </CardContent>
       </Card>
 
-      <Card className="min-w-0">
+      <Card className="card-luxury min-w-0">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Documents</CardTitle>
           {documentsNeedingAttention > 0 ? <AlertCircle className="h-4 w-4 text-destructive" /> : <CheckCircle className="h-4 w-4 text-muted-foreground" />}
@@ -70,7 +70,7 @@ export function VendorDashboardStats({ vendorId }: VendorDashboardStatsProps) {
         </CardContent>
       </Card>
 
-      <Card className="min-w-0">
+      <Card className="card-luxury min-w-0">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Next Event</CardTitle>
           <Calendar className="h-4 w-4 text-muted-foreground" />

@@ -53,7 +53,7 @@ function AchievementsCard() {
   const { data: achievements = [], isLoading } = useAchievements();
   if (isLoading || achievements.length === 0) return null;
   return (
-    <Card>
+    <Card className="card-luxury">
       <CardHeader className="pb-3">
         <CardTitle className="text-base flex items-center gap-2">
           <Award className="h-4 w-4 text-primary" />Achievements
@@ -92,7 +92,7 @@ function SetupChecklist({ steps }: { steps: SetupStep[] }) {
   if (completed === steps.length) return null;
 
   return (
-    <Card className="border-primary/20">
+    <Card className="card-luxury border-primary/20">
       <CardHeader className="pb-3">
         <CardTitle className="text-base">🚀 Get Started</CardTitle>
         <CardDescription>{completed}/{steps.length} steps complete</CardDescription>
@@ -180,7 +180,7 @@ export default function DashboardPage() {
       />
 
       {showPushPrompt && (
-        <Card className="border-primary/20 bg-primary/5">
+        <Card className="card-luxury border-primary/20 bg-primary/5">
           <CardContent className="flex items-center gap-4 p-4">
             <Bell className="h-8 w-8 text-primary shrink-0" />
             <div className="flex-1 min-w-0">
@@ -207,7 +207,7 @@ export default function DashboardPage() {
       {user && <VendorDashboardStats vendorId={user.id} />}
 
       {!isInstalled && (canPrompt || isIOS) && (
-        <Card className="border-primary/20 bg-primary/5">
+        <Card className="card-luxury border-primary/20 bg-primary/5">
           <CardContent className="flex items-center gap-4 p-4">
             <Download className="h-8 w-8 text-primary shrink-0" />
             <div className="flex-1 min-w-0">

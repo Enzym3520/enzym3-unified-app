@@ -27,7 +27,7 @@ export function VendorStatCard({ vendorId, compact = false }: VendorStatCardProp
 
   if (compact) {
     return (
-      <Card>
+      <Card className="card-luxury">
         <CardContent className="p-4">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-4">
@@ -46,9 +46,9 @@ export function VendorStatCard({ vendorId, compact = false }: VendorStatCardProp
   }
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="card-luxury overflow-hidden">
       <CardHeader className="bg-gradient-to-r from-primary/10 to-primary/5 pb-4">
-        <CardTitle className="flex items-center gap-2"><Trophy className="h-5 w-5 text-primary" />{vendorName}'s Career Stats</CardTitle>
+        <CardTitle className="flex items-center gap-2 font-display"><Trophy className="h-5 w-5 text-primary" />{vendorName}'s Career Stats</CardTitle>
       </CardHeader>
       <CardContent className="pt-4 space-y-6">
         <div className="grid grid-cols-3 gap-4 text-center">
