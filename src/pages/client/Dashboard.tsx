@@ -259,7 +259,7 @@ const Dashboard = () => {
     <div className="space-y-6 max-w-5xl mx-auto" data-tour="dashboard-welcome">
       {/* Today's Meeting Banner */}
       {todayMeeting && (
-        <Card className="border-2 border-primary bg-primary/5 shadow-md cursor-pointer hover:shadow-lg transition-shadow" onClick={() => navigate('/app/meeting')}>
+        <Card className="card-luxury border-primary/60 bg-primary/5 cursor-pointer" onClick={() => navigate('/app/meeting')}>
           <CardContent className="py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -280,7 +280,7 @@ const Dashboard = () => {
       <PwaInstallBanner />
 
       {/* Tour step: portalTourSteps.ts — "Countdown" */}
-      <Card className="bg-background border-2 border-primary/20 shadow-xl overflow-hidden" data-tour="countdown-card">
+      <Card className="card-luxury bg-background border-primary/20 overflow-hidden" data-tour="countdown-card">
         <CardContent className="pt-6 pb-6 landscape:pt-4 landscape:pb-4">
           {wedding?.event_date ? (
             <div className="flex flex-col items-center gap-6">
@@ -333,7 +333,7 @@ const Dashboard = () => {
       />
 
       {/* Tour step: portalTourSteps.ts — "Your Event Details" */}
-      <Card data-tour="wedding-details">
+      <Card className="card-luxury" data-tour="wedding-details">
         <CardHeader className="landscape:py-4">
           <CardTitle className="landscape:text-lg">{getDetailsCardTitle(eventType)}</CardTitle>
         </CardHeader>
@@ -379,7 +379,7 @@ const Dashboard = () => {
       </Card>
 
       {/* Tour step: portalTourSteps.ts — "Detail Forms from Coordinator" */}
-      <Card data-tour="coordinator-files">
+      <Card className="card-luxury" data-tour="coordinator-files">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
@@ -447,15 +447,17 @@ const Dashboard = () => {
         {quickActions.map((action) => {
           const Icon = action.icon;
           return (
-            <Card 
-              key={action.path} 
-              className="cursor-pointer hover:shadow-lg transition-shadow"
+            <Card
+              key={action.path}
+              className="card-luxury cursor-pointer"
               onClick={() => navigate(action.path)}
             >
               <CardHeader className="landscape:p-4">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
-                    <Icon className="h-8 w-8 text-primary" />
+                    <div className="flex items-center justify-center w-11 h-11 rounded-2xl bg-primary/10 shrink-0">
+                      <Icon className="h-5 w-5 text-primary" />
+                    </div>
                     <div>
                       <CardTitle className="text-lg">{action.title}</CardTitle>
                       <CardDescription className="mt-1">
@@ -476,7 +478,7 @@ const Dashboard = () => {
       </div>
 
       {/* Settings Quick Link */}
-      <Card className="shadow-md">
+      <Card className="card-luxury">
         <CardContent className="py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
