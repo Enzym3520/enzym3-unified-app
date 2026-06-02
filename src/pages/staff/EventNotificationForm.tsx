@@ -10,7 +10,7 @@ const EventNotificationForm = () => {
   useEffect(() => {
     // If no step parameter, redirect to step 1
     if (!stepParam) {
-      navigate('/event-notification/step-1', { replace: true });
+      navigate('/staff/event-notification/step-1', { replace: true });
     }
   }, [stepParam, navigate]);
 

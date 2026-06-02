@@ -19,22 +19,11 @@ export function AppSidebar() {
   const { canInstall, promptInstall, isInstalled } = useInstallPrompt();
 
   const isActive = (url: string) => {
-    const [path, query] = url.split('?');
-    const params = new URLSearchParams(query || '');
-    const urlTab = params.get('tab');
-
-    // Non-vendor routes
-    if (path !== '/staff/vendor-dashboard') {
-      if (path === '/') return currentPath === '/';
-      if (path === '/staff/comprehensive-form') return currentPath.startsWith('/staff/comprehensive-form');
-      if (path === '/staff/event-notification/step-1') return currentPath.startsWith('/staff/event-notification');
-      return currentPath === path;
-    }
-
-    // Vendor dashboard routes — match by tab param
-    if (currentPath !== '/staff/vendor-dashboard') return false;
-    if (!urlTab) return !currentTab || currentTab === 'events';
-    return currentTab === urlTab;
+    const [path] = url.split('?');
+    if (path === '/') return currentPath === '/';
+    if (path === '/staff/comprehensive-form') return currentPath.startsWith('/staff/comprehensive-form');
+    if (path === '/staff/event-notification/step-1') return currentPath.startsWith('/staff/event-notification');
+    return currentPath === path;
   };
 
   const navigationItems = [
@@ -42,7 +31,7 @@ export function AppSidebar() {
       { title: 'Admin Dashboard', url: '/staff/admin-dashboard', icon: Shield },
     ] : []),
 
-    ...(!isVendor || isAdmin || isModerator ? [
+    [
       { title: 'Home', url: '/staff/coordinator-dashboard', icon: Home },
       { title: 'Event Notification', url: '/staff/event-notification/step-1', icon: FileText },
       { title: 'Notification History', url: '/staff/notification-history', icon: History },
@@ -53,28 +42,14 @@ export function AppSidebar() {
       { title: 'Reminders', url: '/staff/reminders', icon: Bell },
       { title: 'Submissions', url: '/staff/submissions', icon: Package },
       ...(isSuperAdmin ? [{ title: 'Reporting', url: '/staff/reporting', icon: BarChart3 }] : []),
-    ] : []),
-
-    ...(isVendor && !isAdmin && !isModerator ? [
-      { title: 'Dashboard', url: '/staff/vendor-dashboard', icon: Home },
-      { title: 'Calendar', url: '/staff/vendor-dashboard?tab=calendar', icon: Calendar },
-      { title: 'Meetings', url: '/staff/vendor-dashboard?tab=meetings', icon: Video },
-      { title: 'Messages', url: '/staff/messages', icon: MessageSquare },
-      { title: 'Availability', url: '/staff/vendor-dashboard?tab=blackout', icon: Ban },
-      { title: 'Services', url: '/staff/vendor-dashboard?tab=services', icon: FileText },
-      { title: 'Earnings', url: '/staff/vendor-dashboard?tab=earnings', icon: BarChart3 },
-      { title: 'Documents', url: '/staff/vendor-dashboard?tab=documents', icon: FileText },
-      { title: 'My Page', url: '/staff/vendor-dashboard?tab=mypage', icon: User },
-      { title: 'Notifications', url: '/staff/notifications', icon: Bell },
-      { title: 'Profile', url: '/staff/vendor-dashboard?tab=profile', icon: User },
-    ] : []),
+    ],
 
     ...(isAdmin || isModerator ? [
       { title: 'Vendor Management', url: '/staff/vendor-management', icon: Users }
     ] : []),
 
     { title: 'Settings', url: '/staff/settings', icon: Settings },
-  ];
+  ].flat();
 
   const getNavClassName = (url: string) => {
     return isActive(url)

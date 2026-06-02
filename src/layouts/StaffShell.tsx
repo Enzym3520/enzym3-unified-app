@@ -72,7 +72,7 @@ export function StaffShell() {
                     }
                     queryClient.invalidateQueries({ queryKey: ['vendor-profile-tour'] });
                     queryClient.invalidateQueries({ queryKey: ['coordinator-tour-version'] });
-                    const dest = isVendorRoute ? '/staff/vendor-dashboard' : '/staff/coordinator-dashboard';
+                    const dest = '/staff/coordinator-dashboard';
                     navigate(dest);
                     toast({ title: 'Tour will replay now' });
                   }}

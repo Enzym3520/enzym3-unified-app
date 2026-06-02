@@ -347,7 +347,7 @@ export default function HomePage() {
 
             {/* Mobile contact */}
             <div className="md:hidden text-center text-xs text-[#2D2921]/40 pt-4 space-y-1">
-              <p>(520) 406-8600 &bull; booking@enzym3.com</p>
+              <p>(520) 406-8600 &bull; booking@enzym3entertainment.vip</p>
               <p>&copy; {new Date().getFullYear()} Enzym3 Entertainment</p>
             </div>
 
