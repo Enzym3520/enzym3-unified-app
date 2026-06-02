@@ -35,12 +35,6 @@ export const CoordinatorDashboard: React.FC = () => {
     },
   });
 
-  // Plan 4: PortalTour — restore when implemented
-  // const [showTour, setShowTour] = useState(false);
-  // useEffect to setShowTour based on tourProfile.tour_version vs TOUR_VERSION
-  // handleTourComplete — marks tour complete via completeTourMutation
-  // completeTourMutation — persists tour_version to profiles table
-
   // 5-second timeout so dashboard never stalls forever
   useEffect(() => {
     if (loading) {
