@@ -98,9 +98,7 @@ Deno.serve(async (req) => {
       () => supabaseAdmin.from('vendor_availability_blocks').delete().eq('vendor_id', vendorId),
       // 6. vendor_blackout_dates
       () => supabaseAdmin.from('vendor_blackout_dates').delete().eq('vendor_id', vendorId),
-      // 7. vendor_event_notes
-      () => supabaseAdmin.from('vendor_event_notes').delete().eq('vendor_id', vendorId),
-      // 8. vendor_stats
+      // 7. vendor_stats
       () => supabaseAdmin.from('vendor_stats').delete().eq('vendor_id', vendorId),
       // 9. vendor_achievements
       () => supabaseAdmin.from('vendor_achievements').delete().eq('vendor_id', vendorId),
