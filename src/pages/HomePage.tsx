@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import logoBlue from '@/assets/logo-blue.png';
+import heroVideoAsset from '@/assets/hero-video.asset.json';
 import { useUserRole } from '@/hooks/useUserRole';
 import { Loader2, Star, Phone, Mail, ChevronDown, FileText, Music, Calendar, Heart } from 'lucide-react';
 
@@ -154,25 +155,9 @@ export default function HomePage() {
         </div>
       </nav>
 
-      {/* ── HERO ── */}
-      <section className="relative h-screen flex flex-col items-center justify-center overflow-hidden">
-        {/* Background gradient fallback (shows while video loads / if blocked) */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0a0806] via-[#161210] to-[#2D2921]" />
-
-        {/* Vimeo background video */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <iframe
-            src="https://player.vimeo.com/video/1166132336?background=1&autoplay=1&loop=1&muted=1&controls=0"
-            allow="autoplay; fullscreen"
-            title="Enzym3 Entertainment"
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-[177.77vh] min-h-[56.25vw] w-[100vw] h-[100vh] border-0"
-          />
-        </div>
-
-        {/* Dark overlay for text legibility */}
-        <div className="absolute inset-0 bg-black/50" />
-
-        <div className="relative z-10 text-center px-6 max-w-3xl mx-auto space-y-6">
+      {/* ── INTRO (above hero video) ── */}
+      <section className="relative pt-28 pb-10 px-6 bg-gradient-to-br from-[#0a0806] via-[#161210] to-[#2D2921]">
+        <div className="text-center max-w-3xl mx-auto space-y-6">
           <p className="text-[#85D4FA] text-xs font-semibold tracking-[5px] uppercase">
             Tucson, Arizona
           </p>
@@ -196,11 +181,24 @@ export default function HomePage() {
             </Link>
           </div>
         </div>
+      </section>
 
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-          <ChevronDown className="h-6 w-6 text-white/30" />
+      {/* ── HERO VIDEO (clean, no overlay) ── */}
+      <section className="relative w-full bg-[#0a0806]">
+        <video
+          src={heroVideoAsset.url}
+          autoPlay
+          loop
+          muted
+          playsInline
+          controls
+          className="w-full h-auto block"
+        />
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 animate-bounce pointer-events-none">
+          <ChevronDown className="h-6 w-6 text-white/60" />
         </div>
       </section>
+
 
       {/* ── HOW IT WORKS ── */}
       <section className="py-24 px-6 md:px-12 bg-[#f9f6f2]">
