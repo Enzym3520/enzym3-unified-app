@@ -63,6 +63,7 @@ import VendorMyPage from '@/pages/vendor/MyPagePage';
 import PublicVendorPage from '@/pages/vendor/PublicVendorPage';
 import PublicSignPage from '@/pages/vendor/PublicSignPage';
 import JoinByCode from '@/pages/JoinByCode';
+import ClientOnboarding from '@/pages/ClientOnboarding';
 
 const queryClient = new QueryClient();
 export default function App() {
@@ -79,6 +80,7 @@ export default function App() {
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/join/:code" element={<JoinByCode />} />
+                <Route path="/onboarding" element={<ClientOnboarding />} />
                 <Route path="/app" element={<RequireRole role="client"><PortalTourProvider><ClientShell /></PortalTourProvider></RequireRole>}>
                   <Route index element={<Navigate to="dashboard" replace />} />
                   <Route path="dashboard" element={<Dashboard />} />

@@ -85,7 +85,16 @@ export default function JoinByCode() {
     );
   }
 
-  // Valid code, not logged in
+  // Valid code — route by source
+  if (result?.source === 'couple_codes') {
+    // Client → full onboarding wizard
+    const params = new URLSearchParams({ code: code! });
+    if (result.wedding_id) params.set('wid', result.wedding_id);
+    navigate(`/onboarding?${params.toString()}`, { replace: true });
+    return null;
+  }
+
+  // Vendor / venue partner → simple register
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <Card className="w-full max-w-md border border-[#DBD4C3] shadow-sm">
@@ -95,13 +104,8 @@ export default function JoinByCode() {
         </CardHeader>
         <CardContent className="space-y-6 pt-2">
           <p className="text-center text-muted-foreground">
-            You've been invited to your event portal.
+            You've been invited to the Enzym3 portal.
           </p>
-          {result?.wedding_id && (
-            <p className="text-center text-sm text-[#2D2921] bg-[#DBD4C3]/30 rounded-md px-4 py-2">
-              Your event portal is ready and waiting for you.
-            </p>
-          )}
           <Button
             className="w-full bg-[#85D4FA] hover:bg-[#6ec4ef] text-[#2D2921] font-semibold"
             onClick={() => navigate(`/register?code=${code}`)}
@@ -109,10 +113,7 @@ export default function JoinByCode() {
             Set Up Your Account
           </Button>
           <p className="text-center text-sm">
-            <a
-              href={`/login?redirect=/app/dashboard`}
-              className="text-muted-foreground hover:underline"
-            >
+            <a href="/login" className="text-muted-foreground hover:underline">
               Already have an account? Sign in
             </a>
           </p>
