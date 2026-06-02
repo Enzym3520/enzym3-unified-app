@@ -24,6 +24,7 @@ import Review from '@/pages/client/Review';
 import Settings from '@/pages/client/Settings';
 import { CartProvider } from '@/contexts/CartContext';
 import { KeyboardShortcutsProvider } from '@/contexts/KeyboardShortcutsContext';
+import { PortalTourProvider } from '@/contexts/PortalTourContext';
 import { CoordinatorDashboard } from '@/pages/staff/CoordinatorDashboard';
 import EventNotificationForm from '@/pages/staff/EventNotificationForm';
 import NotificationHistory from '@/pages/staff/NotificationHistory';
@@ -78,7 +79,7 @@ export default function App() {
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/join/:code" element={<JoinByCode />} />
-                <Route path="/app" element={<RequireRole role="client"><ClientShell /></RequireRole>}>
+                <Route path="/app" element={<RequireRole role="client"><PortalTourProvider><ClientShell /></PortalTourProvider></RequireRole>}>
                   <Route index element={<Navigate to="dashboard" replace />} />
                   <Route path="dashboard" element={<Dashboard />} />
                   <Route path="vibe-sheet" element={<VibeSheet />} />

@@ -136,7 +136,7 @@ serve(async (req: Request) => {
 </html>
 `;
 
-    const fromAddress = "Enzym3 Entertainment <booking@enzym3.com>";
+    const fromAddress = "Enzym3 Entertainment <booking@enzym3entertainment.vip>";
 
     // Send internal notification
     const internalRes = await fetch("https://api.resend.com/emails", {
