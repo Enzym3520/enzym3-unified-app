@@ -90,7 +90,7 @@ const Dashboard = () => {
           const today = new Date();
           const bookingDate = new Date(bookingResult.data.booking_date + 'T00:00:00');
           const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-          if (bookingDate.getTime() === todayDate.getTime()) {
+          if (bookingDate.getTime() === todayDate.getTime() && bookingResult.data.booking_time) {
             const [h, m] = bookingResult.data.booking_time.split(':');
             const d = new Date();
             d.setHours(Number(h), Number(m));

@@ -180,7 +180,7 @@ export const EventListTab: React.FC<EventListTabProps> = ({ externalEvents }) =>
             <Card
               key={event.id}
               className="cursor-pointer active:bg-muted/50"
-              onClick={() => navigate(`/event/${event.id}`)}
+              onClick={() => navigate(`/staff/event/${event.id}`)}
             >
               <CardContent className="p-3">
                 <div className="flex items-start justify-between gap-2 min-w-0">
@@ -255,7 +255,7 @@ export const EventListTab: React.FC<EventListTabProps> = ({ externalEvents }) =>
                     <TableRow
                       key={event.id}
                       className="cursor-pointer"
-                      onClick={() => navigate(`/event/${event.id}`)}
+                      onClick={() => navigate(`/staff/event/${event.id}`)}
                     >
                       <TableCell className="font-medium">{event.couple_name || 'Unknown'}</TableCell>
                       <TableCell>{formatEventType(event.event_type)}</TableCell>

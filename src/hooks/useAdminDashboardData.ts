@@ -117,7 +117,7 @@ async function fetchDashboardData() {
       title: `Pending: ${inv.invited_first_name || ''} ${inv.invited_last_name || ''}`.trim() || inv.invited_email || 'Unknown',
       subtitle: 'Has not registered yet',
       date: format(new Date(inv.created_at), 'MMM d, yyyy'),
-      action: '/vendor-management',
+      action: '/staff/vendor-management',
     });
   });
 
