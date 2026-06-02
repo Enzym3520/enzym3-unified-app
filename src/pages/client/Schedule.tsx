@@ -169,7 +169,7 @@ const Schedule = () => {
             <CardContent className="py-4">
               <p className="text-sm">
                 <strong>Standard availability:</strong> Tuesday through Saturday (10 AM - 3 PM Arizona Time).
-                If these days don't work for you, please <Link to="/app/contact" className="text-primary font-semibold hover:underline">contact us</Link> to request an alternative time.
+                If these days don't work for you, please <Link to="/app/messages" className="text-primary font-semibold hover:underline">contact us</Link> to request an alternative time.
               </p>
             </CardContent>
           </Card>

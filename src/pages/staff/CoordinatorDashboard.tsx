@@ -177,7 +177,7 @@ export const CoordinatorDashboard: React.FC = () => {
                       <Card
                         key={n.id}
                         className="cursor-pointer active:bg-muted/50"
-                        onClick={() => navigate(`/event/${n.id}`)}
+                        onClick={() => navigate(`/staff/event/${n.id}`)}
                       >
                         <CardContent className="p-3">
                           <div className="flex items-start justify-between gap-2 min-w-0">
@@ -227,7 +227,7 @@ export const CoordinatorDashboard: React.FC = () => {
                           <TableRow
                             key={n.id}
                             className="cursor-pointer"
-                            onClick={() => navigate(`/event/${n.id}`)}
+                            onClick={() => navigate(`/staff/event/${n.id}`)}
                           >
                             <TableCell className="font-medium">{n.couple_name || 'Unknown'}</TableCell>
                             <TableCell>{formatEventType(n.event_type)}</TableCell>

@@ -218,7 +218,7 @@ export default function SubmissionsDashboard() {
 
   const handleRowClick = (submission: Submission) => {
     if (submission.type === 'event') {
-      navigate(`/event/${submission.id}`);
+      navigate(`/staff/event/${submission.id}`);
       return;
     }
     const email = getContactEmail(submission);
