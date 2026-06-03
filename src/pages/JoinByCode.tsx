@@ -21,10 +21,22 @@ export default function JoinByCode() {
 
   useEffect(() => {
     async function run() {
-      // If already logged in, redirect to dashboard
+      // If already logged in, redirect to the correct portal based on role
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        navigate('/app/dashboard', { replace: true });
+        // Check role to redirect to the correct portal
+        const [rolesResult, profileResult] = await Promise.all([
+          supabase.from('user_roles').select('role').eq('user_id', session.user.id).in('role', ['admin', 'super_admin', 'moderator']).maybeSingle(),
+          supabase.from('profiles').select('role, vendor_type').eq('id', session.user.id).maybeSingle(),
+        ]);
+
+        if (rolesResult.data) {
+          navigate('/staff', { replace: true });
+        } else if (profileResult.data?.role === 'vendor' || profileResult.data?.role === 'dj' || profileResult.data?.vendor_type) {
+          navigate('/vendor', { replace: true });
+        } else {
+          navigate('/app/dashboard', { replace: true });
+        }
         return;
       }
 
