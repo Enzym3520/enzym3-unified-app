@@ -6,16 +6,19 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { EmptyState } from "@/components/vendor/EmptyState";
-import { Users, Search, Mail, Phone, MapPin, Calendar, Briefcase, Plus } from "lucide-react";
-import { format, parseISO } from "date-fns";
+import { Users, Search, Mail, Phone, MapPin, Calendar, Briefcase, Plus, Music } from "lucide-react";
+import { format } from "date-fns";
 import { useBookingRequests } from "@/hooks/use-booking-requests";
 import { useEventHistory } from "@/hooks/use-event-history";
 import { smartCapitalize } from "@/utils/smartFields";
 import { formatEventType, parseEventDate } from "@/utils/vendorHelpers";
+import { VibeSheetReview } from "@/components/staff/event-detail/VibeSheetReview";
 
 interface UnifiedClient {
   id: string;
+  wedding_id: string | null;
   source: "assigned" | "booking";
   name: string;
   email: string;
@@ -27,7 +30,7 @@ interface UnifiedClient {
   status: string | null;
 }
 
-function ClientCard({ client }: { client: UnifiedClient }) {
+function ClientCard({ client, onViewVibeSheet }: { client: UnifiedClient; onViewVibeSheet: (c: UnifiedClient) => void }) {
   return (
     <Card>
       <CardContent className="p-4 space-y-2">
@@ -72,6 +75,11 @@ function ClientCard({ client }: { client: UnifiedClient }) {
             <div className="flex items-center gap-2"><Users className="h-3.5 w-3.5 shrink-0" />{client.guest_count} guests</div>
           )}
         </div>
+        {client.wedding_id && (
+          <Button variant="outline" size="sm" className="w-full gap-2 mt-1" onClick={() => onViewVibeSheet(client)}>
+            <Music className="h-3.5 w-3.5" /> View Vibe Sheet
+          </Button>
+        )}
       </CardContent>
     </Card>
   );
@@ -81,6 +89,7 @@ export default function ClientsPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
+  const [vibeSheetClient, setVibeSheetClient] = useState<UnifiedClient | null>(null);
 
   const { data: bookings = [], isLoading: loadingBookings } = useBookingRequests();
   const { data: eventHistory = [], isLoading: loadingHistory } = useEventHistory();
@@ -97,6 +106,7 @@ export default function ClientsPage() {
     seenEmails.add(key);
     clients.push({
       id: `b-${b.id}`,
+      wedding_id: null,
       source: "booking",
       name: b.client_name,
       email: b.client_email,
@@ -115,6 +125,7 @@ export default function ClientsPage() {
     seenEmails.add(key);
     clients.push({
       id: `a-${e.event_id}`,
+      wedding_id: e.event_id,
       source: "assigned",
       name: e.couple_name,
       email: e.contact_email,
@@ -171,10 +182,26 @@ export default function ClientsPage() {
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
           {filtered.map((c) => (
-            <ClientCard key={c.id} client={c} />
+            <ClientCard key={c.id} client={c} onViewVibeSheet={setVibeSheetClient} />
           ))}
         </div>
       )}
+
+      <Dialog open={!!vibeSheetClient} onOpenChange={(open) => { if (!open) setVibeSheetClient(null); }}>
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="font-display text-xl">
+              {vibeSheetClient ? smartCapitalize(vibeSheetClient.name) : ""} — Vibe Sheet
+            </DialogTitle>
+          </DialogHeader>
+          {vibeSheetClient?.wedding_id && (
+            <VibeSheetReview
+              eventId={vibeSheetClient.wedding_id}
+              eventType={vibeSheetClient.event_type || ""}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

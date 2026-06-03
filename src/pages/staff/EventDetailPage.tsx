@@ -16,7 +16,6 @@ import { getPackageTypeLabel } from '@/config/packageTypes';
 import { ReadinessChecklist } from '@/components/staff/event-detail/ReadinessChecklist';
 import { EventVendorsSection } from '@/components/staff/event-detail/EventVendorsSection';
 import { EventPaymentSection } from '@/components/staff/event-detail/EventPaymentSection';
-import { EventMusicSummary } from '@/components/staff/event-detail/EventMusicSummary';
 import { EventMeetingsSection } from '@/components/staff/event-detail/EventMeetingsSection';
 import { EventActivityTimeline } from '@/components/staff/event-detail/EventActivityTimeline';
 import { VenuePartnerInvoiceCard } from '@/components/staff/event-detail/VenuePartnerInvoiceCard';
@@ -95,7 +94,6 @@ const EventDetailPage: React.FC = () => {
           <TabsTrigger value="details">Details</TabsTrigger>
           <TabsTrigger value="vendors">Vendors</TabsTrigger>
           <TabsTrigger value="messages">Messages</TabsTrigger>
-          <TabsTrigger value="music">Music Sheet</TabsTrigger>
           <TabsTrigger value="vibe-sheet">Vibe Sheet</TabsTrigger>
           <TabsTrigger value="meetings">Meetings</TabsTrigger>
           <TabsTrigger value="payments">Payments</TabsTrigger>
@@ -257,10 +255,6 @@ const EventDetailPage: React.FC = () => {
               <WeddingMessagesPanel weddingId={event.id} coupleName={event.couple_name} />
             </CardContent>
           </Card>
-        </TabsContent>
-
-        <TabsContent value="music">
-          <EventMusicSummary weddingId={event.id} />
         </TabsContent>
 
         <TabsContent value="vibe-sheet">
