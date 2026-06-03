@@ -44,7 +44,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log(`Processing invitation for ${recipientEmail} with code ${invitationCode}`);
 
     // Construct the signup URL with invitation code
-    const signupUrl = `${req.headers.get('origin') || 'https://ytembomoyhuwdtrzlwbi.supabase.co'}/auth?tab=signup&invite=${invitationCode}`;
+    const signupUrl = `https://plan.enzym3entertainment.vip/join/${encodeURIComponent(invitationCode)}`;
 
     // Build email HTML
     const emailHtml = `
