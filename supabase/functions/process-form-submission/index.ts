@@ -185,7 +185,7 @@ const N8N_WEBHOOK_URL = Deno.env.get('N8N_WEBHOOK_URL') || '';
 
 // Email configuration
 const ADMIN_EMAIL = 'jj.madison17@gmail.com';
-const FROM_EMAIL = 'Enzym3 Entertainment <booking@enzym3entertainment.vip>';
+const FROM_EMAIL = 'Enzym3 Entertainment <booking@enzym3.com>';
 const PORTAL_URL = 'https://booking.enzym3entertainment.vip';
 
 // Event type configurations for email templates
