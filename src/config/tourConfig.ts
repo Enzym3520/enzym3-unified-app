@@ -89,7 +89,7 @@ export const coordinatorTourSteps: TourStep[] = [
   },
   {
     title: 'Details Forms',
-    description: 'Access and manage comprehensive detail forms for weddings and other events. Review music sheets, timelines, and special requests submitted by clients.',
+    description: 'Access and manage comprehensive detail forms for weddings and other events. Review vibe sheets, timelines, and special requests submitted by clients.',
     icon: Upload,
   },
   {

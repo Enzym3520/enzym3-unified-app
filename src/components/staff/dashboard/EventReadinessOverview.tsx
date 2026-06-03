@@ -64,7 +64,7 @@ export const EventReadinessOverview: React.FC = () => {
             return (
               <Link
                 key={event.event_id}
-                to={`/event/${event.event_id}`}
+                to={`/staff/event/${event.event_id}`}
                 className={`flex items-center gap-3 p-3 rounded-lg hover:opacity-80 transition-opacity ${levelBg[level]}`}
               >
                 <Icon className={`w-5 h-5 shrink-0 ${levelColors[level]}`} />
