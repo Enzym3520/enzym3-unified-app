@@ -245,6 +245,7 @@ export function useSignContract() {
   return useMutation({
     mutationFn: async (payload: {
       contractId: string;
+      signToken: string;
       signerName: string;
       signatureData: string;
     }) => {
@@ -256,7 +257,7 @@ export function useSignContract() {
           signer_name: payload.signerName,
           signature_data: payload.signatureData,
         })
-        .eq("id", payload.contractId);
+        .eq("sign_token", payload.signToken);
       if (error) throw error;
     },
     onError: (e) => toast.error(e.message),

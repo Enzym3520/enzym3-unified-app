@@ -54,6 +54,7 @@ export default function PublicSignPage() {
     if (!signerName.trim() || !signatureData || !agreed) return;
     await signMutation.mutateAsync({
       contractId: contract.id,
+      signToken: token!,
       signerName: signerName.trim(),
       signatureData,
     });
