@@ -34,10 +34,18 @@ serve(async (req: Request) => {
     return new Response("ok", { headers: corsHeaders });
   }
 
-  // Only allow internal service-role calls (from stripe-webhook)
+  // Only allow internal service-role calls (from stripe-webhook).
+  // supabase.functions.invoke() reliably sends the key as the `apikey` header;
+  // it may also arrive as `Authorization: Bearer <key>` depending on client state.
   const authHeader = req.headers.get('Authorization') || '';
+  const apiKeyHeader = req.headers.get('apikey') || '';
   const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-  if (authHeader !== `Bearer ${serviceRoleKey}`) {
+
+  const isServiceRole =
+    authHeader === `Bearer ${serviceRoleKey}` ||
+    apiKeyHeader === serviceRoleKey;
+
+  if (!isServiceRole) {
     return new Response(
       JSON.stringify({ error: 'Unauthorized' }),
       { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
