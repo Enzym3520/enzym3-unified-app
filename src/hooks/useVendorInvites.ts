@@ -90,8 +90,9 @@ export const useCreateVendorInvite = () => {
       
       // Send invitation email with auto-fill code in URL
       const registrationLink = getVendorRegistrationLink(code);
+      let emailSent = true;
       try {
-        await supabase.functions.invoke('send-vendor-invite-email', {
+        const { error: emailError } = await supabase.functions.invoke('send-vendor-invite-email', {
           body: {
             email: invite.email,
             firstName: invite.firstName,
@@ -103,18 +104,22 @@ export const useCreateVendorInvite = () => {
             expiresAt: expiresAt.toISOString(),
           },
         });
-      } catch (emailError) {
-        if (import.meta.env.DEV) console.error('Failed to send invite email:', emailError);
-        // Don't throw - invite was created successfully
+        if (emailError) emailSent = false;
+      } catch {
+        emailSent = false;
       }
-      
-      return data as VendorInvite;
+
+      return { invite: data as VendorInvite, emailSent };
     },
-    onSuccess: () => {
+    onSuccess: ({ emailSent }) => {
       queryClient.invalidateQueries({ queryKey: ['vendor-invites'] });
       queryClient.invalidateQueries({ queryKey: ['vendor-management'] });
       queryClient.invalidateQueries({ queryKey: ['admin-dashboard-data'] });
-      toast.success('Invite created and email sent successfully!');
+      toast.success(
+        emailSent
+          ? 'Invite created and email sent!'
+          : 'Invite created — email failed to send. Resend from the vendor list.'
+      );
     },
     onError: (error: any) => {
       toast.error(error.message || 'Failed to create invite');

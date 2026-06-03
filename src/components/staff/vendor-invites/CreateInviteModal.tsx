@@ -54,7 +54,7 @@ export function CreateInviteModal({ open, onOpenChange }: CreateInviteModalProps
       },
       {
         onSuccess: (data) => {
-          setCreatedInvite(data);
+          setCreatedInvite(data.invite);
         },
       }
     );
