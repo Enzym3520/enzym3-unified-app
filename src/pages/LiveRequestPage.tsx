@@ -223,14 +223,13 @@ export default function LiveRequestPage() {
   const handleUpvote = async (req: SongRequest) => {
     if (!session || upvoted.has(req.id)) return;
     const guestToken = getGuestToken(session.id);
-    try {
-      await supabase.from('request_upvotes').insert({ request_id: req.id, guest_token: guestToken });
-      await supabase.from('song_requests').update({ upvote_count: req.upvote_count + 1 }).eq('id', req.id);
-      saveUpvote(session.id, req.id);
-      setUpvoted(prev => new Set([...prev, req.id]));
-    } catch {
-      // duplicate upvote — already voted
-    }
+    const { error: upvoteError } = await supabase
+      .from('request_upvotes')
+      .insert({ request_id: req.id, guest_token: guestToken });
+    if (upvoteError) return; // already upvoted or error — don't increment
+    await supabase.rpc('increment_song_upvote', { p_request_id: req.id });
+    saveUpvote(session.id, req.id);
+    setUpvoted(prev => new Set([...prev, req.id]));
   };
 
   const statusLabel = (s: SongRequest['status']) => {
