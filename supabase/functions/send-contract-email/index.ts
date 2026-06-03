@@ -98,7 +98,7 @@ Deno.serve(async (req) => {
         method: "POST",
         headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
         body: JSON.stringify({
-          from: "Enzym3 Entertainment <booking@enzym3.com>",
+          from: "Enzym3 Entertainment <booking@enzym3entertainment.vip>",
           to: [contract.signer_email],
           subject,
           html: htmlBody,

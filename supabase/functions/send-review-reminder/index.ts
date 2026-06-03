@@ -201,7 +201,7 @@ serve(async (req: Request): Promise<Response> => {
       const html = buildReviewEmail(brideFirst, groomFirst, reviewUrl);
 
       const emailResult = await resend.emails.send({
-        from: "Enzym3 Entertainment <booking@enzym3.com>",
+        from: "Enzym3 Entertainment <booking@enzym3entertainment.vip>",
         to: Array.from(recipients),
         subject: `${event.couple_name} — We'd love your feedback!`,
         html,

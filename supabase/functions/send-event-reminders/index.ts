@@ -106,7 +106,7 @@ function buildEmailHtml(event: Record<string, unknown>, daysUntil: number): stri
                   Reach your coordinator at
                   <a href="tel:+15204068600" style="color:#2D2921;font-weight:600;">(520) 406-8600</a>
                   or
-                  <a href="mailto:booking@enzym3.com" style="color:#2D2921;font-weight:600;">booking@enzym3.com</a>.
+                  <a href="mailto:booking@enzym3entertainment.vip" style="color:#2D2921;font-weight:600;">booking@enzym3entertainment.vip</a>.
                 </p>
               </div>
 
@@ -118,7 +118,7 @@ function buildEmailHtml(event: Record<string, unknown>, daysUntil: number): stri
             <td style="background:#2D2921;padding:20px 40px;text-align:center;">
               <p style="margin:0;color:#c8b99a;font-size:13px;">
                 Enzym3 Entertainment &nbsp;•&nbsp; (520) 406-8600 &nbsp;•&nbsp;
-                <a href="mailto:booking@enzym3.com" style="color:#c8b99a;">booking@enzym3.com</a>
+                <a href="mailto:booking@enzym3entertainment.vip" style="color:#c8b99a;">booking@enzym3entertainment.vip</a>
               </p>
             </td>
           </tr>
@@ -237,7 +237,7 @@ serve(async (req: Request) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          from: "Enzym3 Entertainment <booking@enzym3.com>",
+          from: "Enzym3 Entertainment <booking@enzym3entertainment.vip>",
           to: event.contact_email,
           subject,
           html,

@@ -176,7 +176,7 @@ serve(async (req: Request) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "Enzym3 Entertainment <booking@enzym3.com>",
+        from: "Enzym3 Entertainment <booking@enzym3entertainment.vip>",
         to: vendor_email,
         subject: "You've been invited to join Enzym3 Entertainment's vendor network",
         html,

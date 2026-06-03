@@ -205,7 +205,7 @@ const handler = async (req: Request): Promise<Response> => {
     `;
 
     const { error: emailError } = await resend.emails.send({
-      from: "Enzym3 Entertainment <booking@enzym3.com>",
+      from: "Enzym3 Entertainment <booking@enzym3entertainment.vip>",
       to: [vendor.email],
       subject: `New Event Assignment - ${clientName} - ${formattedDate}`,
       html: emailHtml,

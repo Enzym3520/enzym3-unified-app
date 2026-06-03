@@ -210,7 +210,7 @@ const handler = async (req: Request): Promise<Response> => {
     );
 
     const emailResponse = await resend.emails.send({
-      from: "Enzym3 Entertainment <booking@enzym3.com>",
+      from: "Enzym3 Entertainment <booking@enzym3entertainment.vip>",
       to: [notification.contact_email],
       subject: `Event Notification: ${notification.couple_name} - ${notification.event_type}`,
       html,

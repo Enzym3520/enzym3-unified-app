@@ -103,7 +103,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send the email using Resend
     const emailResponse = await resend.emails.send({
-      from: "Enzym3 Entertainment <booking@enzym3.com>",
+      from: "Enzym3 Entertainment <booking@enzym3entertainment.vip>",
       to: [recipientEmail],
       subject: `You're Invited to Join Enzym3 Event Management Hub`,
       html: emailHtml,

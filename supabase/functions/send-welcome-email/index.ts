@@ -155,7 +155,7 @@ serve(async (req: Request): Promise<Response> => {
     console.log('Sending to recipients:', recipients);
 
     const emailResult = await resend.emails.send({
-      from: "Enzym3 Entertainment <booking@enzym3.com>",
+      from: "Enzym3 Entertainment <booking@enzym3entertainment.vip>",
       to: recipients,
       subject: `💍 Welcome ${couple_name}! Your Wedding Vibe Planner is Ready`,
       html: htmlContent,

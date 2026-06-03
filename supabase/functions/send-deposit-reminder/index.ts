@@ -199,7 +199,7 @@ serve(async (req: Request): Promise<Response> => {
     `;
 
     const emailResult = await resend.emails.send({
-      from: "Enzym3 Entertainment <booking@enzym3.com>",
+      from: "Enzym3 Entertainment <booking@enzym3entertainment.vip>",
       to: [data.contact_email],
       subject: `💳 Deposit Reminder - ${formattedDeposit} Due for Your ${escapeHtml(data.event_type)}`,
       html: htmlContent,

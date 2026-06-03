@@ -301,7 +301,7 @@ Deno.serve(async (req) => {
 
       const fromEmail = template?.contact_email
         ? `${template.contact_name || vendorName} <${template.contact_email}>`
-        : `${vendorName} <booking@enzym3.com>`;
+        : `${vendorName} <booking@enzym3entertainment.vip>`;
 
       const recipients = [booking.client_email];
 
@@ -450,7 +450,7 @@ Deno.serve(async (req) => {
 
     const fromEmail = template?.contact_email
       ? `${template.contact_name || vendorName} <${template.contact_email}>`
-      : `${vendorName} <booking@enzym3.com>`;
+      : `${vendorName} <booking@enzym3entertainment.vip>`;
 
     const resendRes = await fetch("https://api.resend.com/emails", {
       method: "POST",
