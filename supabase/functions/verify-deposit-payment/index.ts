@@ -49,12 +49,26 @@ serve(async (req: Request) => {
       );
     }
 
+    // Check DB first — stripe-webhook should have already set this
+    const { data: eventRow } = await supabase
+      .from('event_notification_history')
+      .select('deposit_paid, deposit_amount')
+      .eq('id', wedding_id)
+      .maybeSingle();
+
+    if (eventRow?.deposit_paid === true) {
+      return new Response(
+        JSON.stringify({ verified: true, amount_paid: eventRow.deposit_amount ?? 0 }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      );
+    }
+
     const stripe = new Stripe(stripeSecretKey, { apiVersion: "2023-10-16" });
 
     // Search recent checkout sessions for this wedding_id in metadata
     // Stripe allows metadata search via list + filter
     const sessions = await stripe.checkout.sessions.list({
-      limit: 20,
+      limit: 100,
       expand: ["data.payment_intent"],
     });
 
