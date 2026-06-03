@@ -94,24 +94,27 @@ serve(async (req: Request) => {
     const invite_code: string = providedCode ??
       crypto.randomUUID().replace(/-/g, "").substring(0, 12).toUpperCase();
 
-    // Save invite to booking_invite_tokens — best-effort, don't 500 if it fails
-    const insertPayload: Record<string, string | undefined> = {
-      token: invite_code,
-      client_email: vendor_email,
-      client_name: vendor_name,
-    };
-    if (vendor_type) {
-      insertPayload.vendor_type = vendor_type;
-    }
+    // Save invite to dj_codes so validate-invite-code edge function can verify it
+    const nameParts = (vendor_name || '').trim().split(' ');
+    const firstName = nameParts[0] || vendor_name;
+    const lastName = nameParts.slice(1).join(' ') || undefined;
     const { error: insertError } = await supabase
-      .from("booking_invite_tokens")
-      .insert(insertPayload);
+      .from("dj_codes")
+      .insert({
+        code: invite_code,
+        invited_email: vendor_email,
+        invited_first_name: firstName,
+        invited_last_name: lastName || null,
+        vendor_type: vendor_type || null,
+        active: true,
+        expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+      });
     if (insertError) {
-      console.error("booking_invite_tokens insert error (non-fatal):", insertError.message);
+      console.error("dj_codes insert error (non-fatal):", insertError.message);
     }
 
     // Build registration link
-    const registrationLink = `https://app.enzym3.com/vendor/register?code=${encodeURIComponent(invite_code)}`;
+    const registrationLink = `https://plan.enzym3entertainment.vip/join/${encodeURIComponent(invite_code)}`;
     const safeLink = safeLinkUrl(registrationLink);
 
     const html = `<!DOCTYPE html>
