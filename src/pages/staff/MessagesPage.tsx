@@ -273,7 +273,7 @@ const MessagesPage: React.FC = () => {
               <div className="min-w-0">
                 <p className="font-medium text-sm truncate">{selectedName}</p>
                 {selectedType === 'event' && (
-                  <Link to={`/event/${selectedId}`} className="text-xs text-primary hover:underline flex items-center gap-0.5">
+                  <Link to={`/staff/event/${selectedId}`} className="text-xs text-primary hover:underline flex items-center gap-0.5">
                     View Event <ArrowRight className="w-3 h-3" />
                   </Link>
                 )}
