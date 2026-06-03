@@ -25,10 +25,9 @@ import { useContactTags } from '@/hooks/useContactTags';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { getPackageTypeLabel } from '@/config/packageTypes';
-import { useContactMusicSheet } from '@/hooks/useContactMusicSheet';
 import { useContactUpgrades } from '@/hooks/useContactUpgrades';
-import { MusicSheetTab } from './MusicSheetTab';
 import { UpgradesTab } from './UpgradesTab';
+import { VibeSheetReview } from '@/components/staff/event-detail/VibeSheetReview';
 import { capitalizeNames } from '@/utils/contactHelpers';
 import EventAssignmentsView from '@/components/staff/vendor-management/EventAssignmentsView';
 import { WeddingMessagesPanel } from '@/components/staff/messaging/WeddingMessagesPanel';
@@ -53,8 +52,7 @@ const ContactDetailsModal = ({ contact, isOpen, onClose, onContactUpdate, defaul
   // Get wedding_id from event history (use the most recent one)
   const weddingId = contact?.eventHistory?.[0]?.id;
 
-  // Fetch music sheet, upgrades, and client files for this contact
-  const { data: musicSheet, isLoading: musicSheetLoading } = useContactMusicSheet(weddingId);
+  // Fetch upgrades and client files for this contact
   const { data: upgrades, isLoading: upgradesLoading } = useContactUpgrades(weddingId);
   const { data: clientFiles, isLoading: clientFilesLoading } = useClientFiles(weddingId);
   const { unreadCount: unreadMessages } = useWeddingMessages({ weddingId, enabled: !!weddingId });
@@ -174,7 +172,7 @@ const ContactDetailsModal = ({ contact, isOpen, onClose, onContactUpdate, defaul
             <TabsTrigger value="forms">Forms & Documents</TabsTrigger>
             <TabsTrigger value="music">
               <Music className="w-3 h-3 mr-1" />
-              Music Sheet
+              Vibe Sheet
             </TabsTrigger>
             <TabsTrigger value="upgrades">
               <Package className="w-3 h-3 mr-1" />
@@ -755,7 +753,15 @@ const ContactDetailsModal = ({ contact, isOpen, onClose, onContactUpdate, defaul
           </TabsContent>
 
           <TabsContent value="music" className="space-y-4">
-            <MusicSheetTab musicSheet={musicSheet || null} loading={musicSheetLoading} />
+            {weddingId ? (
+              <VibeSheetReview
+                eventId={weddingId}
+                eventType={contact?.eventHistory?.[0]?.event_type || ''}
+                clientEmail={contact?.contact_email}
+              />
+            ) : (
+              <p className="text-sm text-muted-foreground py-4">No event on file for this contact.</p>
+            )}
           </TabsContent>
 
           <TabsContent value="upgrades" className="space-y-4">

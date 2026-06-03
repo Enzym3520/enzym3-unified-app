@@ -237,7 +237,7 @@ export default function SubmissionsDashboard() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl md:text-3xl font-bold font-playfair text-primary">Submissions</h1>
-        <p className="text-muted-foreground">View all events, music sheets, and upgrade requests</p>
+        <p className="text-muted-foreground">View all events, vibe sheets, and upgrade requests</p>
       </div>
 
       {/* Stats Cards */}
@@ -258,7 +258,7 @@ export default function SubmissionsDashboard() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Music Sheets</CardTitle>
+            <CardTitle className="text-sm font-medium">Vibe Sheets</CardTitle>
             <Music className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent><div className="text-2xl font-bold">{stats.music}</div></CardContent>
@@ -287,7 +287,7 @@ export default function SubmissionsDashboard() {
           <SelectContent>
             <SelectItem value="all">All Submissions</SelectItem>
             <SelectItem value="events">Events</SelectItem>
-            <SelectItem value="music">Music Sheets</SelectItem>
+            <SelectItem value="music">Vibe Sheets</SelectItem>
             <SelectItem value="upgrades">Upgrades</SelectItem>
           </SelectContent>
         </Select>
@@ -323,7 +323,7 @@ export default function SubmissionsDashboard() {
                           <Badge variant="outline">{submission.status}</Badge>
                         </>
                       ) : submission.type === 'music' ? (
-                        <Badge variant="default">Music Sheet</Badge>
+                        <Badge variant="default">Vibe Sheet</Badge>
                       ) : (
                         <>
                           <Badge variant="secondary">Upgrade: {(submission as UpgradeSubmission).selected_package}</Badge>

@@ -105,7 +105,7 @@ export const buildNotificationHref = (notification: {
 
   if (weddingId) {
     if (cfg.eventRoute) {
-      return `/event/${weddingId}`;
+      return `/staff/event/${weddingId}`;
     }
     const qs = tab ? `&tab=${encodeURIComponent(tab)}` : '';
     return `/contacts?wedding_id=${weddingId}${qs}`;

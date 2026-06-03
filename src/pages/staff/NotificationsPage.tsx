@@ -72,7 +72,7 @@ export default function NotificationsPage() {
           </TabsTrigger>
           <TabsTrigger value="music">
             <Music className="w-4 h-4 mr-2" />
-            Music Sheets ({musicSheetNotifications.length})
+            Vibe Sheets ({musicSheetNotifications.length})
           </TabsTrigger>
         </TabsList>
 
@@ -83,7 +83,7 @@ export default function NotificationsPage() {
                 {activeTab === 'all' && 'All Notifications'}
                 {activeTab === 'unread' && 'Unread Notifications'}
                 {activeTab === 'upgrades' && 'Upgrade Orders'}
-                {activeTab === 'music' && 'Music Sheet Updates'}
+                {activeTab === 'music' && 'Vibe Sheet Updates'}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">

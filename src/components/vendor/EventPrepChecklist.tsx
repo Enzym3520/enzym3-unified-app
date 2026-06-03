@@ -17,7 +17,7 @@ interface CheckItem {
 export function EventPrepChecklist({ assignment, compact = false }: EventPrepChecklistProps) {
   const items: CheckItem[] = [
     { label: "Confirm assignment", checked: assignment.status === "confirmed" },
-    { label: "Review music sheet", checked: false },
+    { label: "Review vibe sheet", checked: false },
     { label: "Check directions to venue", checked: false },
     { label: "Confirm dress code", checked: !!assignment.event?.dress_code },
     { label: "Upload pre-event files", checked: !!assignment.vendor_files_uploaded },

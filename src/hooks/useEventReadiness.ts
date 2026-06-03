@@ -101,6 +101,6 @@ export const getReadinessItems = (event: EventReadiness) => [
   { label: 'Balance Paid', done: !!event.balance_paid, date: event.balance_paid_at },
   { label: 'Vendor Assigned', done: !!event.assignment_id, date: event.vendor_confirmed_at },
   { label: 'Vendor Confirmed', done: !!event.vendor_confirmed, date: event.vendor_confirmed_at },
-  { label: 'Music Sheet Submitted', done: !!event.music_sheet_submitted, date: null },
+  { label: 'Vibe Sheet Submitted', done: !!event.music_sheet_submitted, date: null },
   { label: 'Vendor Files Uploaded', done: !!event.vendor_files_uploaded, date: null },
 ];
