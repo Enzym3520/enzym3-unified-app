@@ -88,7 +88,7 @@ export const useVendorManagement = (options?: UseVendorManagementOptions) => {
         const { data: allProfiles, error: profilesError } = await supabase
           .from('profiles')
           .select('*, average_rating, total_reviews, events_completed, vendor_types')
-          .in('role', ['dj', 'vendor'])
+          .not('vendor_type', 'is', null)
           .order('created_at', { ascending: false })
           .limit(500);
 
