@@ -2484,6 +2484,83 @@ export type Database = {
         }
         Relationships: []
       }
+      live_sessions: {
+        Row: {
+          allow_upvotes: boolean
+          created_at: string
+          dj_name: string | null
+          ended_at: string | null
+          event_id: string
+          event_name: string | null
+          id: string
+          pause_requests: boolean
+          per_guest_limit: number
+          short_code: string
+          started_at: string | null
+          status: string
+          vendor_id: string
+        }
+        Insert: {
+          allow_upvotes?: boolean
+          created_at?: string
+          dj_name?: string | null
+          ended_at?: string | null
+          event_id: string
+          event_name?: string | null
+          id?: string
+          pause_requests?: boolean
+          per_guest_limit?: number
+          short_code: string
+          started_at?: string | null
+          status?: string
+          vendor_id: string
+        }
+        Update: {
+          allow_upvotes?: boolean
+          created_at?: string
+          dj_name?: string | null
+          ended_at?: string | null
+          event_id?: string
+          event_name?: string | null
+          id?: string
+          pause_requests?: boolean
+          per_guest_limit?: number
+          short_code?: string
+          started_at?: string | null
+          status?: string
+          vendor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "live_sessions_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "event_notification_history"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "live_sessions_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "event_notification_safe"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "live_sessions_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_event_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "live_sessions_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_event_details_secure"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       meeting_summaries: {
         Row: {
           action_items: Json | null
@@ -3171,6 +3248,35 @@ export type Database = {
         }
         Relationships: []
       }
+      request_upvotes: {
+        Row: {
+          created_at: string
+          guest_token: string
+          id: string
+          request_id: string
+        }
+        Insert: {
+          created_at?: string
+          guest_token: string
+          id?: string
+          request_id: string
+        }
+        Update: {
+          created_at?: string
+          guest_token?: string
+          id?: string
+          request_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "request_upvotes_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "song_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       review_reminders_sent: {
         Row: {
           event_id: string
@@ -3250,6 +3356,65 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      song_requests: {
+        Row: {
+          actioned_at: string | null
+          album_art_url: string | null
+          artist_name: string | null
+          dj_notes: string | null
+          guest_token: string
+          id: string
+          requested_at: string
+          session_id: string
+          song_title: string
+          spotify_track_id: string | null
+          spotify_uri: string | null
+          status: string
+          upvote_count: number
+          youtube_url: string | null
+        }
+        Insert: {
+          actioned_at?: string | null
+          album_art_url?: string | null
+          artist_name?: string | null
+          dj_notes?: string | null
+          guest_token: string
+          id?: string
+          requested_at?: string
+          session_id: string
+          song_title: string
+          spotify_track_id?: string | null
+          spotify_uri?: string | null
+          status?: string
+          upvote_count?: number
+          youtube_url?: string | null
+        }
+        Update: {
+          actioned_at?: string | null
+          album_art_url?: string | null
+          artist_name?: string | null
+          dj_notes?: string | null
+          guest_token?: string
+          id?: string
+          requested_at?: string
+          session_id?: string
+          song_title?: string
+          spotify_track_id?: string | null
+          spotify_uri?: string | null
+          status?: string
+          upvote_count?: number
+          youtube_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "song_requests_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "live_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       spotify_connections: {
         Row: {
