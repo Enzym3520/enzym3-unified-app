@@ -16,6 +16,7 @@ import { useMyUpdateRequests } from '@/hooks/use-update-requests';
 import { getMapsUrl } from '@/utils/mapsLink';
 import { VibeSheetReview } from '@/components/staff/event-detail/VibeSheetReview';
 import { ContractPreview } from '@/components/vendor/contracts/ContractPreview';
+import { EventPrepChecklist } from '@/components/vendor/EventPrepChecklist';
 
 interface VendorEventDetailsProps {
   open: boolean;
@@ -103,10 +104,26 @@ export function VendorEventDetails({ open, onOpenChange, assignment }: VendorEve
     enabled: open && !!eventId,
   });
 
+  const { data: vibeSheetStatus } = useQuery({
+    queryKey: ['vibe-sheet-status', eventId],
+    queryFn: async () => {
+      if (!eventId) return null;
+      const { data } = await supabase
+        .from('vibe_sheets')
+        .select('id, submitted_at')
+        .eq('wedding_id', eventId)
+        .maybeSingle();
+      return data;
+    },
+    enabled: open && !!eventId,
+  });
+
   if (!event) return null;
 
   const today = new Date().toISOString().split('T')[0];
   const upcomingMeetings = (eventMeetings || []).filter((m: any) => m.booking_date >= today && m.status !== 'cancelled');
+  const vibeSheetSubmitted = !!(vibeSheetStatus?.submitted_at);
+  const hasMeeting = upcomingMeetings.length > 0;
 
   const contractStatusColor = (status: string) => {
     if (status === 'signed') return 'default';
@@ -155,6 +172,15 @@ export function VendorEventDetails({ open, onOpenChange, assignment }: VendorEve
                 </Button>
               </CardHeader>
               <CardContent className="space-y-4">
+                {/* Prep checklist */}
+                <div className="rounded-lg border p-4">
+                  <EventPrepChecklist
+                    assignment={assignment}
+                    vibeSheetSubmitted={vibeSheetSubmitted}
+                    hasMeeting={hasMeeting}
+                  />
+                </div>
+
                 {/* Client Contact — always shown */}
                 <div className="rounded-lg bg-muted/40 p-4 space-y-2">
                   <h4 className="font-semibold text-sm">Client</h4>

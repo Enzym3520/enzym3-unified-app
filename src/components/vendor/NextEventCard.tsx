@@ -21,7 +21,7 @@ export function NextEventCard({ assignments, onViewDetails }: NextEventCardProps
   const nextAssignment = assignments
     ?.filter((a) => a.status === "confirmed" && a.event?.event_date)
     .map((a) => ({ ...a, _date: parseEventDate(a.event.event_date) }))
-    .filter((a) => a._date >= todayStart && differenceInDays(a._date, todayStart) <= 7)
+    .filter((a) => a._date >= todayStart)
     .sort((a, b) => a._date.getTime() - b._date.getTime())[0];
 
   if (!nextAssignment) return null;

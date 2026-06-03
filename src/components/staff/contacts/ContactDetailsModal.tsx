@@ -757,7 +757,7 @@ const ContactDetailsModal = ({ contact, isOpen, onClose, onContactUpdate, defaul
               <VibeSheetReview
                 eventId={weddingId}
                 eventType={contact?.eventHistory?.[0]?.event_type || ''}
-                clientEmail={contact?.contact_email}
+                clientEmail={contact?.email}
               />
             ) : (
               <p className="text-sm text-muted-foreground py-4">No event on file for this contact.</p>

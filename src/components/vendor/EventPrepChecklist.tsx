@@ -4,8 +4,10 @@ interface EventPrepChecklistProps {
   assignment: {
     status: string | null;
     vendor_files_uploaded?: boolean | null;
-    event?: { dress_code?: string | null } | null;
+    event?: { dress_code?: string | null; venue?: string | null } | null;
   };
+  vibeSheetSubmitted?: boolean;
+  hasMeeting?: boolean;
   compact?: boolean;
 }
 
@@ -14,13 +16,14 @@ interface CheckItem {
   checked: boolean;
 }
 
-export function EventPrepChecklist({ assignment, compact = false }: EventPrepChecklistProps) {
+export function EventPrepChecklist({ assignment, vibeSheetSubmitted = false, hasMeeting = false, compact = false }: EventPrepChecklistProps) {
   const items: CheckItem[] = [
     { label: "Confirm assignment", checked: assignment.status === "confirmed" },
-    { label: "Review vibe sheet", checked: false },
-    { label: "Check directions to venue", checked: false },
-    { label: "Confirm dress code", checked: !!assignment.event?.dress_code },
-    { label: "Upload pre-event files", checked: !!assignment.vendor_files_uploaded },
+    { label: "Vibe sheet submitted by client", checked: vibeSheetSubmitted },
+    { label: "Pre-event meeting scheduled", checked: hasMeeting },
+    { label: "Venue & directions confirmed", checked: !!assignment.event?.venue },
+    { label: "Dress code noted", checked: !!assignment.event?.dress_code },
+    { label: "Pre-event files uploaded", checked: !!assignment.vendor_files_uploaded },
   ];
 
   const completed = items.filter((i) => i.checked).length;
