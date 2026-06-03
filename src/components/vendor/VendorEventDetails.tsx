@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from '@/hooks/use-toast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { format } from 'date-fns';
-import { Calendar, MapPin, Users, Mail, Phone, Package, Clock, UsersRound, Shirt, Navigation, MessageSquarePlus, User, Music, FileSignature, CalendarDays, Eye } from 'lucide-react';
+import { Calendar, MapPin, Users, Mail, Phone, Package, Clock, UsersRound, Shirt, Navigation, MessageSquarePlus, User, Music, FileSignature, CalendarDays, Eye, Radio, Copy } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -26,6 +27,7 @@ interface VendorEventDetailsProps {
 
 export function VendorEventDetails({ open, onOpenChange, assignment }: VendorEventDetailsProps) {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [requestModalOpen, setRequestModalOpen] = useState(false);
   const [previewContract, setPreviewContract] = useState<any>(null);
   const event = assignment?.event;
@@ -118,6 +120,25 @@ export function VendorEventDetails({ open, onOpenChange, assignment }: VendorEve
     enabled: open && !!eventId,
   });
 
+  const { data: liveSession } = useQuery({
+    queryKey: ['live-session-detail', eventId],
+    queryFn: async () => {
+      if (!eventId) return null;
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return null;
+      const { data } = await supabase
+        .from('live_sessions')
+        .select('id, short_code, status')
+        .eq('event_id', eventId)
+        .eq('vendor_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      return data;
+    },
+    enabled: open && !!eventId,
+  });
+
   if (!event) return null;
 
   const today = new Date().toISOString().split('T')[0];
@@ -159,6 +180,9 @@ export function VendorEventDetails({ open, onOpenChange, assignment }: VendorEve
             <TabsTrigger value="timeline">Timeline</TabsTrigger>
             <TabsTrigger value="files">Files</TabsTrigger>
             <TabsTrigger value="vendors">Vendors</TabsTrigger>
+            <TabsTrigger value="live" className="gap-1.5">
+              <Radio className="h-3.5 w-3.5" /> Live
+            </TabsTrigger>
           </TabsList>
 
           {/* OVERVIEW */}
@@ -532,6 +556,49 @@ export function VendorEventDetails({ open, onOpenChange, assignment }: VendorEve
                 ) : (
                   <p className="text-sm text-muted-foreground text-center py-4">No other vendors assigned to this event</p>
                 )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* LIVE */}
+          <TabsContent value="live" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Radio className="h-5 w-5" />
+                  Live Song Requests
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {liveSession ? (
+                  <div className="space-y-3">
+                    <div className="flex items-start justify-between p-3 rounded-lg border bg-muted/30">
+                      <div>
+                        <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Guest Link</p>
+                        <p className="font-mono text-sm break-all">{`${window.location.origin}/live/${liveSession.short_code}`}</p>
+                        <p className="font-mono font-bold text-xl tracking-widest mt-2">{liveSession.short_code}</p>
+                      </div>
+                      <Button size="sm" variant="outline" className="gap-1.5 flex-shrink-0 ml-3" onClick={() => {
+                        navigator.clipboard.writeText(`${window.location.origin}/live/${liveSession.short_code}`);
+                        toast({ title: 'Link copied!' });
+                      }}>
+                        <Copy className="h-3.5 w-3.5" /> Copy
+                      </Button>
+                    </div>
+                    <div className="flex items-center justify-between text-sm px-1">
+                      <span className="text-muted-foreground">Status</span>
+                      <Badge variant={liveSession.status === 'live' ? 'default' : 'secondary'} className="capitalize gap-1.5">
+                        {liveSession.status === 'live' && <span className="h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse inline-block" />}
+                        {liveSession.status}
+                      </Badge>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground text-center py-4">No session yet — open the console to create one.</p>
+                )}
+                <Button className="w-full gap-2" onClick={() => { onOpenChange(false); navigate(`/vendor/live/${eventId}`); }}>
+                  <Radio className="h-4 w-4" /> Open Live Console
+                </Button>
               </CardContent>
             </Card>
           </TabsContent>

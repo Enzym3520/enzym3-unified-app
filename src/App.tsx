@@ -64,6 +64,8 @@ import PublicVendorPage from '@/pages/vendor/PublicVendorPage';
 import PublicSignPage from '@/pages/vendor/PublicSignPage';
 import JoinByCode from '@/pages/JoinByCode';
 import ClientOnboarding from '@/pages/ClientOnboarding';
+import LiveRequestPage from '@/pages/LiveRequestPage';
+import VendorLiveConsole from '@/pages/vendor/LiveConsolePage';
 
 const queryClient = new QueryClient();
 export default function App() {
@@ -117,6 +119,7 @@ export default function App() {
                 </Route>
                 <Route path="/v/:handle" element={<PublicVendorPage />} />
                 <Route path="/sign/:id" element={<PublicSignPage />} />
+                <Route path="/live/:code" element={<LiveRequestPage />} />
                 <Route path="/vendor" element={
                   <AuthProvider>
                     <RequireRole role="vendor"><VendorShell /></RequireRole>
@@ -140,6 +143,7 @@ export default function App() {
                   <Route path="event-history" element={<VendorEventHistory />} />
                   <Route path="email-template" element={<VendorEmailTemplate />} />
                   <Route path="my-page" element={<VendorMyPage />} />
+                  <Route path="live/:eventId" element={<VendorLiveConsole />} />
                 </Route>
               </Routes>
             </BrowserRouter>
