@@ -1,8 +1,9 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { format } from 'date-fns';
-import { Calendar, MapPin, Users, Mail, Phone, Package, Clock, FileText, UsersRound, Shirt, Navigation, StickyNote, FolderOpen, MessageSquarePlus, User } from 'lucide-react';
+import { Calendar, MapPin, Users, Mail, Phone, Package, Clock, UsersRound, Shirt, Navigation, MessageSquarePlus, User, Music, FileSignature, CalendarDays, Eye } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -13,6 +14,8 @@ import { EventFilesViewer } from '@/components/vendor/EventFilesViewer';
 import { RequestInfoUpdateModal } from '@/components/vendor/RequestInfoUpdateModal';
 import { useMyUpdateRequests } from '@/hooks/use-update-requests';
 import { getMapsUrl } from '@/utils/mapsLink';
+import { VibeSheetReview } from '@/components/staff/event-detail/VibeSheetReview';
+import { ContractPreview } from '@/components/vendor/contracts/ContractPreview';
 
 interface VendorEventDetailsProps {
   open: boolean;
@@ -21,12 +24,13 @@ interface VendorEventDetailsProps {
 }
 
 export function VendorEventDetails({ open, onOpenChange, assignment }: VendorEventDetailsProps) {
+  const navigate = useNavigate();
   const [requestModalOpen, setRequestModalOpen] = useState(false);
+  const [previewContract, setPreviewContract] = useState<any>(null);
   const event = assignment?.event;
   const eventId = event?.id;
   const { data: myRequests } = useMyUpdateRequests(eventId);
 
-  // Fetch other vendors assigned to this event
   const { data: otherVendors } = useQuery({
     queryKey: ['event-vendors', eventId],
     queryFn: async () => {
@@ -48,14 +52,12 @@ export function VendorEventDetails({ open, onOpenChange, assignment }: VendorEve
         `)
         .eq('event_id', eventId)
         .neq('dj_user_id', assignment.dj_user_id);
-
       if (error) throw error;
       return data;
     },
     enabled: open && !!eventId,
   });
 
-  // Fetch timeline items
   const { data: timelineItems } = useQuery({
     queryKey: ['event-timeline', eventId],
     queryFn: async () => {
@@ -71,7 +73,46 @@ export function VendorEventDetails({ open, onOpenChange, assignment }: VendorEve
     enabled: open && !!eventId,
   });
 
+  const { data: contracts } = useQuery({
+    queryKey: ['event-contracts', eventId],
+    queryFn: async () => {
+      if (!eventId) return [];
+      const { data, error } = await supabase
+        .from('vendor_contracts')
+        .select('id, title, status, sent_at, signed_at, content_html, created_at')
+        .eq('event_id', eventId)
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: open && !!eventId,
+  });
+
+  const { data: eventMeetings } = useQuery({
+    queryKey: ['event-meetings', eventId],
+    queryFn: async () => {
+      if (!eventId) return [];
+      const { data, error } = await supabase
+        .from('bookings')
+        .select('id, booking_date, booking_time, meeting_type, meeting_format, meeting_link, status, vendor_rsvp')
+        .eq('wedding_id', eventId)
+        .order('booking_date', { ascending: true });
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: open && !!eventId,
+  });
+
   if (!event) return null;
+
+  const today = new Date().toISOString().split('T')[0];
+  const upcomingMeetings = (eventMeetings || []).filter((m: any) => m.booking_date >= today && m.status !== 'cancelled');
+
+  const contractStatusColor = (status: string) => {
+    if (status === 'signed') return 'default';
+    if (status === 'sent') return 'secondary';
+    return 'outline';
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -88,13 +129,22 @@ export function VendorEventDetails({ open, onOpenChange, assignment }: VendorEve
         </DialogHeader>
 
         <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="flex flex-wrap h-auto gap-1 justify-start">
             <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="vibe-sheet" className="gap-1.5">
+              <Music className="h-3.5 w-3.5" />
+              Vibe Sheet
+            </TabsTrigger>
+            <TabsTrigger value="contract" className="gap-1.5">
+              <FileSignature className="h-3.5 w-3.5" />
+              Contract
+            </TabsTrigger>
             <TabsTrigger value="timeline">Timeline</TabsTrigger>
             <TabsTrigger value="files">Files</TabsTrigger>
             <TabsTrigger value="vendors">Vendors</TabsTrigger>
           </TabsList>
 
+          {/* OVERVIEW */}
           <TabsContent value="overview" className="space-y-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0">
@@ -105,6 +155,33 @@ export function VendorEventDetails({ open, onOpenChange, assignment }: VendorEve
                 </Button>
               </CardHeader>
               <CardContent className="space-y-4">
+                {/* Client Contact — always shown */}
+                <div className="rounded-lg bg-muted/40 p-4 space-y-2">
+                  <h4 className="font-semibold text-sm">Client</h4>
+                  <p className="font-medium">{event.couple_name}</p>
+                  {(event.primary_contact_name || event.client_name || event.honoree_name) && (
+                    <div className="flex items-center text-sm text-muted-foreground gap-2">
+                      <User className="h-3.5 w-3.5" />
+                      {event.primary_contact_name || event.client_name || event.honoree_name}
+                    </div>
+                  )}
+                  {(event.primary_contact_email) && (
+                    <a href={`mailto:${event.primary_contact_email}`} className="flex items-center text-sm text-primary hover:underline gap-2">
+                      <Mail className="h-3.5 w-3.5" />
+                      {event.primary_contact_email}
+                    </a>
+                  )}
+                  {(event.primary_contact_phone) && (
+                    <a href={`tel:${event.primary_contact_phone}`} className="flex items-center text-sm text-primary hover:underline gap-2">
+                      <Phone className="h-3.5 w-3.5" />
+                      {event.primary_contact_phone}
+                    </a>
+                  )}
+                  {!event.primary_contact_email && !event.primary_contact_phone && (
+                    <p className="text-xs text-muted-foreground">Contact details not on file — reach out to your coordinator.</p>
+                  )}
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-1">
                     <div className="flex items-center text-sm text-muted-foreground">
@@ -186,67 +263,19 @@ export function VendorEventDetails({ open, onOpenChange, assignment }: VendorEve
                   )}
                 </div>
 
-                {/* Client Contact Section */}
-                {(event.client_name || event.honoree_name || event.primary_contact_name || event.primary_contact_email || event.primary_contact_phone || event.bride_email || event.groom_email) && (
-                  <div className="border-t pt-4">
-                    <h4 className="font-semibold mb-3">Client Contact</h4>
-                    <div className="space-y-2">
-                      {(event.client_name || event.honoree_name) && (
-                        <div className="flex items-center text-sm">
-                          <User className="mr-2 h-4 w-4 text-muted-foreground" />
-                          <span className="font-medium">{event.client_name || event.honoree_name}</span>
-                        </div>
-                      )}
-                      {event.primary_contact_name && event.primary_contact_name !== event.client_name && (
-                        <p className="text-sm text-muted-foreground ml-6">Primary Contact: {event.primary_contact_name}</p>
-                      )}
-                      {event.primary_contact_email && (
-                        <a href={`mailto:${event.primary_contact_email}`} className="flex items-center text-sm text-primary hover:underline">
-                          <Mail className="mr-2 h-4 w-4" />
-                          {event.primary_contact_email}
-                        </a>
-                      )}
-                      {event.primary_contact_phone && (
-                        <a href={`tel:${event.primary_contact_phone}`} className="flex items-center text-sm text-primary hover:underline">
-                          <Phone className="mr-2 h-4 w-4" />
-                          {event.primary_contact_phone}
-                        </a>
-                      )}
-                      {event.bride_email && event.bride_email !== event.primary_contact_email && (
-                        <a href={`mailto:${event.bride_email}`} className="flex items-center text-sm text-primary hover:underline">
-                          <Mail className="mr-2 h-4 w-4" />
-                          {event.bride_email}
-                        </a>
-                      )}
-                      {event.groom_email && event.groom_email !== event.primary_contact_email && (
-                        <a href={`mailto:${event.groom_email}`} className="flex items-center text-sm text-primary hover:underline">
-                          <Mail className="mr-2 h-4 w-4" />
-                          {event.groom_email}
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                )}
-
                 {event.coordinator_name && (
                   <div className="border-t pt-4">
-                    <h4 className="font-semibold mb-3">Coordinator Contact</h4>
+                    <h4 className="font-semibold mb-3">Coordinator</h4>
                     <div className="space-y-2">
                       <p className="font-medium">{event.coordinator_name}</p>
                       {event.contact_email && (
-                        <a
-                          href={`mailto:${event.contact_email}`}
-                          className="flex items-center text-sm text-primary hover:underline"
-                        >
+                        <a href={`mailto:${event.contact_email}`} className="flex items-center text-sm text-primary hover:underline">
                           <Mail className="mr-2 h-4 w-4" />
                           {event.contact_email}
                         </a>
                       )}
                       {event.contact_phone && (
-                        <a
-                          href={`tel:${event.contact_phone}`}
-                          className="flex items-center text-sm text-primary hover:underline"
-                        >
+                        <a href={`tel:${event.contact_phone}`} className="flex items-center text-sm text-primary hover:underline">
                           <Phone className="mr-2 h-4 w-4" />
                           {event.contact_phone}
                         </a>
@@ -275,10 +304,53 @@ export function VendorEventDetails({ open, onOpenChange, assignment }: VendorEve
                     )}
                   </div>
                 )}
+
+                {/* Meetings for this event */}
+                <div className="border-t pt-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-semibold">Meetings</h4>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => { onOpenChange(false); navigate('/vendor/meetings'); }}
+                    >
+                      <CalendarDays className="mr-1.5 h-3.5 w-3.5" />
+                      All Meetings
+                    </Button>
+                  </div>
+                  {upcomingMeetings.length > 0 ? (
+                    <div className="space-y-2">
+                      {upcomingMeetings.map((m: any) => (
+                        <div key={m.id} className="flex items-center justify-between rounded-lg border bg-muted/30 p-3 text-sm">
+                          <div>
+                            <p className="font-medium capitalize">{(m.meeting_type || '').replace(/_/g, ' ')}</p>
+                            <p className="text-muted-foreground">
+                              {format(new Date(m.booking_date), 'MMM d, yyyy')} at {m.booking_time}
+                              {m.meeting_format ? ` · ${m.meeting_format}` : ''}
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {m.vendor_rsvp && (
+                              <Badge variant={m.vendor_rsvp === 'accepted' ? 'default' : 'secondary'} className="capitalize text-xs">
+                                {m.vendor_rsvp}
+                              </Badge>
+                            )}
+                            {m.meeting_link && (
+                              <Button size="sm" variant="outline" asChild>
+                                <a href={m.meeting_link} target="_blank" rel="noopener noreferrer">Join</a>
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">No upcoming meetings scheduled for this event.</p>
+                  )}
+                </div>
               </CardContent>
             </Card>
 
-            {/* Pending update requests */}
             {myRequests && myRequests.length > 0 && (
               <Card>
                 <CardHeader>
@@ -310,6 +382,56 @@ export function VendorEventDetails({ open, onOpenChange, assignment }: VendorEve
             />
           </TabsContent>
 
+          {/* VIBE SHEET */}
+          <TabsContent value="vibe-sheet">
+            <VibeSheetReview eventId={eventId} eventType={event.event_type} />
+          </TabsContent>
+
+          {/* CONTRACT */}
+          <TabsContent value="contract" className="space-y-4">
+            {contracts && contracts.length > 0 ? (
+              contracts.map((c: any) => (
+                <Card key={c.id}>
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium">{c.title}</p>
+                        <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
+                          <Badge variant={contractStatusColor(c.status)} className="capitalize text-xs">{c.status}</Badge>
+                          {c.sent_at && <span>Sent {format(new Date(c.sent_at), 'MMM d, yyyy')}</span>}
+                          {c.signed_at && <span>· Signed {format(new Date(c.signed_at), 'MMM d, yyyy')}</span>}
+                        </div>
+                      </div>
+                      {c.content_html && (
+                        <Button variant="outline" size="sm" onClick={() => setPreviewContract(c)}>
+                          <Eye className="mr-1.5 h-3.5 w-3.5" />
+                          Preview
+                        </Button>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              <Card>
+                <CardContent className="py-10 text-center text-muted-foreground">
+                  <FileSignature className="h-10 w-10 mx-auto mb-3 opacity-40" />
+                  <p className="font-medium">No contract on file</p>
+                  <p className="text-sm mt-1">Contracts you create for this event will appear here.</p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="mt-4"
+                    onClick={() => { onOpenChange(false); navigate('/vendor/contracts'); }}
+                  >
+                    Go to Contracts
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+          </TabsContent>
+
+          {/* TIMELINE */}
           <TabsContent value="timeline" className="space-y-4">
             {timelineItems && timelineItems.length > 0 ? (
               <Card>
@@ -347,10 +469,12 @@ export function VendorEventDetails({ open, onOpenChange, assignment }: VendorEve
             )}
           </TabsContent>
 
+          {/* FILES */}
           <TabsContent value="files" className="space-y-4">
             <EventFilesViewer eventId={event.id} />
           </TabsContent>
 
+          {/* VENDORS */}
           <TabsContent value="vendors" className="space-y-4">
             <Card>
               <CardHeader>
@@ -386,6 +510,15 @@ export function VendorEventDetails({ open, onOpenChange, assignment }: VendorEve
             </Card>
           </TabsContent>
         </Tabs>
+
+        {previewContract && (
+          <ContractPreview
+            open={!!previewContract}
+            onOpenChange={(v) => { if (!v) setPreviewContract(null); }}
+            title={previewContract.title}
+            html={previewContract.content_html}
+          />
+        )}
       </DialogContent>
     </Dialog>
   );
