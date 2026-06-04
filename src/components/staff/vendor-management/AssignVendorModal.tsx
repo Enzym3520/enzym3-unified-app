@@ -52,7 +52,7 @@ const AssignVendorModal = ({ isOpen, onClose, eventId, eventDate, vendorType }: 
         .select('id, first_name, last_name, company_name, vendor_type, is_active')
         .eq('is_active', true)
         .in('role', ['vendor', 'dj'])
-        .not('vendor_type', 'is', null);
+        .not('vendor_types', 'is', null);
 
       if (vendorType) {
         query = query.contains('vendor_types', [vendorType]);

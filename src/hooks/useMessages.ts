@@ -107,7 +107,7 @@ export function useMessages() {
 
         const sortedContacts = [...coordContacts, ...vendorContacts];
         setContacts(sortedContacts);
-        if (window.innerWidth >= 768) setSelectedContact(sortedContacts[0] || null);
+        if (!isMobile) setSelectedContact(sortedContacts[0] || null);
       } catch (err) {
         console.error("Error:", err);
         setError("An unexpected error occurred");

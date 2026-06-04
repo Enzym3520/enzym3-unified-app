@@ -27,6 +27,7 @@ export const EventPaymentSection: React.FC<EventPaymentSectionProps> = ({ readin
       });
       if (error) throw error;
       await queryClient.invalidateQueries({ queryKey: ['event-readiness'] });
+      await queryClient.invalidateQueries({ queryKey: ['event-detail', readiness.event_id] });
       const updated = (data?.updated ?? []) as string[];
       if (updated.length > 0) {
         toast.success(`Synced from Stripe: ${updated.join(', ')}`);
@@ -64,6 +65,7 @@ export const EventPaymentSection: React.FC<EventPaymentSectionProps> = ({ readin
       if (error) throw error;
 
       await queryClient.invalidateQueries({ queryKey: ['event-readiness'] });
+      await queryClient.invalidateQueries({ queryKey: ['event-detail', readiness.event_id] });
       toast.success(`${field === 'deposit' ? 'Deposit' : 'Balance'} marked as ${!isPaid ? 'paid' : 'unpaid'}`);
     } catch (err: any) {
       toast.error(`Failed to update: ${err.message || 'Unknown error'}`);
