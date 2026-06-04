@@ -39,6 +39,21 @@ serve(async (req: Request) => {
     return new Response("ok", { headers: corsHeaders });
   }
 
+  const authHeader = req.headers.get('Authorization') || '';
+  const apiKeyHeader = req.headers.get('apikey') || '';
+  const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+
+  const isServiceRole =
+    authHeader === `Bearer ${serviceRoleKey}` ||
+    apiKeyHeader === serviceRoleKey;
+
+  if (!isServiceRole) {
+    return new Response(
+      JSON.stringify({ error: 'Unauthorized' }),
+      { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+    );
+  }
+
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
@@ -82,6 +97,13 @@ serve(async (req: Request) => {
         .eq("stripe_session_id", session_id)
         .maybeSingle();
       upgradeOrder = data;
+
+      if (upgradeOrder && upgradeOrder.payment_status === 'paid') {
+        return new Response(
+          JSON.stringify({ success: true, already_processed: true }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+        );
+      }
     }
 
     if (!upgradeOrder && wedding_id) {
