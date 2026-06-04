@@ -137,9 +137,6 @@ export default function Login() {
           <Link to="/" className="hover:text-[#2D2921]/60 transition-colors block">
             ← Back to home
           </Link>
-          <Link to="/staff" className="hover:text-[#2D2921]/60 transition-colors block">
-            Staff / Vendor login →
-          </Link>
         </div>
       </div>
     </div>
