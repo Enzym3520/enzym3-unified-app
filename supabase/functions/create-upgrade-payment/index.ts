@@ -79,7 +79,7 @@ serve(async (req: Request) => {
 
     const { data: event, error: eventError } = await supabase
       .from("event_notification_history")
-      .select("id, contact_email, couple_name")
+      .select("id, contact_email, couple_name, event_date")
       .eq("id", weddingId)
       .maybeSingle();
 
@@ -122,7 +122,32 @@ serve(async (req: Request) => {
       };
     });
 
-    // Create Stripe Checkout Session (NOT PaymentIntent)
+    const totalAmount = items.reduce((sum, item) => sum + item.price, 0);
+
+    // Create upgrade_orders row first (status: pending) so the webhook can find it
+    const { data: orderRow, error: orderInsertError } = await supabase
+      .from("upgrade_orders")
+      .insert({
+        wedding_id: weddingId,
+        couple_name: coupleName || event.couple_name,
+        wedding_date: event.event_date,
+        items: items as unknown as any,
+        total_amount: totalAmount,
+        payment_status: "pending",
+        selected_package: items.find((i) => i.type === "package")?.name || "Custom",
+      })
+      .select("id")
+      .single();
+
+    if (orderInsertError || !orderRow) {
+      console.error("create-upgrade-payment: failed to create order row:", orderInsertError?.message);
+      return new Response(
+        JSON.stringify({ error: "Failed to create upgrade order" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
+    // Create Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       mode: "payment",
@@ -132,9 +157,16 @@ serve(async (req: Request) => {
       metadata: {
         wedding_id: weddingId,
         order_type: "upgrade",
+        order_id: orderRow.id,
       },
       customer_email: user.email,
     });
+
+    // Store stripe_session_id on the order so the webhook lookup works
+    await supabase
+      .from("upgrade_orders")
+      .update({ stripe_session_id: session.id })
+      .eq("id", orderRow.id);
 
     return new Response(
       JSON.stringify({ url: session.url }),
