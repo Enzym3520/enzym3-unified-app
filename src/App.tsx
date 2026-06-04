@@ -74,6 +74,7 @@ export default function App() {
       <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
         <CartProvider>
           <KeyboardShortcutsProvider>
+            <AuthProvider>
             <BrowserRouter>
               <Routes>
                 <Route path="/" element={<HomePage />} />
@@ -121,9 +122,7 @@ export default function App() {
                 <Route path="/sign/:id" element={<PublicSignPage />} />
                 <Route path="/live/:code" element={<LiveRequestPage />} />
                 <Route path="/vendor" element={
-                  <AuthProvider>
-                    <RequireRole role="vendor"><VendorShell /></RequireRole>
-                  </AuthProvider>
+                  <RequireRole role="vendor"><VendorShell /></RequireRole>
                 }>
                   <Route index element={<Navigate to="dashboard" replace />} />
                   <Route path="dashboard" element={<VendorDashboard />} />
@@ -147,6 +146,7 @@ export default function App() {
                 </Route>
               </Routes>
             </BrowserRouter>
+            </AuthProvider>
           </KeyboardShortcutsProvider>
         </CartProvider>
       </ThemeProvider>

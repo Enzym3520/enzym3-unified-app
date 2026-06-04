@@ -46,7 +46,8 @@ export function AppSidebar() {
     ],
 
     ...(isAdmin || isModerator ? [
-      { title: 'Vendor Management', url: '/staff/vendor-management', icon: Users }
+      { title: 'Vendor Management', url: '/staff/vendor-management', icon: Users },
+      { title: 'Vendor Invites', url: '/staff/vendor-invites', icon: Users },
     ] : []),
 
     { title: 'Settings', url: '/staff/settings', icon: Settings },
