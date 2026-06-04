@@ -105,8 +105,8 @@ serve(async (req) => {
     });
 
     const token = authHeader.replace('Bearer ', '');
-    const { data: claimsData, error: claimsError } = await userClient.auth.getClaims(token);
-    if (claimsError || !claimsData?.claims) {
+    const { data: { user }, error: claimsError } = await userClient.auth.getUser(token);
+    if (claimsError || !user) {
       console.error('JWT validation failed:', claimsError);
       return new Response(
         JSON.stringify({ error: 'Invalid token' }),
@@ -114,8 +114,8 @@ serve(async (req) => {
       );
     }
 
-    const userId = claimsData.claims.sub as string;
-    const userEmail = claimsData.claims.email as string;
+    const userId = user?.id as string;
+    const userEmail = user?.email as string;
     console.log(`Authenticated user: ${userId} (${userEmail})`);
 
     // Parse request body
