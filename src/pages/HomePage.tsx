@@ -329,26 +329,26 @@ export default function HomePage() {
             >
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-semibold text-[#2D2921]/50 uppercase tracking-wider">Name <span className="text-[#85D4FA]">*</span></Label>
-                  <Input name="name" value={inquiry.name} onChange={handleInquiryChange} placeholder="Your name" required className="border-[#E8E2D8] focus:border-[#85D4FA] h-11 rounded-xl" />
+                  <Label htmlFor="inquiry-name" className="text-xs font-semibold text-[#2D2921]/50 uppercase tracking-wider">Name <span className="text-[#85D4FA]">*</span></Label>
+                  <Input id="inquiry-name" name="name" value={inquiry.name} onChange={handleInquiryChange} placeholder="Your name" required className="border-[#E8E2D8] focus:border-[#85D4FA] h-11 rounded-xl" />
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-semibold text-[#2D2921]/50 uppercase tracking-wider">Email <span className="text-[#85D4FA]">*</span></Label>
-                  <Input name="email" type="email" value={inquiry.email} onChange={handleInquiryChange} placeholder="you@email.com" required className="border-[#E8E2D8] focus:border-[#85D4FA] h-11 rounded-xl" />
+                  <Label htmlFor="inquiry-email" className="text-xs font-semibold text-[#2D2921]/50 uppercase tracking-wider">Email <span className="text-[#85D4FA]">*</span></Label>
+                  <Input id="inquiry-email" name="email" type="email" value={inquiry.email} onChange={handleInquiryChange} placeholder="you@email.com" required className="border-[#E8E2D8] focus:border-[#85D4FA] h-11 rounded-xl" />
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-semibold text-[#2D2921]/50 uppercase tracking-wider">Phone</Label>
-                  <Input name="phone" type="tel" value={inquiry.phone} onChange={handleInquiryChange} placeholder="Optional" className="border-[#E8E2D8] focus:border-[#85D4FA] h-11 rounded-xl" />
+                  <Label htmlFor="inquiry-phone" className="text-xs font-semibold text-[#2D2921]/50 uppercase tracking-wider">Phone</Label>
+                  <Input id="inquiry-phone" name="phone" type="tel" value={inquiry.phone} onChange={handleInquiryChange} placeholder="Optional" className="border-[#E8E2D8] focus:border-[#85D4FA] h-11 rounded-xl" />
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-semibold text-[#2D2921]/50 uppercase tracking-wider">Event Date</Label>
-                  <Input name="eventDate" type="date" value={inquiry.eventDate} onChange={handleInquiryChange} className="border-[#E8E2D8] focus:border-[#85D4FA] h-11 rounded-xl" />
+                  <Label htmlFor="inquiry-eventDate" className="text-xs font-semibold text-[#2D2921]/50 uppercase tracking-wider">Event Date</Label>
+                  <Input id="inquiry-eventDate" name="eventDate" type="date" value={inquiry.eventDate} onChange={handleInquiryChange} className="border-[#E8E2D8] focus:border-[#85D4FA] h-11 rounded-xl" />
                 </div>
               </div>
 
               <div className="space-y-1.5">
-                <Label className="text-xs font-semibold text-[#2D2921]/50 uppercase tracking-wider">Event Type</Label>
-                <select name="eventType" value={inquiry.eventType} onChange={handleInquiryChange} className="w-full h-11 rounded-xl border border-[#E8E2D8] bg-white px-3 text-sm text-[#2D2921] focus:outline-none focus:border-[#85D4FA] focus:ring-2 focus:ring-[#85D4FA]/20">
+                <Label htmlFor="inquiry-eventType" className="text-xs font-semibold text-[#2D2921]/50 uppercase tracking-wider">Event Type</Label>
+                <select id="inquiry-eventType" name="eventType" value={inquiry.eventType} onChange={handleInquiryChange} className="w-full h-11 rounded-xl border border-[#E8E2D8] bg-white px-3 text-sm text-[#2D2921] focus:outline-none focus:border-[#85D4FA] focus:ring-2 focus:ring-[#85D4FA]/20">
                   <option value="">Select type (optional)</option>
                   <option value="Wedding">Wedding</option>
                   <option value="Quinceañera">Quinceañera</option>
@@ -360,8 +360,8 @@ export default function HomePage() {
               </div>
 
               <div className="space-y-1.5">
-                <Label className="text-xs font-semibold text-[#2D2921]/50 uppercase tracking-wider">Message <span className="text-[#85D4FA]">*</span></Label>
-                <textarea name="message" value={inquiry.message} onChange={handleInquiryChange} placeholder="Tell us about your event…" required rows={4} className="w-full text-sm rounded-xl border border-[#E8E2D8] bg-white px-3 py-3 text-[#2D2921] placeholder:text-[#2D2921]/30 focus:outline-none focus:border-[#85D4FA] focus:ring-2 focus:ring-[#85D4FA]/20 resize-none" />
+                <Label htmlFor="inquiry-message" className="text-xs font-semibold text-[#2D2921]/50 uppercase tracking-wider">Message <span className="text-[#85D4FA]">*</span></Label>
+                <textarea id="inquiry-message" name="message" value={inquiry.message} onChange={handleInquiryChange} placeholder="Tell us about your event…" required rows={4} className="w-full text-sm rounded-xl border border-[#E8E2D8] bg-white px-3 py-3 text-[#2D2921] placeholder:text-[#2D2921]/30 focus:outline-none focus:border-[#85D4FA] focus:ring-2 focus:ring-[#85D4FA]/20 resize-none" />
               </div>
 
               {inquiryError && <p className="text-sm text-destructive">Something went wrong — call us at (520) 406-8600.</p>}

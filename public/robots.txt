@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Block private portal routes
+Disallow: /app/
+Disallow: /staff/
+Disallow: /vendor/
+Disallow: /auth/
+
+Sitemap: https://plan.enzym3entertainment.vip/sitemap.xml
