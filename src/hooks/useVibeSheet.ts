@@ -278,8 +278,11 @@ export const useVibeSheet = () => {
         const { error } = await supabase.from('vibe_sheets').update(data).eq('id', vibeSheet.id);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from('vibe_sheets').insert([data]);
+        const { data: inserted, error } = await supabase.from('vibe_sheets').insert([data]).select().maybeSingle();
         if (error) throw error;
+        // Immediately update local state so the next auto-save uses the UPDATE path
+        // instead of INSERT, preventing duplicate-key constraint violations.
+        if (inserted) setVibeSheet(inserted as unknown as VibeSheetRow);
       }
 
       if (!silent) {
@@ -302,6 +305,13 @@ export const useVibeSheet = () => {
       if (!silent) setSaving(false);
     }
   }, [wedding, vibeSheet, ceremony, ceremonyEvents, receptionEvents, quinceCeremonyEvents, quinceReceptionEvents, agendaItems, announcements, preferences, groupDances, additionalSongs, grandIntro, songRequests, playlistLinks, toasts, djEmail, venueEmail, user, loadVibeSheetData]);
+
+  // Ref so the auto-save effect always calls the latest handleSave without
+  // being listed as a dependency (avoids stale-closure INSERT loops).
+  const handleSaveRef = useRef(handleSave);
+  useEffect(() => {
+    handleSaveRef.current = handleSave;
+  }, [handleSave]);
 
   useEffect(() => { if (wedding) loadVibeSheetData(); }, [wedding, loadVibeSheetData]);
 
@@ -327,9 +337,8 @@ export const useVibeSheet = () => {
   useEffect(() => {
     if (!hasLoadedRef.current || loading || !wedding) return;
     if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
-    autoSaveTimerRef.current = setTimeout(async () => { await handleSave(false, true); }, 3000);
+    autoSaveTimerRef.current = setTimeout(async () => { await handleSaveRef.current(false, true); }, 3000);
     return () => { if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current); };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ceremony, ceremonyEvents, receptionEvents, quinceCeremonyEvents, quinceReceptionEvents, agendaItems, announcements, preferences, groupDances, additionalSongs, grandIntro, songRequests, playlistLinks, djEmail, venueEmail, toasts]);
 
   const handlePrint = useCallback((scope: 'full' | 'current' = 'full') => {
