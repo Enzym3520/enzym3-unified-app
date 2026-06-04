@@ -94,8 +94,8 @@ serve(async (req: Request) => {
       ? event.total_price
       : totalFromHours;
 
-    const depositAmount = Math.round(totalPrice * 0.5);
-    const balanceAmount = totalPrice - depositAmount;
+    const depositAmount = event.deposit_amount ?? Math.round(totalPrice * 0.5);
+    const balanceAmount = event.balance_due ?? Math.max(0, totalPrice - (event.deposit_amount ?? Math.round(totalPrice * 0.5)));
 
     let amountCents: number;
     let description: string;

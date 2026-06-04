@@ -53,8 +53,7 @@ export function useMessages() {
           const { data } = await supabase.from("profiles").select("id, first_name, last_name, company_name, role").eq("id", wedding.submitted_by_user_id);
           coordinators = data || [];
         } else {
-          const { data } = await supabase.from("profiles").select("id, first_name, last_name, company_name, role").eq("role", "coordinator");
-          coordinators = data || [];
+          coordinators = []; // Don't expose all coordinators when none is assigned
         }
 
         for (const coord of coordinators) {

@@ -29,7 +29,7 @@ Deno.serve(async (req) => {
     // Fetch event details
     const { data: event, error: eventErr } = await supabase
       .from("event_notification_history")
-      .select("couple_name, event_date, event_type, dj_email")
+      .select("couple_name, event_date, event_type")
       .eq("id", wedding_id)
       .maybeSingle();
 
@@ -39,6 +39,16 @@ Deno.serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+
+    // Get DJ email from assignment
+    const { data: djAssignment } = await supabase
+      .from('event_dj_assignments')
+      .select('profiles(email)')
+      .eq('event_id', wedding_id)
+      .eq('status', 'confirmed')
+      .maybeSingle();
+
+    const djEmail = (djAssignment?.profiles as any)?.email || null;
 
     if (!resendKey) {
       console.warn("RESEND_API_KEY not set — skipping email notification");
@@ -58,7 +68,9 @@ Deno.serve(async (req) => {
       : "TBD";
 
     const staffEmail = "booking@enzym3entertainment.vip";
-    const djEmail = event.dj_email;
+    if (!djEmail) {
+      console.warn("No confirmed DJ assignment found for event — skipping DJ email");
+    }
 
     const html = `<!DOCTYPE html>
 <html>

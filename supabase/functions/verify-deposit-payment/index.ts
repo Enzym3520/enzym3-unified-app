@@ -75,6 +75,7 @@ serve(async (req: Request) => {
     const matchingSession = sessions.data.find(
       (s) =>
         s.metadata?.wedding_id === wedding_id &&
+        s.metadata?.payment_type === "deposit" &&
         s.payment_status === "paid",
     );
 
