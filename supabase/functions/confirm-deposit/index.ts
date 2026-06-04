@@ -307,6 +307,23 @@ serve(async (req: Request) => {
       );
     }
 
+    // Push notification to client (fire-and-forget — don't block the response)
+    supabase.rpc('get_user_id_by_email', { p_email: event.contact_email }).then(({ data: userId }) => {
+      if (userId) {
+        supabase.functions.invoke('send-push-notification', {
+          body: {
+            userId,
+            title: isBalance ? 'Balance received — fully paid!' : 'Deposit confirmed — you\'re all set!',
+            body: isBalance
+              ? 'Your event is fully paid. We can\'t wait to celebrate with you!'
+              : `$${amount_paid} deposit received. Log in to view your contract.`,
+            url: '/app/contract',
+            tag: 'payment',
+          },
+        }).catch(() => {/* non-critical */});
+      }
+    }).catch(() => {/* non-critical */});
+
     return new Response(
       JSON.stringify({ success: true, emailErrors: emailErrors.length > 0 ? emailErrors : undefined }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },

@@ -140,6 +140,22 @@ Deno.serve(async (req) => {
       });
     }
 
+    // Push to all staff (fire-and-forget)
+    supabase.rpc('get_staff_user_ids').then(({ data: staffRows }) => {
+      if (!Array.isArray(staffRows)) return;
+      for (const row of staffRows) {
+        supabase.functions.invoke('send-push-notification', {
+          body: {
+            userId: row.user_id,
+            title: 'Vibe sheet submitted',
+            body: `${coupleName} just submitted their vibe sheet.`,
+            url: '/staff/coordinator-dashboard',
+            tag: 'vibe-sheet',
+          },
+        }).catch(() => {/* non-critical */});
+      }
+    }).catch(() => {/* non-critical */});
+
     return new Response(JSON.stringify({ ok: true }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

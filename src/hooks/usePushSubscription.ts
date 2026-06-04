@@ -4,10 +4,15 @@ import { useAuth } from '@/hooks/useAuth';
 
 const PUSH_PREF_KEY = 'enzym3_push_enabled';
 
-function getVapidPublicKey(): string {
-  // This must match the VAPID_PUBLIC_KEY secret in Supabase
-  // We expose it client-side since it's the PUBLIC key
-  return import.meta.env.VITE_VAPID_PUBLIC_KEY || '';
+async function getVapidPublicKey(): Promise<string> {
+  // Fetch from edge function — avoids needing VITE_VAPID_PUBLIC_KEY in the build env
+  try {
+    const { data, error } = await supabase.functions.invoke('get-vapid-key');
+    if (error || !data?.vapidPublicKey) return '';
+    return data.vapidPublicKey as string;
+  } catch {
+    return '';
+  }
 }
 
 function urlBase64ToUint8Array(base64String: string): Uint8Array {
@@ -64,12 +69,6 @@ export function usePushSubscription() {
   const subscribe = useCallback(async () => {
     if (!user?.id || !isSupported) return false;
 
-    const vapidKey = getVapidPublicKey();
-    if (!vapidKey) {
-      console.error('VAPID public key not configured');
-      return false;
-    }
-
     setLoading(true);
     try {
       const permission = await Notification.requestPermission();
@@ -78,11 +77,18 @@ export function usePushSubscription() {
         return false;
       }
 
+      const vapidKey = await getVapidPublicKey();
+      if (!vapidKey) {
+        console.error('VAPID public key not available');
+        setLoading(false);
+        return false;
+      }
+
       const reg = await navigator.serviceWorker.ready;
-      
+
       // Check if already subscribed
       let subscription = await reg.pushManager.getSubscription();
-      
+
       if (!subscription) {
         subscription = await reg.pushManager.subscribe({
           userVisibleOnly: true,

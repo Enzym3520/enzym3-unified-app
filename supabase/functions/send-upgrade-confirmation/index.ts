@@ -260,6 +260,21 @@ serve(async (req: Request) => {
       );
     }
 
+    // Push to client (fire-and-forget)
+    supabase.rpc('get_user_id_by_email', { p_email: event.contact_email }).then(({ data: userId }: { data: string | null }) => {
+      if (userId) {
+        supabase.functions.invoke('send-push-notification', {
+          body: {
+            userId,
+            title: 'Upgrade purchase confirmed!',
+            body: `Your upgrade for ${coupleName} has been received.`,
+            url: '/app/upgrades',
+            tag: 'upgrade',
+          },
+        }).catch(() => {/* non-critical */});
+      }
+    }).catch(() => {/* non-critical */});
+
     return new Response(
       JSON.stringify({ success: true }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
