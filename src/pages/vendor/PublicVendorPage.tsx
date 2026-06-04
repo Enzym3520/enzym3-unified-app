@@ -15,8 +15,8 @@ import { smartCapitalize, formatPhone, EVENT_TYPE_OPTIONS } from "@/utils/smartF
 import { formatVendorType, formatEventType } from "@/utils/vendorHelpers";
 
 export default function PublicVendorPage() {
-  const { slug } = useParams<{ slug: string }>();
-  const { data: vendor, isLoading } = usePublicVendor(slug);
+  const { handle } = useParams<{ handle: string }>();
+  const { data: vendor, isLoading } = usePublicVendor(handle);
   const submitMutation = useSubmitBookingRequest();
 
   const [form, setForm] = useState({
