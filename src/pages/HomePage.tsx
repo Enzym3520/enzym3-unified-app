@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import logoBlue from '@/assets/logo-blue.png';
 import heroVideoAsset from '@/assets/hero-video.asset.json';
 import { useUserRole } from '@/hooks/useUserRole';
-import { Loader2, Star, Phone, Mail, FileText, Music, Calendar, Heart, ArrowRight, Volume2, VolumeX } from 'lucide-react';
+import { Loader2, Star, Phone, Mail, FileText, Music, Calendar, Heart, ArrowRight, Volume2, VolumeX, RotateCcw, RotateCw } from 'lucide-react';
 
 type InquiryForm = {
   name: string; email: string; phone: string;
@@ -186,19 +186,37 @@ export default function HomePage() {
           autoPlay loop muted playsInline
           className="w-full h-auto block"
         />
-        <button
-          onClick={() => {
-            const v = videoRef.current;
-            if (!v) return;
-            v.muted = !v.muted;
-            setVideoMuted(v.muted);
-          }}
-          className="absolute bottom-4 right-4 z-20 flex items-center gap-1.5 bg-black/50 hover:bg-black/70 text-white text-xs font-medium px-3 py-2 rounded-full backdrop-blur-sm transition-colors"
-          aria-label={videoMuted ? 'Unmute video' : 'Mute video'}
-        >
-          {videoMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
-          {videoMuted ? 'Unmute' : 'Mute'}
-        </button>
+        <div className="absolute bottom-4 right-4 z-20 flex items-center gap-2">
+          <button
+            onClick={() => { if (videoRef.current) videoRef.current.currentTime -= 10; }}
+            className="flex items-center gap-1 bg-black/50 hover:bg-black/70 text-white text-xs font-medium px-3 py-2 rounded-full backdrop-blur-sm transition-colors"
+            aria-label="Rewind 10 seconds"
+          >
+            <RotateCcw className="h-4 w-4" />
+            10
+          </button>
+          <button
+            onClick={() => { if (videoRef.current) videoRef.current.currentTime += 10; }}
+            className="flex items-center gap-1 bg-black/50 hover:bg-black/70 text-white text-xs font-medium px-3 py-2 rounded-full backdrop-blur-sm transition-colors"
+            aria-label="Forward 10 seconds"
+          >
+            10
+            <RotateCw className="h-4 w-4" />
+          </button>
+          <button
+            onClick={() => {
+              const v = videoRef.current;
+              if (!v) return;
+              v.muted = !v.muted;
+              setVideoMuted(v.muted);
+            }}
+            className="flex items-center gap-1.5 bg-black/50 hover:bg-black/70 text-white text-xs font-medium px-3 py-2 rounded-full backdrop-blur-sm transition-colors"
+            aria-label={videoMuted ? 'Unmute video' : 'Mute video'}
+          >
+            {videoMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+            {videoMuted ? 'Unmute' : 'Mute'}
+          </button>
+        </div>
       </section>
 
       {/* ── TRUST BAR ── */}
