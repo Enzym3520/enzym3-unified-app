@@ -5,7 +5,7 @@ import { CoordinatorApproval } from '@/components/staff/coordinator-approval/Coo
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Clock, CheckCircle, TrendingUp, FileText, Users, Upload, List, Calendar, MapPin } from 'lucide-react';
+import { Clock, CheckCircle, TrendingUp, FileText, Users, Upload, List, Calendar, MapPin, Archive } from 'lucide-react';
 import { UploadedFormsTable } from '@/components/staff/admin/UploadedFormsTable';
 import { EventReadinessOverview } from '@/components/staff/dashboard/EventReadinessOverview';
 import { EventListTab } from '@/components/staff/dashboard/EventListTab';
@@ -79,6 +79,11 @@ export const CoordinatorDashboard: React.FC = () => {
     if (paymentFilter === 'venue_partner') return safeNotifications.filter(n => n.booking_source === 'venue_partner');
     return safeNotifications;
   }, [safeNotifications, paymentFilter]);
+
+  const pastEvents = useMemo(() => {
+    const today = new Date().toISOString().slice(0, 10);
+    return safeNotifications.filter(n => n.event_date && n.event_date < today);
+  }, [safeNotifications]);
 
   if (showSkeleton) {
     return (
@@ -160,6 +165,10 @@ export const CoordinatorDashboard: React.FC = () => {
             <TabsTrigger value="uploads" className="flex items-center gap-2">
               <Upload className="h-4 w-4" />
               Uploaded Forms
+            </TabsTrigger>
+            <TabsTrigger value="past" className="flex items-center gap-2">
+              <Archive className="h-4 w-4" />
+              Past Events
             </TabsTrigger>
           </TabsList>
 
@@ -311,6 +320,17 @@ export const CoordinatorDashboard: React.FC = () => {
               </CardHeader>
               <CardContent>
                 <UploadedFormsTable />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="past">
+            <Card className="card-luxury">
+              <CardHeader>
+                <CardTitle>Past Events ({pastEvents.length})</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <EventListTab externalEvents={pastEvents} />
               </CardContent>
             </Card>
           </TabsContent>
