@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import type { ReactNode } from 'react';
 import { useUserRole } from '@/hooks/useUserRole';
 interface Props { role: 'admin' | 'vendor' | 'client'; children: ReactNode; }
 export function RequireRole({ role, children }: Props) {
   const navigate = useNavigate();
+  const location = useLocation();
   const { isAdmin, isModerator, isVendor, isLoading } = useUserRole();
 
   let allowed = false;
@@ -16,7 +17,7 @@ export function RequireRole({ role, children }: Props) {
 
   useEffect(() => {
     if (isLoading || allowed) return;
-    navigate('/login');
+    navigate('/login', { state: { from: location.pathname } });
   }, [isLoading, allowed, navigate]);
 
   if (isLoading || !allowed) return null;

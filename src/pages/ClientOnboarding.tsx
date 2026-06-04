@@ -12,8 +12,8 @@ import logoBlue from '@/assets/logo-blue.png';
 import { Loader2, CheckCircle2, Calendar, MapPin, Music2, ArrowRight } from 'lucide-react';
 
 interface WeddingData {
-  couple_names: string;
-  wedding_date: string | null;
+  couple_name: string;
+  event_date: string | null;
   venue: string | null;
   event_type: string | null;
 }
@@ -80,15 +80,18 @@ export default function ClientOnboarding() {
 
   useEffect(() => {
     if (!wid) { setLoadingWedding(false); return; }
-    supabase
-      .from('weddings')
-      .select('couple_names, wedding_date, venue, event_type')
-      .eq('id', wid)
-      .maybeSingle()
-      .then(({ data }) => {
+    (async () => {
+      try {
+        const { data } = await supabase
+          .from('event_notification_history')
+          .select('couple_name, event_date, venue, event_type')
+          .eq('id', wid)
+          .maybeSingle();
         if (data) setWedding(data as WeddingData);
+      } finally {
         setLoadingWedding(false);
-      });
+      }
+    })();
   }, [wid]);
 
   useEffect(() => {
@@ -215,12 +218,12 @@ export default function ClientOnboarding() {
               <div className="bg-white border border-[#DBD4C3] rounded-2xl p-5 space-y-3">
                 <div className="flex items-center gap-2 text-[#2D2921]">
                   <Music2 className="h-4 w-4 text-[#85D4FA] shrink-0" />
-                  <span className="font-semibold">{wedding.couple_names}</span>
+                  <span className="font-semibold">{wedding.couple_name}</span>
                 </div>
-                {wedding.wedding_date && (
+                {wedding.event_date && (
                   <div className="flex items-center gap-2 text-sm text-[#2D2921]/70">
                     <Calendar className="h-4 w-4 text-[#85D4FA] shrink-0" />
-                    <span>{formatDate(wedding.wedding_date)}</span>
+                    <span>{formatDate(wedding.event_date)}</span>
                   </div>
                 )}
                 {wedding.venue && (

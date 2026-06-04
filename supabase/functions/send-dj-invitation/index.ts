@@ -41,6 +41,13 @@ const handler = async (req: Request): Promise<Response> => {
       companyName
     }: InvitationRequest = await req.json();
 
+    if (!recipientEmail || typeof recipientEmail !== 'string' || !recipientEmail.includes('@')) {
+      return new Response(
+        JSON.stringify({ error: 'recipientEmail is required and must be a valid email address' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      );
+    }
+
     console.log(`Processing invitation for ${recipientEmail} with code ${invitationCode}`);
 
     // Construct the signup URL with invitation code

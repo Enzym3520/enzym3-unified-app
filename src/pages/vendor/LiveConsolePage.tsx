@@ -59,7 +59,11 @@ export default function LiveConsolePage() {
     if (!eventId) return;
     const load = async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) {
+        setLoading(false);
+        navigate('/login');
+        return;
+      }
 
       const { data: existing } = await supabase
         .from('live_sessions')
