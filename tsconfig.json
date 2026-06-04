@@ -32,5 +32,8 @@
   "include": [
     "src",
     "tests"
+  ],
+  "exclude": [
+    "src/sw-custom.ts"
   ]
 }
