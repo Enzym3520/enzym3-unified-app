@@ -96,10 +96,23 @@ serve(async (req: Request) => {
 
     const isBalance = payment_type === "balance";
 
+    const totalPrice = event.total_price ?? 0;
+    const computedBalance = isBalance
+      ? 0
+      : totalPrice > 0
+        ? Math.max(0, totalPrice - amount_paid)
+        : (event.balance_due ?? 0);
+
     // Update event_notification_history: mark deposit or balance paid
+    // Deposit path also writes balance_due so clients can see what they owe
     const updateFields = isBalance
       ? { balance_paid: true, balance_paid_at: new Date().toISOString(), balance_due: 0 }
-      : { deposit_paid: true, deposit_paid_at: new Date().toISOString(), deposit_amount: amount_paid };
+      : {
+          deposit_paid: true,
+          deposit_paid_at: new Date().toISOString(),
+          deposit_amount: amount_paid,
+          ...(totalPrice > 0 ? { balance_due: Math.max(0, totalPrice - amount_paid) } : {}),
+        };
 
     const { error: updateError } = await supabase
       .from("event_notification_history")
@@ -113,14 +126,6 @@ serve(async (req: Request) => {
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
-
-    // Compute balance due (only meaningful for deposit payments)
-    const totalPrice = event.total_price ?? 0;
-    const computedBalance = isBalance
-      ? 0
-      : totalPrice > 0
-        ? Math.max(0, totalPrice - amount_paid)
-        : (event.balance_due ?? 0);
 
     const formattedDate = formatDate(event.event_date);
     const amountPaidStr = esc(formatDollars(amount_paid));
