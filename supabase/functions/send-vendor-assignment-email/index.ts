@@ -34,14 +34,32 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  // AuthN: only allow service-role callers (admin server actions / automations)
+  // AuthN: accept service-role callers OR authenticated users (staff portal)
   const authHeader = req.headers.get('Authorization') ?? '';
   const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
-  if (!serviceRoleKey || authHeader !== `Bearer ${serviceRoleKey}`) {
-    return new Response(
-      JSON.stringify({ error: 'Unauthorized' }),
-      { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+  const isServiceRole = serviceRoleKey && authHeader === `Bearer ${serviceRoleKey}`;
+
+  if (!isServiceRole) {
+    // Fall back to verifying a valid Supabase JWT
+    const anonKey = Deno.env.get('SUPABASE_ANON_KEY') ?? '';
+    const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
+    if (!authHeader.startsWith('Bearer ') || !supabaseUrl || !anonKey) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2.38.4");
+    const callerClient = createClient(supabaseUrl, anonKey, {
+      global: { headers: { Authorization: authHeader } },
+    });
+    const { data: { user }, error: authError } = await callerClient.auth.getUser();
+    if (authError || !user) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
   }
 
   try {

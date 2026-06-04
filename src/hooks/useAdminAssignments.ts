@@ -185,26 +185,39 @@ export const useCreateAssignment = () => {
       } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
-      const { error } = await supabase.from('event_dj_assignments').insert({
+      const { data: inserted, error } = await supabase.from('event_dj_assignments').insert({
         event_id: eventId,
         event_notification_id: eventId,
         dj_user_id: vendorId,
         assignment_notes: notes,
         assigned_by: user.id,
         status: 'assigned',
-      });
+      }).select('id').single();
 
       if (error) throw error;
 
       // Sync dj_name on the notification record
       await syncDjName(eventId);
+
+      return { assignmentId: inserted?.id, eventId, vendorId };
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['admin-assignments'] });
       queryClient.invalidateQueries({ queryKey: ['event-assignments'] });
       queryClient.invalidateQueries({ queryKey: ['assignment-stats'] });
       queryClient.invalidateQueries({ queryKey: ['event-notifications'] });
       toast.success('Vendor assigned successfully!');
+
+      // Fire-and-forget vendor notification — non-fatal if it fails
+      if (data?.assignmentId && data?.eventId && data?.vendorId) {
+        supabase.functions.invoke('send-vendor-assignment-email', {
+          body: {
+            assignment_id: data.assignmentId,
+            dj_user_id: data.vendorId,
+            event_id: data.eventId,
+          },
+        }).catch((err) => console.error('vendor assignment email failed (non-fatal):', err));
+      }
     },
     onError: (error: any) => {
       toast.error(error.message || 'Failed to assign vendor');
