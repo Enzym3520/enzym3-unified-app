@@ -134,11 +134,16 @@ async function handleCheckoutSessionCompleted(
 
     const { data: existingEvent } = await supabase
       .from("event_notification_history")
-      .select("deposit_paid")
+      .select("deposit_paid, balance_paid")
       .eq("id", weddingId)
       .maybeSingle();
 
-    if (existingEvent?.deposit_paid === true) {
+    // Skip only if the specific payment type was already processed
+    if (paymentType === "balance" && existingEvent?.balance_paid === true) {
+      console.log(`stripe-webhook: balance already processed for wedding_id=${weddingId}, skipping`);
+      return;
+    }
+    if (paymentType !== "balance" && existingEvent?.deposit_paid === true) {
       console.log(`stripe-webhook: deposit already processed for wedding_id=${weddingId}, skipping`);
       return;
     }
@@ -148,6 +153,7 @@ async function handleCheckoutSessionCompleted(
         wedding_id: weddingId,
         amount_paid: amountPaidDollars,
         session_id: session.id,
+        payment_type: paymentType,
       },
     });
 

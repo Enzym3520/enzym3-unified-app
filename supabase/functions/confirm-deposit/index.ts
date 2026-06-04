@@ -64,10 +64,11 @@ serve(async (req: Request) => {
       );
     }
 
-    const { wedding_id, amount_paid, session_id } = await req.json() as {
+    const { wedding_id, amount_paid, session_id, payment_type } = await req.json() as {
       wedding_id: string;
       amount_paid: number;
       session_id?: string;
+      payment_type?: string;
     };
 
     if (!wedding_id || amount_paid == null) {
@@ -93,14 +94,16 @@ serve(async (req: Request) => {
       );
     }
 
-    // Update event_notification_history: mark deposit paid
+    const isBalance = payment_type === "balance";
+
+    // Update event_notification_history: mark deposit or balance paid
+    const updateFields = isBalance
+      ? { balance_paid: true, balance_paid_at: new Date().toISOString(), balance_due: 0 }
+      : { deposit_paid: true, deposit_paid_at: new Date().toISOString(), deposit_amount: amount_paid };
+
     const { error: updateError } = await supabase
       .from("event_notification_history")
-      .update({
-        deposit_paid: true,
-        deposit_paid_at: new Date().toISOString(),
-        deposit_amount: amount_paid,
-      })
+      .update(updateFields)
       .eq("id", wedding_id);
 
     if (updateError) {
@@ -111,11 +114,13 @@ serve(async (req: Request) => {
       );
     }
 
-    // Compute balance due
+    // Compute balance due (only meaningful for deposit payments)
     const totalPrice = event.total_price ?? 0;
-    const computedBalance = totalPrice > 0
-      ? Math.max(0, totalPrice - amount_paid)
-      : (event.balance_due ?? 0);
+    const computedBalance = isBalance
+      ? 0
+      : totalPrice > 0
+        ? Math.max(0, totalPrice - amount_paid)
+        : (event.balance_due ?? 0);
 
     const formattedDate = formatDate(event.event_date);
     const amountPaidStr = esc(formatDollars(amount_paid));
@@ -139,9 +144,9 @@ serve(async (req: Request) => {
         <!-- Body -->
         <tr>
           <td style="padding:40px;">
-            <p style="margin:0 0 8px;font-size:22px;color:#2D2921;font-weight:bold;">You're all set!</p>
+            <p style="margin:0 0 8px;font-size:22px;color:#2D2921;font-weight:bold;">${isBalance ? "Balance Received — You're Fully Paid!" : "You're all set!"}</p>
             <p style="margin:0 0 24px;font-size:15px;color:#444;line-height:1.6;">
-              Hi ${esc(event.couple_name || "there")} — your contract is signed and your deposit has been received. We can't wait to be part of your event!
+              Hi ${esc(event.couple_name || "there")} — ${isBalance ? "your remaining balance has been received. Your event is fully paid. We can't wait to be part of your day!" : "your contract is signed and your deposit has been received. We can't wait to be part of your event!"}
             </p>
             <table cellpadding="0" cellspacing="0" style="background:#f9f6f2;border-radius:6px;padding:20px;margin-bottom:24px;width:100%;">
               <tr><td style="padding:6px 0;">
@@ -259,7 +264,7 @@ serve(async (req: Request) => {
         body: JSON.stringify({
           from: "Enzym3 Entertainment <booking@enzym3entertainment.vip>",
           to: event.contact_email,
-          subject: "Contract signed and deposit confirmed — you're all set!",
+          subject: isBalance ? "Balance received — you're fully paid!" : "Contract signed and deposit confirmed — you're all set!",
           html: clientHtml,
         }),
       });
@@ -280,7 +285,7 @@ serve(async (req: Request) => {
       body: JSON.stringify({
         from: "Enzym3 Entertainment <booking@enzym3entertainment.vip>",
         to: "booking@enzym3entertainment.vip",
-        subject: `Deposit received: ${event.couple_name || wedding_id}`,
+        subject: isBalance ? `Balance received: ${event.couple_name || wedding_id}` : `Deposit received: ${event.couple_name || wedding_id}`,
         html: coordinatorHtml,
       }),
     });

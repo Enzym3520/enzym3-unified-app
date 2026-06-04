@@ -52,11 +52,41 @@ serve(async (req: Request) => {
     // Check DB first — stripe-webhook should have already set this
     const { data: eventRow } = await supabase
       .from('event_notification_history')
-      .select('deposit_paid, deposit_amount')
+      .select('deposit_paid, deposit_amount, balance_paid')
       .eq('id', wedding_id)
       .maybeSingle();
 
+    // If fully paid (both deposit and balance), verified
+    if (eventRow?.deposit_paid === true && eventRow?.balance_paid === true) {
+      return new Response(
+        JSON.stringify({ verified: true, amount_paid: eventRow.deposit_amount ?? 0 }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      );
+    }
+
+    // If deposit paid but balance not yet — check Stripe for a balance session
     if (eventRow?.deposit_paid === true) {
+      const stripe = new Stripe(stripeSecretKey, { apiVersion: "2023-10-16" });
+      const sessions = await stripe.checkout.sessions.list({ limit: 100 });
+      const balanceSession = sessions.data.find(
+        (s) =>
+          s.metadata?.wedding_id === wedding_id &&
+          s.metadata?.payment_type === "balance" &&
+          s.payment_status === "paid",
+      );
+      if (balanceSession) {
+        const amountPaid = (balanceSession.amount_total ?? 0) / 100;
+        await supabase.from("event_notification_history").update({
+          balance_paid: true,
+          balance_paid_at: new Date().toISOString(),
+          balance_due: 0,
+        }).eq("id", wedding_id);
+        return new Response(
+          JSON.stringify({ verified: true, amount_paid: amountPaid }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+      // Deposit is paid, balance not yet confirmed — tell client deposit is done but balance pending
       return new Response(
         JSON.stringify({ verified: true, amount_paid: eventRow.deposit_amount ?? 0 }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
@@ -66,7 +96,6 @@ serve(async (req: Request) => {
     const stripe = new Stripe(stripeSecretKey, { apiVersion: "2023-10-16" });
 
     // Search recent checkout sessions for this wedding_id in metadata
-    // Stripe allows metadata search via list + filter
     const sessions = await stripe.checkout.sessions.list({
       limit: 100,
       expand: ["data.payment_intent"],
@@ -75,7 +104,7 @@ serve(async (req: Request) => {
     const matchingSession = sessions.data.find(
       (s) =>
         s.metadata?.wedding_id === wedding_id &&
-        s.metadata?.payment_type === "deposit" &&
+        (s.metadata?.payment_type === "deposit" || s.metadata?.payment_type === "full") &&
         s.payment_status === "paid",
     );
 
