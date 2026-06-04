@@ -3,7 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 import { Resend } from "npm:resend@4.0.0";
 import { safeLogger, redactEmail, redactName } from "../_shared/validators.ts";
 
-const DASHBOARD_URL = Deno.env.get('COORDINATION_PORTAL_URL') || 'https://coordination.enzym3entertainment.vip';
+const DASHBOARD_URL = Deno.env.get('COORDINATION_PORTAL_URL') || 'https://plan.enzym3entertainment.vip/staff';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',

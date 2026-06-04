@@ -100,7 +100,7 @@ serve(async (req: Request) => {
 
     const stripe = new Stripe(stripeSecretKey, { apiVersion: "2023-10-16" });
 
-    const origin = req.headers.get("origin") || "https://app.enzym3.com";
+    const origin = req.headers.get("origin") || "https://plan.enzym3entertainment.vip";
 
     // Build Stripe line items from cart
     const lineItems = items.map((item) => {

@@ -122,7 +122,7 @@ function deriveGuestCount(n: any): number | null {
 function buildPayload(n: any, options: { source: string; reason?: string; editCount?: number; isEdited?: boolean }) {
   const metadata = n.additional_metadata || {};
   const coupleCode = metadata.couple_code || '';
-  const registrationLink = coupleCode ? `https://booking.enzym3entertainment.vip/couple/register?code=${coupleCode}` : '';
+  const registrationLink = coupleCode ? `https://plan.enzym3entertainment.vip/join/${coupleCode}` : '';
   
   return {
     // Match initial webhook structure exactly

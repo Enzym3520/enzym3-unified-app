@@ -186,7 +186,7 @@ const N8N_WEBHOOK_URL = Deno.env.get('N8N_WEBHOOK_URL') || '';
 // Email configuration
 const ADMIN_EMAIL = 'jj.madison17@gmail.com';
 const FROM_EMAIL = 'Enzym3 Entertainment <booking@enzym3entertainment.vip>';
-const PORTAL_URL = 'https://booking.enzym3entertainment.vip';
+const PORTAL_URL = 'https://plan.enzym3entertainment.vip';
 
 // Event type configurations for email templates
 const EVENT_CONFIG = {
@@ -374,7 +374,7 @@ function generateClientWelcomeEmail(notification: any, coupleCode: string): stri
           <!-- Header: Logo -->
           <tr>
             <td align="center" style="padding: 40px 30px 24px; background-color: #DBD4C3;">
-              <img src="https://e3ecoordination.lovable.app/lovable-uploads/logo_transparent_background-3.png"
+              <img src="https://ytembomoyhuwdtrzlwbi.supabase.co/storage/v1/object/public/email-assets/logo-blue.png?v=1"
                    alt="Enzym3 Entertainment" width="200"
                    style="display: block; margin: 0 auto;" />
             </td>
@@ -459,7 +459,7 @@ function generateClientWelcomeEmail(notification: any, coupleCode: string): stri
 // Generate admin notification email HTML
 function generateAdminNotificationEmail(notification: any, coupleCode: string): string {
   const config = getEventConfig(notification.event_type);
-  const dashboardLink = 'https://coordination.enzym3entertainment.vip/contacts';
+  const dashboardLink = 'https://plan.enzym3entertainment.vip/staff/contacts';
   
   return `
 <!DOCTYPE html>

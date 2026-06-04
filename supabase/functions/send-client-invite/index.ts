@@ -109,7 +109,7 @@ serve(async (req: Request) => {
       );
     }
 
-    const inviteLink = `https://app.enzym3.com/register?code=${encodeURIComponent(inviteCode)}`;
+    const inviteLink = `https://plan.enzym3entertainment.vip/join/${encodeURIComponent(inviteCode)}`;
     const formattedDate = formatDate(event.event_date);
 
     const html = `<!DOCTYPE html>

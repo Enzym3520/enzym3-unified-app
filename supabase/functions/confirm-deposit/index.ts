@@ -120,7 +120,7 @@ serve(async (req: Request) => {
     const formattedDate = formatDate(event.event_date);
     const amountPaidStr = esc(formatDollars(amount_paid));
     const balanceDueStr = esc(formatDollars(computedBalance));
-    const portalLink = "https://app.enzym3.com/app/contract";
+    const portalLink = "https://plan.enzym3entertainment.vip/app/contract";
 
     // --- Email 1: Client confirmation ---
     const clientHtml = `<!DOCTYPE html>
