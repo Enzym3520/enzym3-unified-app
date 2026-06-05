@@ -1,4 +1,17 @@
 /**
+ * Rewrite a raw notification route to the vendor portal equivalent.
+ * Raw routes from getNotificationRoute use bare /path patterns (no portal prefix).
+ */
+export function toVendorNotificationRoute(route: string | null): string | null {
+  if (!route) return null;
+  if (route.startsWith("/vendor/")) return route;
+  if (route === "/") return "/vendor/dashboard";
+  // Root with query params like /?event=xxx → /vendor/dashboard?event=xxx
+  if (route.startsWith("/?")) return `/vendor/dashboard${route.slice(1)}`;
+  return route.replace(/^\//, "/vendor/");
+}
+
+/**
  * Compute the deep-link route for a notification based on its type + metadata.
  * Returns null if no specific route applies (caller should fall back to /notifications).
  */

@@ -12,7 +12,7 @@ import {
   useDeleteNotification, useClearAllRead, type Notification,
 } from "@/hooks/use-notifications";
 import { EmptyState } from "@/components/vendor/EmptyState";
-import { getNotificationRoute } from "@/utils/notificationRoutes";
+import { getNotificationRoute, toVendorNotificationRoute } from "@/utils/notificationRoutes";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem,
@@ -78,17 +78,6 @@ function groupByDate(notifications: Notification[]) {
   return groups;
 }
 
-/** Rewrite bare notification routes to /vendor/* equivalents. */
-function toVendorRoute(route: string | null): string | null {
-  if (!route) return null;
-  // Already prefixed
-  if (route.startsWith("/vendor/")) return route;
-  // Root-level route → /vendor/dashboard
-  if (route === "/" || route === "/dashboard") return "/vendor/dashboard";
-  // Bare paths like /messages?thread=... → /vendor/messages?thread=...
-  return route.replace(/^\//, "/vendor/");
-}
-
 export default function NotificationsPage() {
   const { data: notifications = [], isLoading } = useNotifications();
   const markRead = useMarkRead();
@@ -101,7 +90,7 @@ export default function NotificationsPage() {
   const handleNotificationClick = (n: Notification) => {
     if (!n.is_read) markRead.mutate(n.id);
     const rawRoute = getNotificationRoute(n.type, n.metadata, n.wedding_id);
-    const route = toVendorRoute(rawRoute);
+    const route = toVendorNotificationRoute(rawRoute);
     if (route) navigate(route);
   };
 

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, useNavigate } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/vendor/AppSidebar";
 import { Bell, LogOut, Sun, Moon } from "lucide-react";
@@ -8,13 +8,42 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "next-themes";
 import { NotificationBadge } from "@/components/vendor/notifications/NotificationBadge";
 import { OfflineBanner } from "@/components/vendor/OfflineBanner";
-import { unlockNotificationSound } from "@/utils/notificationSound";
+import { unlockNotificationSound, playNotificationSound } from "@/utils/notificationSound";
+import { supabase } from "@/integrations/supabase/client";
+import { getNotificationRoute, toVendorNotificationRoute } from "@/utils/notificationRoutes";
+import { toast } from "sonner";
 
 export function VendorShell() {
-  const { signOut } = useAuth();
+  const { signOut, user } = useAuth();
   const { theme, setTheme } = useTheme();
+  const navigate = useNavigate();
 
   const toggleTheme = () => setTheme(theme === "dark" ? "light" : "dark");
+
+  // Real-time notification toasts for vendors
+  useEffect(() => {
+    if (!user) return;
+    const suffix = Math.random().toString(36).slice(2);
+    const channel = supabase
+      .channel(`vendor-notif-${user.id}-${suffix}`)
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${user.id}` },
+        (payload) => {
+          const n = payload.new as { title?: string; content?: string; type?: string; metadata?: Record<string, unknown>; wedding_id?: string } | null;
+          if (!n) return;
+          playNotificationSound();
+          const rawRoute = getNotificationRoute(n.type ?? "", n.metadata ?? null, n.wedding_id);
+          const route = toVendorNotificationRoute(rawRoute);
+          toast(n.title || "New notification", {
+            description: n.content || undefined,
+            action: route ? { label: "View", onClick: () => navigate(route) } : undefined,
+          });
+        }
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [user, navigate]);
 
   useEffect(() => {
     document.documentElement.classList.remove("portal-client", "portal-staff", "portal-vendor");
