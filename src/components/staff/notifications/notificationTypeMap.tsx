@@ -47,8 +47,8 @@ export const NOTIFICATION_TYPE_MAP: Record<string, NotificationTypeConfig> = {
   client_message: { Icon: MessageSquare, defaultTab: 'messages' },
   meeting_booked: { Icon: CalendarPlus, defaultTab: 'overview' },
   meeting_cancelled: { Icon: CalendarX, defaultTab: 'overview' },
-  review_submitted: { Icon: Star, staticRoute: '/admin-dashboard?tab=reviews' },
-  contact_inquiry: { Icon: Mail, staticRoute: '/admin-dashboard' },
+  review_submitted: { Icon: Star, staticRoute: '/staff/admin-dashboard?tab=reviews' },
+  contact_inquiry: { Icon: Mail, staticRoute: '/staff/admin-dashboard' },
 
   // Vendor-facing assignment notifications — route to the event detail page
   new_assignment: { Icon: CalendarPlus, eventRoute: true },
@@ -108,7 +108,7 @@ export const buildNotificationHref = (notification: {
       return `/staff/event/${weddingId}`;
     }
     const qs = tab ? `&tab=${encodeURIComponent(tab)}` : '';
-    return `/contacts?wedding_id=${weddingId}${qs}`;
+    return `/staff/contacts?wedding_id=${weddingId}${qs}`;
   }
   if (cfg.staticRoute) return cfg.staticRoute;
 
