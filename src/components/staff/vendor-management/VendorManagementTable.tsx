@@ -38,7 +38,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { MoreHorizontal, Eye, Copy, Send, Ban, Trash2, Edit, ShieldCheck, ShieldAlert, ShieldX, Star, Power, PowerOff, AlertTriangle } from 'lucide-react';
+import { MoreHorizontal, Eye, Copy, Send, Ban, Trash2, Edit, ShieldCheck, ShieldAlert, ShieldX, Star, Power, PowerOff, AlertTriangle, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import { UnifiedVendor } from '@/hooks/useVendorManagement';
 import { format } from 'date-fns';
 import { formatVendorType } from '@/utils/vendorTypeFormatter';
@@ -71,6 +71,8 @@ export function VendorManagementTable({ vendors, isLoading, statusFilter: propSt
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [deleteInviteTarget, setDeleteInviteTarget] = useState<string | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [sortField, setSortField] = useState<'name' | 'vendorType' | 'status' | 'registeredAt'>('name');
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
 
   const deactivateInvite = useDeactivateInvite();
   const deleteInvite = useDeleteInvite();
@@ -100,6 +102,32 @@ export function VendorManagementTable({ vendors, isLoading, statusFilter: propSt
     const types = new Set(vendors.map((v) => v.vendorType));
     return Array.from(types).sort();
   }, [vendors]);
+
+  const sortedVendors = useMemo(() => {
+    return [...filteredVendors].sort((a, b) => {
+      let aVal: any = (a as any)[sortField] ?? '';
+      let bVal: any = (b as any)[sortField] ?? '';
+      if (sortField === 'registeredAt') {
+        aVal = new Date(aVal || 0).getTime();
+        bVal = new Date(bVal || 0).getTime();
+      } else {
+        aVal = String(aVal).toLowerCase();
+        bVal = String(bVal).toLowerCase();
+      }
+      if (sortDir === 'asc') return aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
+      return aVal > bVal ? -1 : aVal < bVal ? 1 : 0;
+    });
+  }, [filteredVendors, sortField, sortDir]);
+
+  const handleVendorSort = (field: typeof sortField) => {
+    if (sortField === field) setSortDir(d => d === 'asc' ? 'desc' : 'asc');
+    else { setSortField(field); setSortDir('asc'); }
+  };
+
+  const VendorSortIcon = ({ field }: { field: typeof sortField }) => {
+    if (sortField !== field) return <ArrowUpDown className="w-3 h-3 ml-1 opacity-40" />;
+    return sortDir === 'asc' ? <ArrowUp className="w-3 h-3 ml-1" /> : <ArrowDown className="w-3 h-3 ml-1" />;
+  };
 
   const selectedVendors = useMemo(() => {
     return filteredVendors.filter(v => selectedIds.has(v.id));
@@ -315,10 +343,10 @@ export function VendorManagementTable({ vendors, isLoading, statusFilter: propSt
 
       {isMobile ? (
         <div className="space-y-3">
-          {filteredVendors.length === 0 ? (
+          {sortedVendors.length === 0 ? (
             <p className="text-center py-8 text-muted-foreground">No vendors found</p>
           ) : (
-            filteredVendors.map((vendor) => (
+            sortedVendors.map((vendor) => (
               <Card key={vendor.id} className="p-4 cursor-pointer hover:bg-muted/50 active:bg-muted/50 transition-colors" onClick={() => handleViewDetails(vendor)}>
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-center gap-3 min-w-0 flex-1">
@@ -423,25 +451,41 @@ export function VendorManagementTable({ vendors, isLoading, statusFilter: propSt
                   onCheckedChange={toggleSelectAll}
                 />
               </TableHead>
-              <TableHead>Vendor</TableHead>
-              <TableHead>Type</TableHead>
+              <TableHead>
+                <button onClick={() => handleVendorSort('name')} className="flex items-center hover:text-foreground transition-colors">
+                  Vendor<VendorSortIcon field="name" />
+                </button>
+              </TableHead>
+              <TableHead>
+                <button onClick={() => handleVendorSort('vendorType')} className="flex items-center hover:text-foreground transition-colors">
+                  Type<VendorSortIcon field="vendorType" />
+                </button>
+              </TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Company</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead>
+                <button onClick={() => handleVendorSort('status')} className="flex items-center hover:text-foreground transition-colors">
+                  Status<VendorSortIcon field="status" />
+                </button>
+              </TableHead>
               <TableHead>Rating</TableHead>
-              <TableHead>Date</TableHead>
+              <TableHead>
+                <button onClick={() => handleVendorSort('registeredAt')} className="flex items-center hover:text-foreground transition-colors">
+                  Date<VendorSortIcon field="registeredAt" />
+                </button>
+              </TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-          {filteredVendors.length === 0 ? (
+          {sortedVendors.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
                   No vendors found
                 </TableCell>
               </TableRow>
             ) : (
-              filteredVendors.map((vendor) => (
+              sortedVendors.map((vendor) => (
                 <TableRow key={vendor.id} className="cursor-pointer hover:bg-muted/50 transition-colors" onClick={() => handleViewDetails(vendor)}>
                   <TableCell onClick={(e) => e.stopPropagation()}>
                     <Checkbox

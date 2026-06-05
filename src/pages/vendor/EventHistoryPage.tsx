@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useEventHistory, type VendorEventHistory } from "@/hooks/use-event-history";
 import { useBookingRequests, type BookingRequest } from "@/hooks/use-booking-requests";
 import { useAuth } from "@/contexts/AuthContext";
@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/vendor/EmptyState";
 import {
@@ -22,6 +23,8 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { formatEventType, parseEventDate } from "@/utils/vendorHelpers";
+
+type SortOption = "date_desc" | "date_asc" | "name_asc" | "name_desc";
 
 interface UnifiedNotification {
   id: string;
@@ -71,6 +74,7 @@ export default function EventHistoryPage() {
 
   const [filter, setFilter] = useState<string>("All");
   const [search, setSearch] = useState("");
+  const [sortOption, setSortOption] = useState<SortOption>("date_desc");
 
   // Fetch invite token send counts for bookings
   const { data: tokenCounts = [] } = useQuery({
@@ -136,13 +140,6 @@ export default function EventHistoryPage() {
     });
   }
 
-  // Sort by event date descending
-  items.sort((a, b) => {
-    const da = a.event_date ?? "9999";
-    const db = b.event_date ?? "9999";
-    return db.localeCompare(da);
-  });
-
   const filtered = items.filter((item) => {
     if (search && !item.name.toLowerCase().includes(search.toLowerCase()) && !item.email.toLowerCase().includes(search.toLowerCase())) return false;
 
@@ -157,6 +154,15 @@ export default function EventHistoryPage() {
         return item.event_date ? item.event_date < today : true;
       default:
         return true;
+    }
+  });
+
+  const sorted = [...filtered].sort((a, b) => {
+    switch (sortOption) {
+      case "date_asc":  return (a.event_date ?? "").localeCompare(b.event_date ?? "");
+      case "name_asc":  return a.name.localeCompare(b.name);
+      case "name_desc": return b.name.localeCompare(a.name);
+      default:          return (b.event_date ?? "9999").localeCompare(a.event_date ?? "9999");
     }
   });
 
@@ -179,6 +185,17 @@ export default function EventHistoryPage() {
             className="pl-9"
           />
         </div>
+        <Select value={sortOption} onValueChange={(v) => setSortOption(v as SortOption)}>
+          <SelectTrigger className="w-40 shrink-0">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="date_desc">Newest First</SelectItem>
+            <SelectItem value="date_asc">Oldest First</SelectItem>
+            <SelectItem value="name_asc">Name A–Z</SelectItem>
+            <SelectItem value="name_desc">Name Z–A</SelectItem>
+          </SelectContent>
+        </Select>
         <div className="flex flex-wrap gap-1.5">
           {FILTERS.map((f) => (
             <Button
@@ -196,7 +213,7 @@ export default function EventHistoryPage() {
 
       {isLoading ? (
         <PageSkeleton />
-      ) : filtered.length === 0 ? (
+      ) : sorted.length === 0 ? (
         <EmptyState
           icon={History}
           title="No notifications found"
@@ -204,7 +221,7 @@ export default function EventHistoryPage() {
         />
       ) : (
         <div className="space-y-3">
-          {filtered.map((item) => (
+          {sorted.map((item) => (
             <Card key={item.id}>
               <CardContent className="p-4">
                 <div className="flex items-start justify-between gap-2 mb-2">

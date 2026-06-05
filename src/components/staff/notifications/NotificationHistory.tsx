@@ -7,13 +7,15 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Search, Calendar, User, Loader2 } from 'lucide-react';
+import { Search, Calendar, User, Loader2, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import { format } from 'date-fns';
 import { parseLocalDate } from '@/utils/dateHelpers';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
 type StatusFilter = 'all' | 'pending' | 'confirmed' | 'completed' | 'cancelled';
+type SortField = 'couple_name' | 'event_date' | 'event_type' | 'status' | 'coordinator_name' | 'created_at';
+type SortDirection = 'asc' | 'desc';
 
 interface EventHistoryRow {
   id: string;
@@ -116,6 +118,8 @@ const NotificationHistory: React.FC = () => {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
+  const [sortField, setSortField] = useState<SortField>('event_date');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['notification-history'],
@@ -146,6 +150,34 @@ const NotificationHistory: React.FC = () => {
       );
     });
   }, [data, search, statusFilter]);
+
+  const sorted = useMemo(() => {
+    return [...rows].sort((a, b) => {
+      let aVal: any = (a as any)[sortField] ?? '';
+      let bVal: any = (b as any)[sortField] ?? '';
+      if (sortField === 'event_date' || sortField === 'created_at') {
+        aVal = new Date(aVal || 0).getTime();
+        bVal = new Date(bVal || 0).getTime();
+      } else {
+        aVal = String(aVal).toLowerCase();
+        bVal = String(bVal).toLowerCase();
+      }
+      if (sortDirection === 'asc') return aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
+      return aVal > bVal ? -1 : aVal < bVal ? 1 : 0;
+    });
+  }, [rows, sortField, sortDirection]);
+
+  const handleSort = (field: SortField) => {
+    if (sortField === field) setSortDirection(d => d === 'asc' ? 'desc' : 'asc');
+    else { setSortField(field); setSortDirection('asc'); }
+  };
+
+  const SortIcon = ({ field }: { field: SortField }) => {
+    if (sortField !== field) return <ArrowUpDown className="w-3 h-3 ml-1 opacity-50" />;
+    return sortDirection === 'asc'
+      ? <ArrowUp className="w-3 h-3 ml-1" />
+      : <ArrowDown className="w-3 h-3 ml-1" />;
+  };
 
   const goToEvent = (id: string) => navigate(`/staff/event/${id}`);
 
@@ -205,7 +237,7 @@ const NotificationHistory: React.FC = () => {
       )}
 
       {/* Empty state */}
-      {!isLoading && !isError && rows.length === 0 && (
+      {!isLoading && !isError && sorted.length === 0 && (
         <Card>
           <CardContent className="py-12 text-center text-muted-foreground">
             <Search className="h-10 w-10 mx-auto mb-3 opacity-40" />
@@ -220,10 +252,10 @@ const NotificationHistory: React.FC = () => {
       )}
 
       {/* Mobile cards (< md) */}
-      {!isLoading && !isError && rows.length > 0 && (
+      {!isLoading && !isError && sorted.length > 0 && (
         <>
           <div className="flex md:hidden flex-col gap-3">
-            {rows.map((row) => (
+            {sorted.map((row) => (
               <MobileCard key={row.id} row={row} onClick={() => goToEvent(row.id)} />
             ))}
           </div>
@@ -232,23 +264,34 @@ const NotificationHistory: React.FC = () => {
           <Card className="hidden md:block overflow-hidden">
             <CardHeader className="py-3 px-4 border-b bg-muted/30">
               <CardTitle className="text-sm font-medium text-muted-foreground">
-                {rows.length} {rows.length === 1 ? 'event' : 'events'}
+                {sorted.length} {sorted.length === 1 ? 'event' : 'events'}
               </CardTitle>
             </CardHeader>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b bg-muted/20 text-muted-foreground text-xs uppercase tracking-wide">
-                    <th className="text-left px-4 py-2 font-medium">Name</th>
-                    <th className="text-left px-4 py-2 font-medium">Date</th>
-                    <th className="text-left px-4 py-2 font-medium">Type</th>
-                    <th className="text-left px-4 py-2 font-medium">Status</th>
-                    <th className="text-left px-4 py-2 font-medium">Coordinator</th>
-                    <th className="text-left px-4 py-2 font-medium">Created</th>
+                    {([
+                      { field: 'couple_name' as SortField, label: 'Name' },
+                      { field: 'event_date' as SortField, label: 'Date' },
+                      { field: 'event_type' as SortField, label: 'Type' },
+                      { field: 'status' as SortField, label: 'Status' },
+                      { field: 'coordinator_name' as SortField, label: 'Coordinator' },
+                      { field: 'created_at' as SortField, label: 'Created' },
+                    ]).map(({ field, label }) => (
+                      <th key={field} className="text-left px-4 py-2 font-medium">
+                        <button
+                          onClick={() => handleSort(field)}
+                          className="flex items-center hover:text-foreground transition-colors"
+                        >
+                          {label}<SortIcon field={field} />
+                        </button>
+                      </th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {rows.map((row, idx) => (
+                  {sorted.map((row, idx) => (
                     <tr
                       key={row.id}
                       onClick={() => goToEvent(row.id)}

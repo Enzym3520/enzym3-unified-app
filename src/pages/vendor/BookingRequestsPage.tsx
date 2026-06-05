@@ -1,14 +1,19 @@
+import { useState } from "react";
 import { useBookingRequests, useUpdateBookingRequest, BookingRequest } from "@/hooks/use-booking-requests";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/vendor/EmptyState";
-import { Inbox, CheckCircle, XCircle, Clock, Mail, Phone, Calendar, Plus } from "lucide-react";
+import { Inbox, CheckCircle, XCircle, Clock, Mail, Phone, Calendar, Plus, Search } from "lucide-react";
 import { format } from "date-fns";
 import { smartCapitalize } from "@/utils/smartFields";
 import { formatEventType, parseEventDate } from "@/utils/vendorHelpers";
+
+type SortOpt = "created_desc" | "date_desc" | "date_asc" | "name_asc";
 
 const statusColors: Record<string, string> = {
   pending: "bg-yellow-500/10 text-yellow-700 dark:text-yellow-400",
@@ -77,6 +82,8 @@ function RequestCard({ req }: { req: BookingRequest }) {
 export default function BookingRequestsPage() {
   const { data: requests, isLoading } = useBookingRequests();
   const navigate = useNavigate();
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState<SortOpt>("created_desc");
 
   if (isLoading) {
     return (
@@ -88,8 +95,24 @@ export default function BookingRequestsPage() {
     );
   }
 
-  const pending = requests?.filter((r) => r.status === "pending") ?? [];
-  const past = requests?.filter((r) => r.status !== "pending") ?? [];
+  const sortFn = (a: BookingRequest, b: BookingRequest) => {
+    switch (sort) {
+      case "date_desc": return (b.event_date ?? "9999").localeCompare(a.event_date ?? "9999");
+      case "date_asc":  return (a.event_date ?? "").localeCompare(b.event_date ?? "");
+      case "name_asc":  return a.client_name.localeCompare(b.client_name);
+      default:          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    }
+  };
+
+  const applyFilter = (list: BookingRequest[]) => {
+    const q = search.toLowerCase();
+    return list
+      .filter(r => !q || r.client_name.toLowerCase().includes(q) || r.client_email.toLowerCase().includes(q))
+      .sort(sortFn);
+  };
+
+  const pending = applyFilter(requests?.filter((r) => r.status === "pending") ?? []);
+  const past = applyFilter(requests?.filter((r) => r.status !== "pending") ?? []);
 
   return (
     <div className="p-4 md:p-6 space-y-6 max-w-4xl mx-auto">
@@ -103,6 +126,29 @@ export default function BookingRequestsPage() {
         <Button onClick={() => navigate("/vendor/new-booking")}>
           <Plus className="mr-1.5 h-4 w-4" /> New Booking
         </Button>
+      </div>
+
+      <div className="flex flex-col sm:flex-row gap-2">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search by name or email..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="pl-9"
+          />
+        </div>
+        <Select value={sort} onValueChange={(v) => setSort(v as SortOpt)}>
+          <SelectTrigger className="w-44 shrink-0">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="created_desc">Newest Request</SelectItem>
+            <SelectItem value="date_desc">Event Date ↓</SelectItem>
+            <SelectItem value="date_asc">Event Date ↑</SelectItem>
+            <SelectItem value="name_asc">Name A–Z</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       {requests?.length === 0 ? (
