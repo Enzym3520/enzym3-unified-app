@@ -1,6 +1,7 @@
 import { Contact } from '@/types/contact';
 import { Reminder, ReminderTemplate, CreateReminderData } from '@/types/reminder';
 import { addDays, subDays, addYears, format } from 'date-fns';
+import { parseLocalDate } from '@/utils/dateHelpers';
 
 export const REMINDER_TEMPLATES: ReminderTemplate[] = [
   {
@@ -39,7 +40,7 @@ export const REMINDER_TEMPLATES: ReminderTemplate[] = [
 
 export const generateAutomaticReminders = (contact: Contact): CreateReminderData[] => {
   const reminders: CreateReminderData[] = [];
-  const primaryEventDate = new Date(contact.primaryEventDate);
+  const primaryEventDate = parseLocalDate(contact.primaryEventDate);
   const now = new Date();
 
   // Only generate reminders for future events or recent past events (within 30 days)
@@ -193,13 +194,13 @@ export const filterReminders = (
 
     // Date range filter
     if (filters.dateRange?.start || filters.dateRange?.end) {
-      const reminderDate = new Date(reminder.scheduled_date);
-      
-      if (filters.dateRange.start && reminderDate < new Date(filters.dateRange.start)) {
+      const reminderDate = parseLocalDate(reminder.scheduled_date);
+
+      if (filters.dateRange.start && reminderDate < parseLocalDate(filters.dateRange.start)) {
         return false;
       }
-      
-      if (filters.dateRange.end && reminderDate > new Date(filters.dateRange.end)) {
+
+      if (filters.dateRange.end && reminderDate > parseLocalDate(filters.dateRange.end)) {
         return false;
       }
     }

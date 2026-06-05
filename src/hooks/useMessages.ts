@@ -115,7 +115,7 @@ export function useMessages() {
       setContactsLoading(false);
     };
     loadContacts();
-  }, [wedding, user, eventLoading]);
+  }, [wedding, user, eventLoading, isMobile]);
 
   const loading = eventLoading || contactsLoading;
 

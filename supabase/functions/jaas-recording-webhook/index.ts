@@ -180,7 +180,13 @@ async function processRecording(
   try {
     // Step 1: Download the recording
     console.log('Downloading recording...');
-    const audioResponse = await fetch(recordingUrl);
+    let audioResponse: Response;
+    try {
+      audioResponse = await fetch(recordingUrl, { signal: AbortSignal.timeout(30_000) });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      throw new Error(`Recording download timed out or failed: ${msg}`);
+    }
     if (!audioResponse.ok) {
       throw new Error(`Failed to download recording: ${audioResponse.status}`);
     }
@@ -193,13 +199,21 @@ async function processRecording(
     formData.append('file', audioBlob, 'recording.mp4');
     formData.append('model', 'whisper-1');
 
-    const transcriptionResponse = await fetch('https://ai.gateway.lovable.dev/v1/audio/transcriptions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-      },
-      body: formData,
-    });
+    let transcriptionResponse: Response;
+    try {
+      transcriptionResponse = await fetch('https://ai.gateway.lovable.dev/v1/audio/transcriptions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        },
+        body: formData,
+        signal: AbortSignal.timeout(30_000),
+      });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn('Whisper transcription timed out or failed:', msg);
+      transcriptionResponse = new Response(null, { status: 500 });
+    }
 
     let transcript: string;
     if (!transcriptionResponse.ok) {
@@ -215,12 +229,15 @@ async function processRecording(
 
     // Step 3: Generate AI summary with action items
     console.log('Generating AI summary...');
-    const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    let aiResponse: Response;
+    try {
+      aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json',
       },
+      signal: AbortSignal.timeout(30_000),
       body: JSON.stringify({
         model: 'google/gemini-3-flash-preview',
         messages: [
@@ -276,7 +293,11 @@ Be concise, professional, and focus on actionable information. Use the client's 
         ],
         tool_choice: { type: 'function', function: { name: 'create_meeting_summary' } },
       }),
-    });
+      });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      throw new Error(`AI summary timed out or failed: ${msg}`);
+    }
 
     if (!aiResponse.ok) {
       const errText = await aiResponse.text();

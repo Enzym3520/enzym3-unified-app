@@ -173,7 +173,7 @@ export const useDirectMessages = ({ partnerId, enabled = true }: UseDirectMessag
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['direct-messages', partnerId] });
-      queryClient.invalidateQueries({ queryKey: ['dm-threads'] });
+      queryClient.invalidateQueries({ queryKey: ['dm-threads', currentUserId] });
     },
     onError: () => {
       toast({ title: 'Failed to send message', variant: 'destructive' });
@@ -193,7 +193,7 @@ export const useDirectMessages = ({ partnerId, enabled = true }: UseDirectMessag
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['direct-messages', partnerId] });
-      queryClient.invalidateQueries({ queryKey: ['dm-threads'] });
+      queryClient.invalidateQueries({ queryKey: ['dm-threads', currentUserId] });
     },
     onError: () => {
       toast({ title: 'Failed to mark messages as read', variant: 'destructive' });
@@ -216,7 +216,7 @@ export const useDirectMessages = ({ partnerId, enabled = true }: UseDirectMessag
             (msg.sender_id === partnerId && msg.recipient_id === currentUserId)
           ) {
             queryClient.invalidateQueries({ queryKey: ['direct-messages', partnerId] });
-            queryClient.invalidateQueries({ queryKey: ['dm-threads'] });
+            queryClient.invalidateQueries({ queryKey: ['dm-threads', currentUserId] });
           }
         }
       )

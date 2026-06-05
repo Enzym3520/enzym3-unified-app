@@ -35,7 +35,7 @@ export interface PaymentStatus {
 
 export const useAdminAnalytics = (startDate?: Date, endDate?: Date) => {
   return useQuery({
-    queryKey: ['admin-analytics', startDate, endDate],
+    queryKey: ['admin-analytics', startDate?.toISOString(), endDate?.toISOString()],
     queryFn: async () => {
       const start = startDate || subMonths(new Date(), 12);
       const end = endDate || new Date();
@@ -73,6 +73,7 @@ export const useAdminAnalytics = (startDate?: Date, endDate?: Date) => {
       const revenueByMonth = new Map<string, { revenue: number; profit: number; events: number }>();
       
       costs?.forEach((cost: any) => {
+        if (!cost.assignment?.event?.event_date) return;
         const month = format(parseLocalDate(cost.assignment.event.event_date), 'MMM yyyy');
         const existing = revenueByMonth.get(month) || { revenue: 0, profit: 0, events: 0 };
         

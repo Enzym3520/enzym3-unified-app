@@ -33,7 +33,7 @@ const ComprehensiveFormPage = () => {
   const [selectedWeddingId, setSelectedWeddingId] = useState<string>('');
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [notes, setNotes] = useState('');
-  const [uploaderName, setUploaderName] = useState('Cece');
+  const [uploaderName, setUploaderName] = useState('');
 
   const { uploadMultipleDetailsForm, isUploading } = useDetailsFormUpload();
 

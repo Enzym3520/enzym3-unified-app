@@ -35,7 +35,7 @@ export async function resolveClientEvent<T = any>(
       .eq('id', coupleCode.wedding_id)
       .maybeSingle();
     if (data) {
-      console.log('[resolveClientEvent] Resolved via couple_codes:', coupleCode.wedding_id);
+      if (import.meta.env.DEV) console.log('[resolveClientEvent] Resolved via couple_codes:', coupleCode.wedding_id);
       return data as T;
     }
   }
@@ -51,7 +51,7 @@ export async function resolveClientEvent<T = any>(
     .maybeSingle();
 
   if (emailMatch) {
-    console.log('[resolveClientEvent] Resolved via email match on event_notification_history');
+    if (import.meta.env.DEV) console.log('[resolveClientEvent] Resolved via email match on event_notification_history');
     return emailMatch as T;
   }
 
@@ -72,11 +72,11 @@ export async function resolveClientEvent<T = any>(
       .eq('id', vcAssignment.event_id)
       .maybeSingle();
     if (vcEvent) {
-      console.log('[resolveClientEvent] Resolved via vendor_client_assignments:', vcAssignment.event_id);
+      if (import.meta.env.DEV) console.log('[resolveClientEvent] Resolved via vendor_client_assignments:', vcAssignment.event_id);
       return vcEvent as T;
     }
   }
 
-  console.warn('[resolveClientEvent] No event found for user:', userId);
+  if (import.meta.env.DEV) console.warn('[resolveClientEvent] No event found for user:', userId);
   return null;
 }

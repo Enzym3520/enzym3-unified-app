@@ -164,7 +164,7 @@ Deno.serve(async (req) => {
           warning: 'Profile deleted but auth user removal failed',
           code: 'PARTIAL_SUCCESS'
         }),
-        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        { status: 207, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 

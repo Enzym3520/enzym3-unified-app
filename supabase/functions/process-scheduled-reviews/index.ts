@@ -82,19 +82,17 @@ Deno.serve(async (req) => {
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
   const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-  const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
   const resendKey = Deno.env.get("RESEND_API_KEY")!;
   const cronSecret = Deno.env.get("CRON_SECRET");
 
-  // AuthN: accept x-cron-secret, service-role bearer, or anon key (pg_cron jobs use anon key).
+  // AuthN: accept x-cron-secret or service-role bearer only. Anon key is NOT accepted.
   const providedCronSecret = req.headers.get("x-cron-secret");
   const authHeader = req.headers.get("Authorization") ?? "";
   const bearer = authHeader.replace(/^Bearer\s+/i, "");
 
   const authorized =
     (cronSecret && providedCronSecret === cronSecret) ||
-    bearer === serviceKey ||
-    bearer === anonKey;
+    bearer === serviceKey;
 
   if (!authorized) {
     return new Response(

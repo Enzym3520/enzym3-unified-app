@@ -13,11 +13,17 @@ Deno.serve(async (req) => {
 
   try {
     const cronSecret = Deno.env.get("CRON_SECRET");
+    if (!cronSecret) {
+      return new Response(JSON.stringify({ error: "Server misconfiguration" }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
     const provided =
       req.headers.get("x-cron-secret") ??
       req.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
 
-    if (cronSecret && provided !== cronSecret) {
+    if (provided !== cronSecret) {
       return new Response(JSON.stringify({ error: "unauthorized" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },

@@ -82,7 +82,7 @@ export function VendorEventDetails({ open, onOpenChange, assignment }: VendorEve
       if (!eventId) return [];
       const { data, error } = await supabase
         .from('vendor_contracts')
-        .select('id, title, status, sent_at, signed_at, content_html, created_at')
+        .select('id, title, status, sent_at, signed_at, body_html, created_at')
         .eq('event_id', eventId)
         .order('created_at', { ascending: false });
       if (error) throw error;
@@ -452,7 +452,7 @@ export function VendorEventDetails({ open, onOpenChange, assignment }: VendorEve
                           {c.signed_at && <span>· Signed {format(new Date(c.signed_at), 'MMM d, yyyy')}</span>}
                         </div>
                       </div>
-                      {c.content_html && (
+                      {c.body_html && (
                         <Button variant="outline" size="sm" onClick={() => setPreviewContract(c)}>
                           <Eye className="mr-1.5 h-3.5 w-3.5" />
                           Preview
@@ -609,7 +609,7 @@ export function VendorEventDetails({ open, onOpenChange, assignment }: VendorEve
             open={!!previewContract}
             onOpenChange={(v) => { if (!v) setPreviewContract(null); }}
             title={previewContract.title}
-            html={previewContract.content_html}
+            html={previewContract.body_html}
           />
         )}
       </DialogContent>

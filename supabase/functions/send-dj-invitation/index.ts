@@ -18,6 +18,8 @@ interface InvitationRequest {
   companyName?: string;
 }
 
+const esc = (s: string) => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
 const handler = async (req: Request): Promise<Response> => {
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
@@ -25,10 +27,26 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    // Auth check — require a valid JWT
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user: callerUser }, error: authErr } = await supabase.auth.getUser(token);
+    if (authErr || !callerUser) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
     const {
       recipientEmail,
@@ -82,7 +100,7 @@ const handler = async (req: Request): Promise<Response> => {
               ${personalMessage ? `
               <div class="personal-message">
                 <p><strong>Personal message from ${inviterName}:</strong></p>
-                <p>${personalMessage}</p>
+                <p>${esc(personalMessage ?? '')}</p>
               </div>
               ` : ''}
 

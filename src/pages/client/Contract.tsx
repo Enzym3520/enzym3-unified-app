@@ -11,11 +11,6 @@ import { parseLocalDate } from "@/lib/formatters";
 export default function Contract() {
   const c = useContract();
 
-  // Debug: log resolved event to confirm correct record is loaded
-  if (c.wedding) {
-    console.log('[Contract] Resolved event:', c.wedding.id, 'date:', c.wedding.event_date);
-  }
-
   if (c.loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">

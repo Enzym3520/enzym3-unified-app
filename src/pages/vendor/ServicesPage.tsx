@@ -40,7 +40,9 @@ export default function ServicesPage() {
   const [serviceDialog, setServiceDialog] = useState(false);
   const [packageDialog, setPackageDialog] = useState(false);
   const [addOnDialog, setAddOnDialog] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingServiceId, setEditingServiceId] = useState<string | null>(null);
+  const [editingPackageId, setEditingPackageId] = useState<string | null>(null);
+  const [editingAddOnId, setEditingAddOnId] = useState<string | null>(null);
 
   const [serviceForm, setServiceForm] = useState({ service_type: "", rate_type: "hourly", base_rate: 0, overtime_rate: 0, min_hours: 0, notes: "", is_active: true });
   const [packageForm, setPackageForm] = useState({ name: "", description: "", price: 0, features: "", is_active: true });
@@ -49,7 +51,7 @@ export default function ServicesPage() {
   const resetServiceForm = () => setServiceForm({ service_type: "", rate_type: "hourly", base_rate: 0, overtime_rate: 0, min_hours: 0, notes: "", is_active: true });
 
   const editService = (s: VendorService) => {
-    setEditingId(s.id);
+    setEditingServiceId(s.id);
     setServiceForm({ service_type: s.service_type, rate_type: s.rate_type, base_rate: s.base_rate, overtime_rate: s.overtime_rate ?? 0, min_hours: s.min_hours ?? 0, notes: s.notes ?? "", is_active: s.is_active });
     setServiceDialog(true);
   };
@@ -100,10 +102,10 @@ export default function ServicesPage() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <div><CardTitle className="flex items-center gap-2"><DollarSign className="h-5 w-5" /> Services</CardTitle><CardDescription>Your base service rates.</CardDescription></div>
-          <Dialog open={serviceDialog} onOpenChange={(o) => { setServiceDialog(o); if (!o) { setEditingId(null); resetServiceForm(); } }}>
+          <Dialog open={serviceDialog} onOpenChange={(o) => { setServiceDialog(o); if (!o) { setEditingServiceId(null); resetServiceForm(); } }}>
             <DialogTrigger asChild><Button size="sm"><Plus className="h-4 w-4 mr-1" /> Add Service</Button></DialogTrigger>
             <DialogContent>
-              <DialogHeader><DialogTitle>{editingId ? "Edit" : "Add"} Service</DialogTitle></DialogHeader>
+              <DialogHeader><DialogTitle>{editingServiceId ? "Edit" : "Add"} Service</DialogTitle></DialogHeader>
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label>Service Type</Label>
@@ -128,7 +130,7 @@ export default function ServicesPage() {
                 </div>
                 <div className="space-y-2"><Label>Notes</Label><Textarea value={serviceForm.notes} onChange={(e) => setServiceForm({ ...serviceForm, notes: e.target.value })} /></div>
                 <div className="flex items-center gap-2"><Switch checked={serviceForm.is_active} onCheckedChange={(v) => setServiceForm({ ...serviceForm, is_active: v })} /><Label>Active</Label></div>
-                <Button onClick={() => saveService.mutate({ id: editingId, ...serviceForm }, { onSuccess: () => { setServiceDialog(false); setEditingId(null); resetServiceForm(); } })} disabled={saveService.isPending || !serviceForm.service_type} className="w-full">
+                <Button onClick={() => saveService.mutate({ id: editingServiceId, ...serviceForm }, { onSuccess: () => { setServiceDialog(false); setEditingServiceId(null); resetServiceForm(); } })} disabled={saveService.isPending || !serviceForm.service_type} className="w-full">
                   {saveService.isPending ? "Saving..." : "Save Service"}
                 </Button>
               </div>
@@ -161,17 +163,17 @@ export default function ServicesPage() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <div><CardTitle className="flex items-center gap-2"><Package className="h-5 w-5" /> Packages</CardTitle><CardDescription>Bundled service packages for clients.</CardDescription></div>
-          <Dialog open={packageDialog} onOpenChange={(o) => { setPackageDialog(o); if (!o) { setEditingId(null); setPackageForm({ name: "", description: "", price: 0, features: "", is_active: true }); } }}>
+          <Dialog open={packageDialog} onOpenChange={(o) => { setPackageDialog(o); if (!o) { setEditingPackageId(null); setPackageForm({ name: "", description: "", price: 0, features: "", is_active: true }); } }}>
             <DialogTrigger asChild><Button size="sm"><Plus className="h-4 w-4 mr-1" /> Add Package</Button></DialogTrigger>
             <DialogContent>
-              <DialogHeader><DialogTitle>{editingId ? "Edit" : "Add"} Package</DialogTitle></DialogHeader>
+              <DialogHeader><DialogTitle>{editingPackageId ? "Edit" : "Add"} Package</DialogTitle></DialogHeader>
               <div className="space-y-4">
                 <div className="space-y-2"><Label>Package Name</Label><Input value={packageForm.name} onChange={(e) => setPackageForm({ ...packageForm, name: e.target.value })} /></div>
                 <div className="space-y-2"><Label>Description</Label><Textarea value={packageForm.description} onChange={(e) => setPackageForm({ ...packageForm, description: e.target.value })} /></div>
                 <div className="space-y-2"><Label>Price ($)</Label><Input type="number" value={packageForm.price} onChange={(e) => setPackageForm({ ...packageForm, price: +e.target.value })} /></div>
                 <div className="space-y-2"><Label>Features (one per line)</Label><Textarea value={packageForm.features} onChange={(e) => setPackageForm({ ...packageForm, features: e.target.value })} placeholder={"4 hours of DJ service\nMC included\nLighting setup"} /></div>
                 <div className="flex items-center gap-2"><Switch checked={packageForm.is_active} onCheckedChange={(v) => setPackageForm({ ...packageForm, is_active: v })} /><Label>Active</Label></div>
-                <Button onClick={() => savePackage.mutate({ id: editingId, ...packageForm }, { onSuccess: () => { setPackageDialog(false); setEditingId(null); setPackageForm({ name: "", description: "", price: 0, features: "", is_active: true }); } })} disabled={savePackage.isPending || !packageForm.name} className="w-full">
+                <Button onClick={() => savePackage.mutate({ id: editingPackageId, ...packageForm }, { onSuccess: () => { setPackageDialog(false); setEditingPackageId(null); setPackageForm({ name: "", description: "", price: 0, features: "", is_active: true }); } })} disabled={savePackage.isPending || !packageForm.name} className="w-full">
                   {savePackage.isPending ? "Saving..." : "Save Package"}
                 </Button>
               </div>
@@ -186,7 +188,7 @@ export default function ServicesPage() {
                 <div className="flex items-start justify-between">
                   <div><h3 className="font-semibold">{p.name}</h3><p className="text-lg font-bold text-primary">${p.price}</p></div>
                   <div className="flex gap-1">
-                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => { setEditingId(p.id); setPackageForm({ name: p.name, description: p.description ?? "", price: p.price, features: (p.features ?? []).join("\n"), is_active: p.is_active ?? true }); setPackageDialog(true); }} aria-label="Edit package"><Pencil className="h-3.5 w-3.5" /></Button>
+                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => { setEditingPackageId(p.id); setPackageForm({ name: p.name, description: p.description ?? "", price: p.price, features: (p.features ?? []).join("\n"), is_active: p.is_active ?? true }); setPackageDialog(true); }} aria-label="Edit package"><Pencil className="h-3.5 w-3.5" /></Button>
                     <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => deletePackage.mutate(p.id)} aria-label="Delete package"><Trash2 className="h-3.5 w-3.5" /></Button>
                   </div>
                 </div>
@@ -204,16 +206,16 @@ export default function ServicesPage() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <div><CardTitle className="flex items-center gap-2"><Layers className="h-5 w-5" /> Add-ons</CardTitle><CardDescription>Additional services clients can add.</CardDescription></div>
-          <Dialog open={addOnDialog} onOpenChange={(o) => { setAddOnDialog(o); if (!o) { setEditingId(null); setAddOnForm({ name: "", description: "", price: 0, is_active: true }); } }}>
+          <Dialog open={addOnDialog} onOpenChange={(o) => { setAddOnDialog(o); if (!o) { setEditingAddOnId(null); setAddOnForm({ name: "", description: "", price: 0, is_active: true }); } }}>
             <DialogTrigger asChild><Button size="sm"><Plus className="h-4 w-4 mr-1" /> Add-on</Button></DialogTrigger>
             <DialogContent>
-              <DialogHeader><DialogTitle>{editingId ? "Edit" : "Add"} Add-on</DialogTitle></DialogHeader>
+              <DialogHeader><DialogTitle>{editingAddOnId ? "Edit" : "Add"} Add-on</DialogTitle></DialogHeader>
               <div className="space-y-4">
                 <div className="space-y-2"><Label>Name</Label><Input value={addOnForm.name} onChange={(e) => setAddOnForm({ ...addOnForm, name: e.target.value })} /></div>
                 <div className="space-y-2"><Label>Description</Label><Textarea value={addOnForm.description} onChange={(e) => setAddOnForm({ ...addOnForm, description: e.target.value })} /></div>
                 <div className="space-y-2"><Label>Price ($)</Label><Input type="number" value={addOnForm.price} onChange={(e) => setAddOnForm({ ...addOnForm, price: +e.target.value })} /></div>
                 <div className="flex items-center gap-2"><Switch checked={addOnForm.is_active} onCheckedChange={(v) => setAddOnForm({ ...addOnForm, is_active: v })} /><Label>Active</Label></div>
-                <Button onClick={() => saveAddOn.mutate({ id: editingId, ...addOnForm }, { onSuccess: () => { setAddOnDialog(false); setEditingId(null); setAddOnForm({ name: "", description: "", price: 0, is_active: true }); } })} disabled={saveAddOn.isPending || !addOnForm.name} className="w-full">
+                <Button onClick={() => saveAddOn.mutate({ id: editingAddOnId, ...addOnForm }, { onSuccess: () => { setAddOnDialog(false); setEditingAddOnId(null); setAddOnForm({ name: "", description: "", price: 0, is_active: true }); } })} disabled={saveAddOn.isPending || !addOnForm.name} className="w-full">
                   {saveAddOn.isPending ? "Saving..." : "Save Add-on"}
                 </Button>
               </div>
@@ -231,7 +233,7 @@ export default function ServicesPage() {
                   {a.description && <p className="text-xs text-muted-foreground">{a.description}</p>}
                 </div>
                 <div className="flex gap-1">
-                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => { setEditingId(a.id); setAddOnForm({ name: a.name, description: a.description ?? "", price: a.price, is_active: a.is_active ?? true }); setAddOnDialog(true); }} aria-label="Edit add-on"><Pencil className="h-3.5 w-3.5" /></Button>
+                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => { setEditingAddOnId(a.id); setAddOnForm({ name: a.name, description: a.description ?? "", price: a.price, is_active: a.is_active ?? true }); setAddOnDialog(true); }} aria-label="Edit add-on"><Pencil className="h-3.5 w-3.5" /></Button>
                   <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => deleteAddOn.mutate(a.id)} aria-label="Delete add-on"><Trash2 className="h-3.5 w-3.5" /></Button>
                 </div>
               </div>
