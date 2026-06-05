@@ -1,9 +1,11 @@
+import { useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/vendor/EmptyState";
 import { DollarSign, TrendingUp, Clock, CheckCircle } from "lucide-react";
 import { format, parseISO } from "date-fns";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { useEarnings, type EarningRecord } from "@/hooks/use-earnings";
 import { formatEventType, parseEventDate } from "@/utils/vendorHelpers";
 
@@ -27,6 +29,21 @@ function EarningsSkeleton() {
 
 export default function EarningsPage() {
   const { data: earnings = [], isLoading } = useEarnings();
+
+  const monthlyData = useMemo(() => {
+    const today = new Date();
+    const map = new Map<string, number>();
+    for (let i = 11; i >= 0; i--) {
+      const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
+      map.set(format(d, "MMM yy"), 0);
+    }
+    for (const e of earnings) {
+      if (!e.event_date) continue;
+      const key = format(parseEventDate(e.event_date), "MMM yy");
+      if (map.has(key)) map.set(key, (map.get(key) ?? 0) + (e.total_vendor_cost ?? 0));
+    }
+    return Array.from(map.entries()).map(([month, revenue]) => ({ month, revenue }));
+  }, [earnings]);
 
   if (isLoading) return <div className="p-4 md:p-6 max-w-4xl mx-auto"><EarningsSkeleton /></div>;
 
@@ -90,6 +107,26 @@ export default function EarningsPage() {
           </CardContent>
         </Card>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2"><TrendingUp className="h-5 w-5" /> Revenue by Month</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ResponsiveContainer width="100%" height={200}>
+            <BarChart data={monthlyData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+              <XAxis dataKey="month" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
+              <YAxis tick={{ fontSize: 11 }} tickLine={false} axisLine={false} tickFormatter={(v) => `$${v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v}`} />
+              <Tooltip
+                formatter={(value: number) => [`$${value.toLocaleString()}`, "Revenue"]}
+                contentStyle={{ fontSize: 12, borderRadius: 8 }}
+              />
+              <Bar dataKey="revenue" radius={[4, 4, 0, 0]} className="fill-primary" />
+            </BarChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>

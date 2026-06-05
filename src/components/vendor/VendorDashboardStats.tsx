@@ -1,7 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAssignments } from "@/hooks/use-assignments";
 import { useDocuments } from "@/hooks/use-documents";
-import { Calendar, Clock, AlertCircle, CheckCircle } from "lucide-react";
+import { useEarnings } from "@/hooks/use-earnings";
+import { Calendar, Clock, AlertCircle, CheckCircle, DollarSign } from "lucide-react";
 import { differenceInDays, startOfDay } from "date-fns";
 import { capitalizeNames, parseEventDate } from "@/utils/vendorHelpers";
 
@@ -12,6 +13,12 @@ interface VendorDashboardStatsProps {
 export function VendorDashboardStats({ vendorId }: VendorDashboardStatsProps) {
   const { data: assignments } = useAssignments();
   const { data: documents } = useDocuments();
+  const { data: earnings = [] } = useEarnings();
+
+  const currentYear = new Date().getFullYear();
+  const ytdRevenue = earnings
+    .filter((e) => e.event_date && new Date(e.event_date).getFullYear() === currentYear)
+    .reduce((sum, e) => sum + (e.total_vendor_cost ?? 0), 0);
 
   const todayStart = startOfDay(new Date());
 
@@ -36,7 +43,7 @@ export function VendorDashboardStats({ vendorId }: VendorDashboardStatsProps) {
     : null;
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4 overflow-hidden">
+    <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-2 md:gap-4 overflow-hidden">
       <Card className="card-luxury min-w-0">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Upcoming Events</CardTitle>
@@ -89,6 +96,17 @@ export function VendorDashboardStats({ vendorId }: VendorDashboardStatsProps) {
               <p className="text-xs text-muted-foreground">No upcoming events</p>
             </>
           )}
+        </CardContent>
+      </Card>
+
+      <Card className="card-luxury min-w-0">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">YTD Revenue</CardTitle>
+          <DollarSign className="h-4 w-4 text-muted-foreground" />
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">${ytdRevenue.toLocaleString()}</div>
+          <p className="text-xs text-muted-foreground">{new Date().getFullYear()} earnings</p>
         </CardContent>
       </Card>
     </div>

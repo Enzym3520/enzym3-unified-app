@@ -5,8 +5,8 @@ import { useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Award, Download, CheckCircle, FileText, Palette, CalendarOff, UserCircle, Package, Bell, X } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Award, Download, CheckCircle, FileText, Palette, CalendarOff, UserCircle, Package, Bell, X, Plus, Radio, Inbox, Users } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { useInstallPrompt } from "@/hooks/vendor-use-install-prompt";
 import { usePushNotifications } from "@/hooks/use-push-notifications";
 import { EventList } from "@/components/vendor/dashboard/EventList";
@@ -85,6 +85,35 @@ interface SetupStep {
   done: boolean;
   href: string;
   icon: React.ElementType;
+}
+
+function QuickActions({ pendingCount }: { pendingCount: number }) {
+  const navigate = useNavigate();
+  const actions = [
+    { icon: Plus, label: "New Booking", desc: "Create booking", onClick: () => navigate("/vendor/new-booking"), accent: false },
+    { icon: Radio, label: "Go Live", desc: "Song requests", onClick: () => navigate("/vendor/live"), accent: true },
+    { icon: Inbox, label: "Requests", desc: pendingCount > 0 ? `${pendingCount} pending` : "View all", onClick: () => navigate("/vendor/booking-requests"), accent: pendingCount > 0 },
+    { icon: Users, label: "My Clients", desc: "Contact & history", onClick: () => navigate("/vendor/clients"), accent: false },
+  ];
+  return (
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      {actions.map((a) => (
+        <button
+          key={a.label}
+          onClick={a.onClick}
+          className={`flex flex-col items-center gap-2 rounded-xl border p-4 text-center transition-colors hover:bg-accent/50 active:scale-95 ${a.accent ? "border-primary/40 bg-primary/5" : "bg-card"}`}
+        >
+          <div className={`flex h-10 w-10 items-center justify-center rounded-full ${a.accent ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
+            <a.icon className="h-5 w-5" />
+          </div>
+          <div>
+            <p className="text-sm font-semibold leading-tight">{a.label}</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">{a.desc}</p>
+          </div>
+        </button>
+      ))}
+    </div>
+  );
 }
 
 function SetupChecklist({ steps }: { steps: SetupStep[] }) {
@@ -178,6 +207,8 @@ export default function DashboardPage() {
         pendingCount={pendingCount}
         upcomingCount={upcomingCount}
       />
+
+      <QuickActions pendingCount={pendingCount} />
 
       {showPushPrompt && (
         <Card className="card-luxury border-primary/20 bg-primary/5">
