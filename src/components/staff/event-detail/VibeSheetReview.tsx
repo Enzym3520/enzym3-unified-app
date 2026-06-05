@@ -397,6 +397,45 @@ const NotesPanel: React.FC<{ vs: Record<string, unknown> }> = ({ vs }) => {
   );
 };
 
+// ── Print-all view (hidden on screen, expands every section for PDF) ──────────
+
+const PrintSection: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
+  <section className="mb-6 break-inside-avoid">
+    <h3 className="font-semibold text-sm uppercase tracking-wide border-b pb-1 mb-3">{title}</h3>
+    {children}
+  </section>
+);
+
+const PrintAllView: React.FC<{
+  vs: Record<string, unknown>;
+  isWedding: boolean;
+  submittedAt: string | null;
+}> = ({ vs, isWedding, submittedAt }) => (
+  <div className="hidden print:block text-sm">
+    <div className="mb-6 pb-2 border-b">
+      <h2 className="text-lg font-bold">Vibe Sheet</h2>
+      {submittedAt && (
+        <p className="text-xs text-muted-foreground">Submitted: {safeFormatDate(submittedAt, 'PPPp', '')}</p>
+      )}
+    </div>
+    {isWedding ? (
+      <>
+        <PrintSection title="Ceremony"><CeremonyPanel vs={vs} /></PrintSection>
+        <PrintSection title="Reception"><ReceptionPanel vs={vs} /></PrintSection>
+        <PrintSection title="Music Style"><MusicStylePanel vs={vs} /></PrintSection>
+        <PrintSection title="Additional Songs"><AdditionalSongsPanel vs={vs} /></PrintSection>
+        <PrintSection title="Grand Introduction"><GrandIntroPanel vs={vs} /></PrintSection>
+      </>
+    ) : (
+      <>
+        <PrintSection title="Songs"><SongsPanel vs={vs} /></PrintSection>
+        <PrintSection title="Music Style"><MusicStylePanel vs={vs} /></PrintSection>
+        <PrintSection title="Notes"><NotesPanel vs={vs} /></PrintSection>
+      </>
+    )}
+  </div>
+);
+
 // ── Main component ─────────────────────────────────────────────────────────────
 
 export const VibeSheetReview: React.FC<VibeSheetReviewProps> = ({ eventId, eventType, clientEmail }) => {
@@ -493,10 +532,12 @@ export const VibeSheetReview: React.FC<VibeSheetReviewProps> = ({ eventId, event
         </div>
         <Button variant="outline" size="sm" onClick={() => window.print()} className="gap-2 print:hidden">
           <Printer className="w-4 h-4" />
-          Print
+          Export PDF
         </Button>
       </div>
 
+      {/* Screen: tabbed view */}
+      <div className="print:hidden">
       {isWedding ? (
         <Tabs defaultValue="ceremony" className="space-y-3">
           <TabsList className="flex-wrap h-auto gap-1">
@@ -532,6 +573,10 @@ export const VibeSheetReview: React.FC<VibeSheetReviewProps> = ({ eventId, event
           </Card>
         </Tabs>
       )}
+      </div>
+
+      {/* Print: all sections expanded */}
+      <PrintAllView vs={vs} isWedding={isWedding} submittedAt={submittedAt} />
     </div>
   );
 };
