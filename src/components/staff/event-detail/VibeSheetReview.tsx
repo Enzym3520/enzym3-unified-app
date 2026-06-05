@@ -502,6 +502,7 @@ export const VibeSheetReview: React.FC<VibeSheetReviewProps> = ({ eventId, event
           <TabsList className="flex-wrap h-auto gap-1">
             <TabsTrigger value="ceremony">Ceremony</TabsTrigger>
             <TabsTrigger value="reception">Reception</TabsTrigger>
+            <TabsTrigger value="music-style">Music Style</TabsTrigger>
             <TabsTrigger value="additional-songs">Additional Songs</TabsTrigger>
             <TabsTrigger value="grand-intro">Grand Introduction</TabsTrigger>
           </TabsList>
@@ -509,6 +510,7 @@ export const VibeSheetReview: React.FC<VibeSheetReviewProps> = ({ eventId, event
             <CardContent className="py-4">
               <TabsContent value="ceremony" className="mt-0"><CeremonyPanel vs={vs} /></TabsContent>
               <TabsContent value="reception" className="mt-0"><ReceptionPanel vs={vs} /></TabsContent>
+              <TabsContent value="music-style" className="mt-0"><MusicStylePanel vs={vs} /></TabsContent>
               <TabsContent value="additional-songs" className="mt-0"><AdditionalSongsPanel vs={vs} /></TabsContent>
               <TabsContent value="grand-intro" className="mt-0"><GrandIntroPanel vs={vs} /></TabsContent>
             </CardContent>
@@ -518,11 +520,13 @@ export const VibeSheetReview: React.FC<VibeSheetReviewProps> = ({ eventId, event
         <Tabs defaultValue="songs" className="space-y-3">
           <TabsList className="flex-wrap h-auto gap-1">
             <TabsTrigger value="songs">Songs</TabsTrigger>
+            <TabsTrigger value="music-style">Music Style</TabsTrigger>
             <TabsTrigger value="notes">Notes</TabsTrigger>
           </TabsList>
           <Card>
             <CardContent className="py-4">
               <TabsContent value="songs" className="mt-0"><SongsPanel vs={vs} /></TabsContent>
+              <TabsContent value="music-style" className="mt-0"><MusicStylePanel vs={vs} /></TabsContent>
               <TabsContent value="notes" className="mt-0"><NotesPanel vs={vs} /></TabsContent>
             </CardContent>
           </Card>
