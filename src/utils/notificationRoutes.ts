@@ -62,6 +62,12 @@ export function getNotificationRoute(
     case "booking_request":
       return "/booking-requests";
 
+    case "review_request":
+      return "/app/review";
+
+    case "review_submitted":
+      return "/staff/reviews";
+
     default:
       return "/notifications";
   }
