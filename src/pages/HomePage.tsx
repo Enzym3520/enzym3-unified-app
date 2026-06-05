@@ -58,7 +58,7 @@ export default function HomePage() {
   useEffect(() => {
     supabase
       .from('client_reviews')
-      .select('reviewer_name, event_type, event_date, rating, review_text')
+      .select('reviewer_name, event_name, event_type, event_date, rating, review_text')
       .eq('approved', true)
       .order('created_at', { ascending: false })
       .limit(6)
@@ -66,7 +66,7 @@ export default function HomePage() {
         if (!data?.length) return;
         setLiveReviews(data.map((r) => ({
           name: r.reviewer_name,
-          event: [r.event_type, r.event_date ? new Date(r.event_date).getFullYear() : null].filter(Boolean).join(' · '),
+          event: r.event_name || [r.event_type, r.event_date ? new Date(r.event_date).getFullYear() : null].filter(Boolean).join(' · ') || '',
           stars: r.rating ?? 5,
           quote: r.review_text,
         })));
