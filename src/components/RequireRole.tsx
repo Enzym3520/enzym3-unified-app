@@ -1,12 +1,16 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import type { ReactNode } from 'react';
 import { useUserRole } from '@/hooks/useUserRole';
+import { supabase } from '@/integrations/supabase/client';
+
 interface Props { role: 'admin' | 'vendor' | 'client'; children: ReactNode; }
+
 export function RequireRole({ role, children }: Props) {
   const navigate = useNavigate();
   const location = useLocation();
   const { isAdmin, isModerator, isVendor, isLoading } = useUserRole();
+  const [flagChecked, setFlagChecked] = useState(false);
 
   let allowed = false;
   if (!isLoading) {
@@ -16,10 +20,40 @@ export function RequireRole({ role, children }: Props) {
   }
 
   useEffect(() => {
-    if (isLoading || allowed) return;
-    navigate('/login', { state: { from: location.pathname } });
+    if (isLoading || !allowed) return;
+
+    const checkFlag = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { setFlagChecked(true); return; }
+
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('must_change_password')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (error || data === null) {
+        // Fail open: allow access if query errors or returns no row
+        console.error('RequireRole: profiles query error', error);
+        setFlagChecked(true);
+        return;
+      }
+
+      if (data?.must_change_password) {
+        navigate('/change-password', { replace: true });
+      } else {
+        setFlagChecked(true);
+      }
+    };
+
+    checkFlag();
   }, [isLoading, allowed, navigate]);
 
-  if (isLoading || !allowed) return null;
+  useEffect(() => {
+    if (isLoading || allowed) return;
+    navigate('/login', { state: { from: location.pathname } });
+  }, [isLoading, allowed, navigate, location.pathname]);
+
+  if (isLoading || !allowed || !flagChecked) return null;
   return <>{children}</>;
 }
