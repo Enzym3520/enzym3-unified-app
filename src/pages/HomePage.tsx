@@ -22,7 +22,8 @@ const steps = [
   { number: '04', Icon: Heart, title: 'Enjoy Your Event', desc: "Show up and dance. We've had every detail locked in from day one." },
 ];
 
-const reviews = [
+// Fallback shown while DB loads or if no approved reviews exist yet
+const FALLBACK_REVIEWS = [
   { name: 'Mariana & Carlos V.', event: 'Wedding · Tucson, AZ', stars: 5, quote: 'Enzym3 made our wedding night absolutely unforgettable. The portal made everything so easy — playlist, contract, timeline, all in one place. Our guests are still talking about it.' },
   { name: 'Destiny R.', event: 'Quinceañera · Phoenix, AZ', stars: 5, quote: 'I was stressed about planning everything but the team walked me through every step. The client portal let me plan my songs and track every detail. 10/10 would recommend to any family.' },
   { name: 'James & Priya M.', event: 'Wedding · Scottsdale, AZ', stars: 5, quote: 'Professional, responsive, and the music was perfect. We used the vibe sheet to plan exactly what we wanted and they delivered. The night-of coordination was completely seamless.' },
@@ -51,6 +52,26 @@ export default function HomePage() {
   const [inquirySuccess, setInquirySuccess] = useState(false);
   const [inquiryError, setInquiryError] = useState(false);
   const [inquiry, setInquiry] = useState<InquiryForm>({ name: '', email: '', phone: '', eventDate: '', eventType: '', message: '' });
+
+  // Live approved reviews from Event Echoes
+  const [liveReviews, setLiveReviews] = useState<{ name: string; event: string; stars: number; quote: string }[]>([]);
+  useEffect(() => {
+    supabase
+      .from('client_reviews')
+      .select('reviewer_name, event_type, event_date, rating, review_text')
+      .eq('approved', true)
+      .order('created_at', { ascending: false })
+      .limit(6)
+      .then(({ data }) => {
+        if (!data?.length) return;
+        setLiveReviews(data.map((r) => ({
+          name: r.reviewer_name,
+          event: [r.event_type, r.event_date ? new Date(r.event_date).getFullYear() : null].filter(Boolean).join(' · '),
+          stars: r.rating ?? 5,
+          quote: r.review_text,
+        })));
+      });
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -266,7 +287,7 @@ export default function HomePage() {
           </Section>
 
           <Section className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {reviews.map((r, i) => (
+            {(liveReviews.length > 0 ? liveReviews : FALLBACK_REVIEWS).map((r, i) => (
               <motion.div
                 key={i}
                 variants={fadeUp}
