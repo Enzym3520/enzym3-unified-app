@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import type { RealtimePostgresInsertPayload } from '@supabase/supabase-js';
+import { getNotificationRoute } from '@/utils/notificationRoutes';
 
 interface Notification {
   id: string;
@@ -37,6 +39,7 @@ export function setNotificationSoundPref(enabled: boolean) {
 
 export function useNotifications() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [unreadCount, setUnreadCount] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -98,9 +101,15 @@ export function useNotifications() {
           const n = payload.new;
           setUnreadCount((c) => c + 1);
           playSound();
+          const route = getNotificationRoute(
+            String(n.type ?? ''),
+            (n.metadata as Record<string, any>) ?? null,
+            n.wedding_id ? String(n.wedding_id) : null,
+          );
           toast(String(n.title ?? 'New Notification'), {
             description: n.content ? String(n.content) : undefined,
             duration: 5000,
+            action: route ? { label: 'View', onClick: () => navigate(route) } : undefined,
           });
         }
       )
@@ -109,7 +118,7 @@ export function useNotifications() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [user?.id, playSound]);
+  }, [user?.id, playSound, navigate]);
 
   const markAllRead = useCallback(async () => {
     if (!user?.id) return;

@@ -2,6 +2,7 @@ import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useEffect, useRef, useCallback } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { playNotificationSound } from '@/utils/notificationSound';
 
 export interface InAppNotification {
   id: string;
@@ -129,6 +130,7 @@ export const useInAppNotifications = () => {
           (payload) => {
             if (!isMounted) return;
             const newNotification = payload.new as InAppNotification;
+            playNotificationSound();
             toastRef.current({
               title: newNotification.title,
               description: newNotification.content,
