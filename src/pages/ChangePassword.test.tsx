@@ -2,9 +2,9 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 
-const { mockUpdateUser, mockFrom, mockNavigate } = vi.hoisted(() => ({
+const { mockUpdateUser, mockInvoke, mockNavigate } = vi.hoisted(() => ({
   mockUpdateUser: vi.fn(),
-  mockFrom: vi.fn(),
+  mockInvoke: vi.fn(),
   mockNavigate: vi.fn(),
 }));
 
@@ -14,11 +14,14 @@ vi.mock('@/integrations/supabase/client', () => ({
       getUser: vi.fn().mockResolvedValue({ data: { user: { id: 'user-1' } }, error: null }),
       updateUser: mockUpdateUser,
     },
-    from: mockFrom,
+    functions: {
+      invoke: mockInvoke,
+    },
   },
 }));
 vi.mock('@/hooks/useUserRole', () => ({
   useUserRole: () => ({ isAdmin: false, isModerator: false, isVendor: false, isLoading: false, roles: ['user'] }),
+  clearRoleCache: vi.fn(),
 }));
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom');
@@ -30,7 +33,7 @@ import ChangePassword from './ChangePassword';
 describe('ChangePassword', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockFrom.mockReturnValue({ update: vi.fn().mockReturnValue({ eq: vi.fn().mockResolvedValue({ error: null }) }) });
+    mockInvoke.mockResolvedValue({ data: { success: true }, error: null });
     mockUpdateUser.mockResolvedValue({ error: null });
   });
 
@@ -56,7 +59,7 @@ describe('ChangePassword', () => {
     fireEvent.change(screen.getByLabelText(/confirm/i), { target: { value: 'NewPass123!' } });
     fireEvent.click(screen.getByRole('button', { name: /set password/i }));
     await waitFor(() => expect(mockUpdateUser).toHaveBeenCalledWith({ password: 'NewPass123!' }));
-    expect(mockFrom).toHaveBeenCalledWith('profiles');
+    expect(mockInvoke).toHaveBeenCalledWith('clear-password-flag');
     expect(mockNavigate).toHaveBeenCalled();
   });
 

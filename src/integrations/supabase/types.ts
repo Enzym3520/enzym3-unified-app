@@ -3048,6 +3048,7 @@ export type Database = {
           is_active: boolean | null
           is_coordinator: boolean | null
           last_name: string | null
+          must_change_password: boolean
           phone: string | null
           price_type: string | null
           role: Database["public"]["Enums"]["user_role"]
@@ -3078,6 +3079,7 @@ export type Database = {
           is_active?: boolean | null
           is_coordinator?: boolean | null
           last_name?: string | null
+          must_change_password?: boolean
           phone?: string | null
           price_type?: string | null
           role?: Database["public"]["Enums"]["user_role"]
@@ -3108,6 +3110,7 @@ export type Database = {
           is_active?: boolean | null
           is_coordinator?: boolean | null
           last_name?: string | null
+          must_change_password?: boolean
           phone?: string | null
           price_type?: string | null
           role?: Database["public"]["Enums"]["user_role"]
@@ -6707,6 +6710,12 @@ export type Database = {
           spotify_user_id: string
         }[]
       }
+      get_staff_user_ids: {
+        Args: never
+        Returns: {
+          user_id: string
+        }[]
+      }
       get_upcoming_event_readiness: {
         Args: { p_event_id?: string; p_from_date?: string; p_limit?: number }
         Returns: {
@@ -6748,6 +6757,7 @@ export type Database = {
           venue: string
         }[]
       }
+      get_user_id_by_email: { Args: { p_email: string }; Returns: string }
       get_vendor_event_history: {
         Args: { p_vendor_id: string }
         Returns: {
@@ -6778,6 +6788,14 @@ export type Database = {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
+        Returns: boolean
+      }
+      increment_song_upvote: {
+        Args: { p_request_id: string }
+        Returns: undefined
+      }
+      is_client_email_on_event: {
+        Args: { p_event_id: string }
         Returns: boolean
       }
       mark_test_submissions: { Args: never; Returns: undefined }

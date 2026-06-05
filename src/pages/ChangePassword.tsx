@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import { useUserRole } from '@/hooks/useUserRole';
+import { useUserRole, clearRoleCache } from '@/hooks/useUserRole';
 import { Loader2 } from 'lucide-react';
 
 const schema = z.object({
@@ -51,21 +51,15 @@ export default function ChangePassword() {
       return;
     }
 
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user) {
-      const { error: flagError } = await supabase
-        .from('profiles')
-        .update({ must_change_password: false })
-        .eq('id', user.id);
-
-      if (flagError) {
-        toast.error('Password updated but session state could not be cleared. Please contact support.');
-        setLoading(false);
-        return;
-      }
+    const { data, error: flagError } = await supabase.functions.invoke('clear-password-flag');
+    if (flagError || data?.error) {
+      toast.error('Password updated but session state could not be cleared. Please contact support.');
+      setLoading(false);
+      return;
     }
 
     setLoading(false);
+    clearRoleCache();
     toast.success('Password updated successfully.');
 
     if (isAdmin || isModerator) navigate('/staff', { replace: true });
