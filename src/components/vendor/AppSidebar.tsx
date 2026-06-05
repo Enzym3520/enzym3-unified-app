@@ -2,7 +2,7 @@ import logoRed from '@/assets/logo-red.png';
 import {
   LayoutDashboard, Calendar, Users, MessageSquare, CalendarOff,
   Package, DollarSign, FileText, Globe, UserCircle, Bell, Briefcase,
-  Inbox, History, Moon, Sun, Mail, PlusCircle, FileSignature,
+  Inbox, History, Moon, Sun, Mail, PlusCircle, FileSignature, Radio,
 } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { useTheme } from "next-themes";
@@ -18,6 +18,7 @@ import { useAuth } from "@/contexts/AuthContext";
 
 const mainItems = [
   { title: "Dashboard", url: "/vendor/dashboard", icon: LayoutDashboard },
+  { title: "Live Requests", url: "/vendor/live", icon: Radio },
   { title: "Calendar", url: "/vendor/calendar", icon: Calendar },
   { title: "Meetings", url: "/vendor/meetings", icon: Users },
   { title: "Messages", url: "/vendor/messages", icon: MessageSquare },

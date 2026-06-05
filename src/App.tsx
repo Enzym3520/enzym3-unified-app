@@ -67,6 +67,7 @@ import JoinByCode from '@/pages/JoinByCode';
 import ClientOnboarding from '@/pages/ClientOnboarding';
 import LiveRequestPage from '@/pages/LiveRequestPage';
 import VendorLiveConsole from '@/pages/vendor/LiveConsolePage';
+import LiveRequestsPage from '@/pages/vendor/LiveRequestsPage';
 
 const queryClient = new QueryClient();
 export default function App() {
@@ -144,6 +145,7 @@ export default function App() {
                   <Route path="event-history" element={<VendorEventHistory />} />
                   <Route path="email-template" element={<VendorEmailTemplate />} />
                   <Route path="my-page" element={<VendorMyPage />} />
+                  <Route path="live" element={<LiveRequestsPage />} />
                   <Route path="live/:eventId" element={<VendorLiveConsole />} />
                 </Route>
               </Routes>
