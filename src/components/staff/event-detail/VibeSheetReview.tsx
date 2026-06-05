@@ -412,12 +412,6 @@ const PrintAllView: React.FC<{
   submittedAt: string | null;
 }> = ({ vs, isWedding, submittedAt }) => (
   <div className="hidden print:block text-sm">
-    <div className="mb-6 pb-2 border-b">
-      <h2 className="text-lg font-bold">Vibe Sheet</h2>
-      {submittedAt && (
-        <p className="text-xs text-muted-foreground">Submitted: {safeFormatDate(submittedAt, 'PPPp', '')}</p>
-      )}
-    </div>
     {isWedding ? (
       <>
         <PrintSection title="Ceremony"><CeremonyPanel vs={vs} /></PrintSection>
@@ -521,7 +515,7 @@ export const VibeSheetReview: React.FC<VibeSheetReviewProps> = ({ eventId, event
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between flex-wrap gap-2">
+      <div className="flex items-center justify-between flex-wrap gap-2 print:hidden">
         <div>
           <h3 className="font-semibold text-base">Vibe Sheet</h3>
           {submittedAt ? (
