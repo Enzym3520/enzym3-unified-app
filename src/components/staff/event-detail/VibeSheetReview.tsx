@@ -403,13 +403,31 @@ export const VibeSheetReview: React.FC<VibeSheetReviewProps> = ({ eventId, event
   const { data: vibeSheet, isLoading } = useQuery({
     queryKey: ['vibe-sheet-staff', eventId],
     queryFn: async () => {
-      const { data, error } = await supabase
+      // Step 1: direct match (eventId is already vibe_sheets.wedding_id)
+      const { data: direct, error } = await supabase
         .from('vibe_sheets')
         .select('*')
         .eq('wedding_id', eventId)
         .maybeSingle();
       if (error) throw error;
-      return data;
+      if (direct) return direct;
+
+      // Step 2: eventId might be event_notification_history.id — resolve to weddings.id
+      const { data: enh } = await supabase
+        .from('event_notification_history')
+        .select('wedding_id')
+        .eq('id', eventId)
+        .maybeSingle();
+      if (enh?.wedding_id) {
+        const { data: viaEnh } = await supabase
+          .from('vibe_sheets')
+          .select('*')
+          .eq('wedding_id', enh.wedding_id)
+          .maybeSingle();
+        if (viaEnh) return viaEnh;
+      }
+
+      return null;
     },
     enabled: !!eventId,
   });
@@ -484,7 +502,6 @@ export const VibeSheetReview: React.FC<VibeSheetReviewProps> = ({ eventId, event
           <TabsList className="flex-wrap h-auto gap-1">
             <TabsTrigger value="ceremony">Ceremony</TabsTrigger>
             <TabsTrigger value="reception">Reception</TabsTrigger>
-            <TabsTrigger value="music-style">Music Style</TabsTrigger>
             <TabsTrigger value="additional-songs">Additional Songs</TabsTrigger>
             <TabsTrigger value="grand-intro">Grand Introduction</TabsTrigger>
           </TabsList>
@@ -492,22 +509,19 @@ export const VibeSheetReview: React.FC<VibeSheetReviewProps> = ({ eventId, event
             <CardContent className="py-4">
               <TabsContent value="ceremony" className="mt-0"><CeremonyPanel vs={vs} /></TabsContent>
               <TabsContent value="reception" className="mt-0"><ReceptionPanel vs={vs} /></TabsContent>
-              <TabsContent value="music-style" className="mt-0"><MusicStylePanel vs={vs} /></TabsContent>
               <TabsContent value="additional-songs" className="mt-0"><AdditionalSongsPanel vs={vs} /></TabsContent>
               <TabsContent value="grand-intro" className="mt-0"><GrandIntroPanel vs={vs} /></TabsContent>
             </CardContent>
           </Card>
         </Tabs>
       ) : (
-        <Tabs defaultValue="music-style" className="space-y-3">
+        <Tabs defaultValue="songs" className="space-y-3">
           <TabsList className="flex-wrap h-auto gap-1">
-            <TabsTrigger value="music-style">Music Style</TabsTrigger>
             <TabsTrigger value="songs">Songs</TabsTrigger>
             <TabsTrigger value="notes">Notes</TabsTrigger>
           </TabsList>
           <Card>
             <CardContent className="py-4">
-              <TabsContent value="music-style" className="mt-0"><MusicStylePanel vs={vs} /></TabsContent>
               <TabsContent value="songs" className="mt-0"><SongsPanel vs={vs} /></TabsContent>
               <TabsContent value="notes" className="mt-0"><NotesPanel vs={vs} /></TabsContent>
             </CardContent>
