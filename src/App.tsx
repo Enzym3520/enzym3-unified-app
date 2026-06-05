@@ -12,6 +12,7 @@ import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
 import ResetPassword from '@/pages/ResetPassword';
+import ChangePassword from '@/pages/ChangePassword';
 import Dashboard from '@/pages/client/Dashboard';
 import VibeSheet from '@/pages/client/VibeSheet';
 import Contract from '@/pages/client/Contract';
@@ -82,6 +83,7 @@ export default function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/change-password" element={<ChangePassword />} />
                 <Route path="/join/:code" element={<JoinByCode />} />
                 <Route path="/onboarding" element={<ClientOnboarding />} />
                 <Route path="/app" element={<RequireRole role="client"><PortalTourProvider><ClientShell /></PortalTourProvider></RequireRole>}>
