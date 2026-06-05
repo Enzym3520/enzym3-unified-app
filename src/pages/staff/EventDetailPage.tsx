@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Calendar, MapPin, Users, Mail, Phone, User, Package, Clock, FileText } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import ContractViewer from '@/components/ContractViewer';
+import { calculatePricing, isVenuePartner, VENUE_PARTNER_OVERTIME_RATE, INDEPENDENT_OVERTIME_RATE } from '@/lib/venueUtils';
+import type { PricingType } from '@/lib/venueUtils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -26,6 +30,7 @@ import { getEventStartTime, formatEventTime } from '@/utils/eventTimeHelpers';
 
 const EventDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const [contractDialogOpen, setContractDialogOpen] = useState(false);
 
   // Fetch the event notification record
   const { data: event, isLoading: eventLoading } = useQuery({
@@ -157,11 +162,14 @@ const EventDetailPage: React.FC = () => {
                             View contract
                           </a>
                         ) : (
-                          <span>
+                          <button
+                            onClick={() => setContractDialogOpen(true)}
+                            className="text-primary hover:underline text-left"
+                          >
                             Contract signed
                             {signerName ? ` by ${signerName}` : ''}
                             {contractSignedAt ? ` · ${safeFormatDate(contractSignedAt, 'PP', '')}` : ''}
-                          </span>
+                          </button>
                         )}
                       </div>
                     )}
@@ -282,6 +290,59 @@ const EventDetailPage: React.FC = () => {
           <EventActivityTimeline weddingId={event.id} />
         </TabsContent>
       </Tabs>
+
+      {/* Signed contract viewer */}
+      <Dialog open={contractDialogOpen} onOpenChange={setContractDialogOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Signed Contract — {event.couple_name}</DialogTitle>
+          </DialogHeader>
+          {(() => {
+            const overtimeRate = (event as any).overtime_rate
+              ?? (event.booking_source === 'venue_partner' || event.payment_required === false
+                ? VENUE_PARTNER_OVERTIME_RATE
+                : isVenuePartner(event.venue)
+                  ? VENUE_PARTNER_OVERTIME_RATE
+                  : INDEPENDENT_OVERTIME_RATE);
+            const pricingType = ((event as any).pricing_type as PricingType) || 'hourly';
+            return (
+              <>
+                <ContractViewer
+                  coupleName={event.couple_name}
+                  eventDate={event.event_date}
+                  venue={event.venue || ''}
+                  hours={(event as any).hours_booked ?? 0}
+                  hourlyRate={(event as any).hourly_rate ?? 0}
+                  guestCount={(event as any).guest_count || undefined}
+                  djMealIncluded={(event as any).dj_meal_included || false}
+                  overtimeRate={overtimeRate}
+                  pricingType={pricingType}
+                  totalPrice={(event as any).total_price}
+                />
+                {(event as any).contract_signature_data && (
+                  <div className="border-t pt-4 mt-4">
+                    <h3 className="font-semibold mb-3">Signature</h3>
+                    <div className="flex items-end gap-8">
+                      <div>
+                        <p className="text-sm text-muted-foreground mb-1">Client Signature</p>
+                        <div className="border-b-2 border-foreground pb-1 min-w-[200px]">
+                          <img src={(event as any).contract_signature_data} alt="Client Signature" className="max-h-12" />
+                        </div>
+                        <p className="text-sm font-medium mt-1">{(event as any).client_signature_name}</p>
+                        <p className="text-xs text-muted-foreground">
+                          Signed: {event.contract_signed_at && new Date(event.contract_signed_at as string).toLocaleDateString('en-US', {
+                            year: 'numeric', month: 'long', day: 'numeric',
+                          })}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </>
+            );
+          })()}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
