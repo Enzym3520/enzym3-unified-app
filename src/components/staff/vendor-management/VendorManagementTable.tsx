@@ -38,7 +38,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { MoreHorizontal, Eye, Copy, Send, Ban, Trash2, Edit, ShieldCheck, ShieldAlert, ShieldX, Star, Power, PowerOff, AlertTriangle, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
+import { MoreHorizontal, Eye, Copy, Send, Ban, Trash2, Edit, ShieldCheck, ShieldAlert, ShieldX, Star, Power, PowerOff, AlertTriangle, ArrowUpDown, ArrowUp, ArrowDown, KeyRound } from 'lucide-react';
 import { UnifiedVendor } from '@/hooks/useVendorManagement';
 import { format } from 'date-fns';
 import { formatVendorType } from '@/utils/vendorTypeFormatter';
@@ -49,6 +49,7 @@ import { useDeactivateVendor, useActivateVendor, useToggleDoNotUse } from '@/hoo
 import { VendorDetailsModal } from './VendorDetailsModal';
 import { InviteDetailsModal } from './InviteDetailsModal';
 import { EditVendorModal } from './EditVendorModal';
+import { ResetPasswordModal } from './ResetPasswordModal';
 import { DeleteVendorDialog } from './DeleteVendorDialog';
 import { VendorBulkActions } from './VendorBulkActions';
 import { useVendorDocuments, getComplianceStatus, getMissingDocuments, getExpiredDocuments, DOCUMENT_TYPES } from '@/hooks/useVendorDocuments';
@@ -73,6 +74,7 @@ export function VendorManagementTable({ vendors, isLoading, statusFilter: propSt
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [sortField, setSortField] = useState<'name' | 'vendorType' | 'status' | 'registeredAt'>('name');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
+  const [resetPasswordTarget, setResetPasswordTarget] = useState<{ userId: string; userName: string } | null>(null);
 
   const deactivateInvite = useDeactivateInvite();
   const deleteInvite = useDeleteInvite();
@@ -418,6 +420,10 @@ export function VendorManagementTable({ vendors, isLoading, statusFilter: propSt
                             <Edit className="mr-2 h-4 w-4" />
                             Edit Profile
                           </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => setResetPasswordTarget({ userId: vendor.userId!, userName: vendor.name })}>
+                            <KeyRound className="mr-2 h-4 w-4" />
+                            Reset Password
+                          </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem onClick={() => handleToggleActive(vendor)}>
                             {vendor.status === 'active' ? <><PowerOff className="mr-2 h-4 w-4" />Deactivate</> : <><Power className="mr-2 h-4 w-4" />Activate</>}
@@ -581,6 +587,10 @@ export function VendorManagementTable({ vendors, isLoading, statusFilter: propSt
                               <Edit className="mr-2 h-4 w-4" />
                               Edit Profile
                             </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setResetPasswordTarget({ userId: vendor.userId!, userName: vendor.name })}>
+                              <KeyRound className="mr-2 h-4 w-4" />
+                              Reset Password
+                            </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem onClick={() => handleToggleActive(vendor)}>
                               {vendor.status === 'active' ? (
@@ -643,6 +653,15 @@ export function VendorManagementTable({ vendors, isLoading, statusFilter: propSt
             onOpenChange={setShowDeleteDialog}
           />
         </>
+      )}
+
+      {resetPasswordTarget && (
+        <ResetPasswordModal
+          open={!!resetPasswordTarget}
+          onOpenChange={(open) => { if (!open) setResetPasswordTarget(null); }}
+          userId={resetPasswordTarget.userId}
+          userName={resetPasswordTarget.userName}
+        />
       )}
 
       <AlertDialog open={!!deleteInviteTarget} onOpenChange={(open) => !open && setDeleteInviteTarget(null)}>
