@@ -20,62 +20,30 @@ export interface PrePopulationUrlOptions {
  */
 export const generatePrePopulatedFormUrl = (options: PrePopulationUrlOptions): string => {
   const baseUrl = options.baseUrl || window.location.origin;
-  const formPath = options.templateId ? `/comprehensive-form?template=${options.templateId}` : '/comprehensive-form';
-  
   const params = new URLSearchParams();
-  
-  // Add context parameters based on available options
-  if (options.eventId) {
-    params.set('from_event', options.eventId);
-  }
-  
-  if (options.submissionId) {
-    params.set('from_submission', options.submissionId);
-  }
-  
-  if (options.contactEmail) {
-    params.set('contact_email', options.contactEmail);
-  }
-  
-  if (options.contactName) {
-    params.set('contact_name', options.contactName);
-  }
-  
-  if (options.weddingId) {
-    params.set('wedding_id', options.weddingId);
-  }
-  
-  const queryString = params.toString();
-  if (!queryString) {
-    return `${baseUrl}${formPath}`;
-  }
-  
-  // If formPath already has query params (templateId), use &, otherwise use ?
-  const separator = formPath.includes('?') ? '&' : '?';
-  return `${baseUrl}${formPath}${separator}${queryString}`;
+  if (options.templateId) params.set('template', options.templateId);
+  if (options.eventId) params.set('from_event', options.eventId);
+  if (options.submissionId) params.set('from_submission', options.submissionId);
+  if (options.contactEmail) params.set('contact_email', options.contactEmail);
+  if (options.contactName) params.set('contact_name', options.contactName);
+  if (options.weddingId) params.set('wedding_id', options.weddingId);
+  const qs = params.toString();
+  return `${baseUrl}/comprehensive-form${qs ? `?${qs}` : ''}`;
 };
 
 /**
  * Generates a pre-populated form path (relative path for React Router navigation)
  */
 export const generatePrePopulatedFormPath = (options: PrePopulationUrlOptions): string => {
-  const formPath = options.templateId 
-    ? `/comprehensive-form?template=${options.templateId}` 
-    : '/comprehensive-form';
-  
   const params = new URLSearchParams();
-  
+  if (options.templateId) params.set('template', options.templateId);
   if (options.eventId) params.set('from_event', options.eventId);
   if (options.submissionId) params.set('from_submission', options.submissionId);
   if (options.contactEmail) params.set('contact_email', options.contactEmail);
   if (options.contactName) params.set('contact_name', options.contactName);
   if (options.weddingId) params.set('wedding_id', options.weddingId);
-  
-  const queryString = params.toString();
-  if (!queryString) return formPath;
-  
-  const separator = formPath.includes('?') ? '&' : '?';
-  return `${formPath}${separator}${queryString}`;
+  const qs = params.toString();
+  return `/comprehensive-form${qs ? `?${qs}` : ''}`;
 };
 
 /**
