@@ -51,10 +51,28 @@ export function useReviewPipeline() {
     },
   });
 
+  const sendNowMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.functions.invoke('admin-send-review', {
+        body: { record_id: id },
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast({ title: 'Review invite sent', description: 'Email delivered to the couple.' });
+      queryClient.invalidateQueries({ queryKey: ['review-pipeline'] });
+    },
+    onError: (e: any) => {
+      toast({ title: 'Failed to send', description: e.message, variant: 'destructive' });
+    },
+  });
+
   return {
     rows: query.data ?? [],
     isLoading: query.isLoading,
     stopReminders: stopMutation.mutate,
+    sendNow: sendNowMutation.mutate,
+    isSending: sendNowMutation.isPending,
   };
 }
 

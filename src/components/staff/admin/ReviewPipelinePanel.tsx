@@ -1,12 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Mail, Clock, CheckCircle, XCircle, StopCircle } from 'lucide-react';
+import { Mail, Clock, CheckCircle, XCircle, StopCircle, SendHorizonal, Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useReviewPipeline, getCadencePhase } from '@/hooks/useReviewPipeline';
 
 export function ReviewPipelinePanel() {
-  const { rows, isLoading, stopReminders } = useReviewPipeline();
+  const { rows, isLoading, stopReminders, sendNow, isSending } = useReviewPipeline();
 
   const active = rows.filter((r) => !r.stopped);
   const stopped = rows.filter((r) => r.stopped);
@@ -86,15 +86,31 @@ export function ReviewPipelinePanel() {
                     </p>
                   </div>
                   {!row.stopped && (
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="text-muted-foreground hover:text-destructive shrink-0"
-                      onClick={() => stopReminders(row.id)}
-                    >
-                      <StopCircle className="h-4 w-4 mr-1" />
-                      Stop reminders
-                    </Button>
+                    <div className="flex gap-1 shrink-0">
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="text-muted-foreground hover:text-primary"
+                        onClick={() => sendNow(row.id)}
+                        disabled={isSending}
+                      >
+                        {isSending ? (
+                          <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+                        ) : (
+                          <SendHorizonal className="h-4 w-4 mr-1" />
+                        )}
+                        Send now
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="text-muted-foreground hover:text-destructive"
+                        onClick={() => stopReminders(row.id)}
+                      >
+                        <StopCircle className="h-4 w-4 mr-1" />
+                        Stop
+                      </Button>
+                    </div>
                   )}
                 </div>
               );
