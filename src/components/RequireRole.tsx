@@ -20,11 +20,15 @@ export function RequireRole({ role, children }: Props) {
   }
 
   useEffect(() => {
-    if (isLoading || !allowed) return;
+    if (isLoading || !allowed) {
+      setFlagChecked(false);
+      return;
+    }
+    let cancelled = false;
 
     const checkFlag = async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { setFlagChecked(true); return; }
+      if (!user || cancelled) { if (!cancelled) setFlagChecked(true); return; }
 
       const { data, error } = await supabase
         .from('profiles')
@@ -32,14 +36,18 @@ export function RequireRole({ role, children }: Props) {
         .eq('id', user.id)
         .maybeSingle();
 
-      if (error || data === null) {
-        // Fail open: allow access if query errors or returns no row
+      if (cancelled) return;
+
+      if (error) {
         console.error('RequireRole: profiles query error', error);
         setFlagChecked(true);
         return;
       }
-
-      if (data?.must_change_password) {
+      if (data === null) {
+        setFlagChecked(true);
+        return;
+      }
+      if (data.must_change_password) {
         navigate('/change-password', { replace: true });
       } else {
         setFlagChecked(true);
@@ -47,7 +55,8 @@ export function RequireRole({ role, children }: Props) {
     };
 
     checkFlag();
-  }, [isLoading, allowed, navigate]);
+    return () => { cancelled = true; };
+  }, [isLoading, allowed, navigate, location.pathname]);
 
   useEffect(() => {
     if (isLoading || allowed) return;

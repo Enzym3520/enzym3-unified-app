@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react';
-import { vi, describe, it, expect } from 'vitest';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 
 const { mockNavigate, mockFrom } = vi.hoisted(() => ({
@@ -27,6 +27,10 @@ vi.mock('@/integrations/supabase/client', () => ({
 import { RequireRole } from './RequireRole';
 
 describe('RequireRole', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it('redirects to /change-password when must_change_password is true', async () => {
     mockFrom.mockReturnValue({
       select: vi.fn().mockReturnValue({
