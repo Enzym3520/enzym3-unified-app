@@ -34,14 +34,15 @@ describe('ChangePassword', () => {
     mockUpdateUser.mockResolvedValue({ error: null });
   });
 
-  it('renders new password and confirm fields', () => {
+  it('renders new password and confirm fields', async () => {
     render(<MemoryRouter><ChangePassword /></MemoryRouter>);
-    expect(screen.getByLabelText(/new password/i)).toBeInTheDocument();
+    await waitFor(() => expect(screen.getByLabelText(/new password/i)).toBeInTheDocument());
     expect(screen.getByLabelText(/confirm/i)).toBeInTheDocument();
   });
 
   it('shows error when passwords do not match', async () => {
     render(<MemoryRouter><ChangePassword /></MemoryRouter>);
+    await waitFor(() => expect(screen.getByLabelText(/new password/i)).toBeInTheDocument());
     fireEvent.change(screen.getByLabelText(/new password/i), { target: { value: 'Password1!' } });
     fireEvent.change(screen.getByLabelText(/confirm/i), { target: { value: 'Different1!' } });
     fireEvent.click(screen.getByRole('button', { name: /set password/i }));
@@ -50,10 +51,21 @@ describe('ChangePassword', () => {
 
   it('calls updateUser and clears flag on valid submit', async () => {
     render(<MemoryRouter><ChangePassword /></MemoryRouter>);
+    await waitFor(() => expect(screen.getByLabelText(/new password/i)).toBeInTheDocument());
     fireEvent.change(screen.getByLabelText(/new password/i), { target: { value: 'NewPass123!' } });
     fireEvent.change(screen.getByLabelText(/confirm/i), { target: { value: 'NewPass123!' } });
     fireEvent.click(screen.getByRole('button', { name: /set password/i }));
     await waitFor(() => expect(mockUpdateUser).toHaveBeenCalledWith({ password: 'NewPass123!' }));
+    expect(mockFrom).toHaveBeenCalledWith('profiles');
     expect(mockNavigate).toHaveBeenCalled();
+  });
+
+  it('shows error when password is too short', async () => {
+    render(<MemoryRouter><ChangePassword /></MemoryRouter>);
+    await waitFor(() => expect(screen.getByLabelText(/new password/i)).toBeInTheDocument());
+    fireEvent.change(screen.getByLabelText(/new password/i), { target: { value: 'abc' } });
+    fireEvent.change(screen.getByLabelText(/confirm/i), { target: { value: 'abc' } });
+    fireEvent.click(screen.getByRole('button', { name: /set password/i }));
+    await waitFor(() => expect(screen.getByText(/min 8 characters/i)).toBeInTheDocument());
   });
 });

@@ -23,6 +23,7 @@ type F = z.infer<typeof schema>;
 export default function ChangePassword() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [sessionChecked, setSessionChecked] = useState(false);
   const { isAdmin, isModerator, isVendor, isLoading } = useUserRole();
 
   const { register, handleSubmit, formState: { errors } } = useForm<F>({
@@ -32,7 +33,11 @@ export default function ChangePassword() {
   useEffect(() => {
     const checkSession = async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) navigate('/login', { replace: true });
+      if (!user) {
+        navigate('/login', { replace: true });
+      } else {
+        setSessionChecked(true);
+      }
     };
     checkSession();
   }, [navigate]);
@@ -48,9 +53,19 @@ export default function ChangePassword() {
 
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
-      await supabase.from('profiles').update({ must_change_password: false }).eq('id', user.id);
+      const { error: flagError } = await supabase
+        .from('profiles')
+        .update({ must_change_password: false })
+        .eq('id', user.id);
+
+      if (flagError) {
+        toast.error('Password updated but session state could not be cleared. Please contact support.');
+        setLoading(false);
+        return;
+      }
     }
 
+    setLoading(false);
     toast.success('Password updated successfully.');
 
     if (isAdmin || isModerator) navigate('/staff', { replace: true });
@@ -58,7 +73,7 @@ export default function ChangePassword() {
     else navigate('/app', { replace: true });
   };
 
-  if (isLoading) {
+  if (isLoading || !sessionChecked) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <Loader2 className="h-8 w-8 animate-spin text-[#85D4FA]" />
