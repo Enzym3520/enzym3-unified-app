@@ -38,13 +38,20 @@ serve(async (req) => {
 
     // Verify caller is admin or moderator
     const adminClient = createClient(supabaseUrl, supabaseServiceKey);
-    const { data: roleData } = await adminClient
+    const { data: roleData, error: roleError } = await adminClient
       .from('user_roles')
       .select('role')
       .eq('user_id', user.id)
       .in('role', ['admin', 'moderator', 'super_admin'])
       .maybeSingle();
 
+    if (roleError) {
+      console.error('Role check error:', roleError);
+      return new Response(
+        JSON.stringify({ error: 'Failed to verify permissions' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
     if (!roleData) {
       return new Response(
         JSON.stringify({ error: 'Admin or moderator role required' }),
@@ -53,22 +60,31 @@ serve(async (req) => {
     }
 
     // Parse body
-    const { userId, newPassword } = await req.json();
+    let body: { userId?: unknown; newPassword?: unknown };
+    try {
+      body = await req.json();
+    } catch {
+      return new Response(JSON.stringify({ error: 'Invalid JSON body' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+    const { userId, newPassword } = body;
+
     if (!userId || !newPassword) {
       return new Response(
         JSON.stringify({ error: 'userId and newPassword are required' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
-    if (newPassword.length < 8) {
+    if (typeof newPassword !== 'string' || newPassword.length < 8) {
       return new Response(
         JSON.stringify({ error: 'Password must be at least 8 characters' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
+    console.log('Admin password reset requested by:', user.id, 'for target:', userId);
+
     // Reset the password via admin API
-    const { error: resetError } = await adminClient.auth.admin.updateUserById(userId, {
+    const { error: resetError } = await adminClient.auth.admin.updateUserById(userId as string, {
       password: newPassword,
     });
     if (resetError) {
@@ -78,15 +94,18 @@ serve(async (req) => {
       );
     }
 
+    console.log('Password reset complete for:', userId);
+
     // Set must_change_password flag
     const { error: flagError } = await adminClient
       .from('profiles')
       .update({ must_change_password: true })
       .eq('id', userId);
     if (flagError) {
+      console.error('CRITICAL: password was reset but flag update failed for', userId, flagError);
       return new Response(
-        JSON.stringify({ error: 'Password reset but failed to set flag: ' + flagError.message }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ success: true, warning: 'Password reset but flag update failed — set must_change_password manually' }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
@@ -96,6 +115,7 @@ serve(async (req) => {
     );
 
   } catch (error) {
+    console.error('Unexpected error:', error);
     return new Response(
       JSON.stringify({ error: 'Unexpected error' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
