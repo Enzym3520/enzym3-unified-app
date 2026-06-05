@@ -39,7 +39,7 @@ const Step4ReviewSubmit = () => {
   const handleStartAnother = () => {
     setSubmitted(false);
     setCurrentStep(1);
-    navigate('/event-notification/step-1');
+    navigate('/staff/event-notification/step-1');
   };
 
   if (submitted) {

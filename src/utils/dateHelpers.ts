@@ -10,7 +10,7 @@ export function parseLocalDate(date: string | Date): Date {
   // Date-only string like "2026-06-05" → local midnight
   if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
     const [y, m, d] = date.split('-').map(Number);
-    return new Date(y, m - 1, d);
+    if (m >= 1 && m <= 12 && d >= 1 && d <= 31) return new Date(y, m - 1, d);
   }
   return new Date(date); // ISO timestamps with time component are fine
 }

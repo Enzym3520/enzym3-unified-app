@@ -4,7 +4,7 @@
  *   - alias some surfaces use: event_start_time / event_end_time
  *   - submitted form payload: additional_metadata.form_data.eventStartTime / eventEndTime
  */
-const TIME_RE = /^[0-2]?\d:[0-5]\d(:[0-5]\d)?$/;
+const TIME_RE = /^([01]?\d|2[0-3]):[0-5]\d(:[0-5]\d)?$/;
 
 const pick = (...candidates: any[]): string | null => {
   for (const c of candidates) {
