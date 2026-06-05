@@ -61,7 +61,7 @@ export default function Login() {
             <img
               src={logoBlue}
               alt="Enzym3 Entertainment"
-              className="h-10 w-auto mx-auto"
+              className="h-24 w-auto mx-auto"
             />
           </Link>
           <div>
