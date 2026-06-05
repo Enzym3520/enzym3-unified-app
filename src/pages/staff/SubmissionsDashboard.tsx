@@ -9,9 +9,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Music, Package, Calendar, MapPin, FileText } from 'lucide-react';
 import { format } from 'date-fns';
 import { parseLocalDate } from '@/utils/dateHelpers';
-import ContactDetailsModal from '@/components/staff/contacts/ContactDetailsModal';
-import { Contact } from '@/types/contact';
-import { useContactsImproved } from '@/hooks/useContactsImproved';
 import { capitalizeNames } from '@/utils/contactHelpers';
 
 type SubmissionType = 'all' | 'events' | 'music' | 'upgrades';
@@ -33,6 +30,7 @@ interface MusicSheetSubmission {
   wedding_id: string;
   created_at: string;
   type: 'music';
+  event_id?: string;
   wedding: {
     couple_name: string;
     event_date: string;
@@ -48,6 +46,7 @@ interface UpgradeSubmission {
   payment_status: string;
   created_at: string;
   type: 'upgrade';
+  event_id?: string;
   wedding: {
     couple_name: string;
     event_date: string;
@@ -61,8 +60,6 @@ type Submission = EventSubmission | MusicSheetSubmission | UpgradeSubmission;
 export default function SubmissionsDashboard() {
   const [searchQuery, setSearchQuery] = useState('');
   const [submissionType, setSubmissionType] = useState<SubmissionType>('all');
-  const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
-  const { contacts } = useContactsImproved();
   const navigate = useNavigate();
 
   // Fetch event notifications
@@ -186,6 +183,7 @@ export default function SubmissionsDashboard() {
         wedding_id: sheet.wedding_id,
         created_at: sheet.created_at,
         type: 'music' as const,
+        event_id: wedding?.id,
         wedding: wedding
           ? { couple_name: wedding.couple_name, event_date: wedding.event_date, venue: wedding.venue, contact_email: wedding.contact_email }
           : { couple_name: sheet._wedding?.couple_names || 'Unknown', event_date: sheet._wedding?.wedding_date || '', venue: '', contact_email: '' },
@@ -196,6 +194,7 @@ export default function SubmissionsDashboard() {
       return {
         ...upgrade,
         type: 'upgrade' as const,
+        event_id: upgrade.wedding_id,
         wedding: wedding || { couple_name: 'Unknown', event_date: '', venue: '', contact_email: '' },
       };
     }),
@@ -221,9 +220,10 @@ export default function SubmissionsDashboard() {
       navigate(`/staff/event/${submission.id}`);
       return;
     }
-    const email = getContactEmail(submission);
-    const contact = contacts.find(c => c.email === email);
-    if (contact) setSelectedContact(contact);
+    const eventId = (submission as MusicSheetSubmission | UpgradeSubmission).event_id;
+    if (eventId) {
+      navigate(`/staff/event/${eventId}`);
+    }
   };
 
   const stats = {
@@ -378,11 +378,6 @@ export default function SubmissionsDashboard() {
         )}
       </div>
 
-      <ContactDetailsModal
-        contact={selectedContact}
-        isOpen={!!selectedContact}
-        onClose={() => setSelectedContact(null)}
-      />
     </div>
   );
 }
