@@ -11,7 +11,7 @@ export default defineConfig({
       strategies: 'injectManifest',
       srcDir: 'src',
       filename: 'sw-custom.ts',
-      includeAssets: ['favicon.ico', 'favicon.svg', 'apple-touch-icon.png'],
+      includeAssets: ['favicon.ico', 'favicon.png', 'favicon.svg', 'apple-touch-icon.png'],
       manifest: {
         name: 'Enzym3 Entertainment',
         short_name: 'Enzym3',
@@ -41,10 +41,10 @@ export default defineConfig({
             purpose: 'maskable',
           },
           {
-            src: '/favicon.svg',
-            sizes: 'any',
-            type: 'image/svg+xml',
-            purpose: 'any',
+            src: '/icon-192.png',
+            sizes: '192x192',
+            type: 'image/png',
+            purpose: 'maskable',
           },
         ],
       },
