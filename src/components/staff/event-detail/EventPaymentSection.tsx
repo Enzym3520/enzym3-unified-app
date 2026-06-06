@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DollarSign, CheckCircle2, Circle, ToggleLeft, ToggleRight, Loader2, RefreshCw } from 'lucide-react';
+import { DollarSign, CheckCircle2, Circle, ToggleLeft, ToggleRight, Loader2, RefreshCw, Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { EventReadiness } from '@/hooks/useEventReadiness';
@@ -18,6 +18,7 @@ export const EventPaymentSection: React.FC<EventPaymentSectionProps> = ({ readin
   const queryClient = useQueryClient();
   const [toggling, setToggling] = useState<string | null>(null);
   const [verifying, setVerifying] = useState(false);
+  const [sendingReminder, setSendingReminder] = useState(false);
 
   const handleVerify = async () => {
     setVerifying(true);
@@ -40,6 +41,21 @@ export const EventPaymentSection: React.FC<EventPaymentSectionProps> = ({ readin
       toast.error(`Verify failed: ${err.message || 'Unknown error'}`);
     } finally {
       setVerifying(false);
+    }
+  };
+
+  const handleSendBalanceReminder = async () => {
+    setSendingReminder(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('send-balance-reminder', {
+        body: { event_id: readiness.event_id },
+      });
+      if (error) throw error;
+      toast.success(`Balance reminder sent to ${data?.sent_to ?? 'client'}`);
+    } catch (err: any) {
+      toast.error(`Failed to send reminder: ${err.message || 'Unknown error'}`);
+    } finally {
+      setSendingReminder(false);
     }
   };
 
@@ -139,6 +155,25 @@ export const EventPaymentSection: React.FC<EventPaymentSectionProps> = ({ readin
               </div>
             </div>
           ))}
+          {/* Balance reminder — shows only when deposit paid but balance still owed */}
+          {isAdmin && readiness.deposit_paid && !readiness.balance_paid && (
+            <div className="pt-1">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={handleSendBalanceReminder}
+                disabled={sendingReminder}
+                className="w-full text-amber-700 border-amber-300 hover:bg-amber-50 dark:text-amber-400 dark:border-amber-700 dark:hover:bg-amber-950"
+              >
+                {sendingReminder ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <Bell className="w-4 h-4 mr-2" />
+                )}
+                Send Balance Reminder
+              </Button>
+            </div>
+          )}
           {readiness.stripe_payment_intent_id && (
             <p className="text-xs text-muted-foreground border-t pt-2">
               Stripe: {readiness.stripe_payment_intent_id}
