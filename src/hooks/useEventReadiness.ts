@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 
 export interface EventReadiness {
   event_id: string;
@@ -63,8 +64,10 @@ export const useEventReadiness = (eventId?: string) => {
 };
 
 export const useUpcomingReadiness = (limit = 10) => {
+  const { user } = useAuth();
   return useQuery({
-    queryKey: ['upcoming-readiness', limit],
+    queryKey: ['upcoming-readiness', limit, user?.id],
+    enabled: !!user,
     queryFn: async () => {
       const today = new Date().toISOString().split('T')[0];
 
