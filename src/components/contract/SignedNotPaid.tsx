@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { getPortalDisplayName, getClientLabel } from "@/lib/eventUtils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, FileSignature, CreditCard, AlertCircle, Heart, Calendar, X } from "lucide-react";
+import { Loader2, FileSignature, CreditCard, AlertCircle, Heart, Calendar, X, Banknote, CheckCircle2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import ContractPricingCard from "@/components/ContractPricingCard";
@@ -27,6 +27,7 @@ interface SignedNotPaidProps {
 
 export function SignedNotPaid({ wedding, submitting, onPayDeposit, onVerified, paymentType, onPaymentTypeChange, paymentProcessing = false, paymentCancelled = false, onDismissCancelled }: SignedNotPaidProps) {
   const [checking, setChecking] = useState(false);
+  const [cashSelected, setCashSelected] = useState(false);
   const autoCheckedRef = useRef(false);
   const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const pollAttemptsRef = useRef(0);
@@ -244,21 +245,50 @@ export function SignedNotPaid({ wedding, submitting, onPayDeposit, onVerified, p
         <ContractPricingCard hours={wedding.hours_booked ?? 0} hourlyRate={wedding.hourly_rate ?? 0} paymentType={paymentType} onPaymentTypeChange={onPaymentTypeChange} pricingType={weddingPricingType} totalPrice={wedding.total_price} />
       )}
 
-      <Button onClick={onPayDeposit} size="lg" className="w-full h-14 text-lg" disabled={submitting || checking || paymentProcessing}>
-        {(submitting || paymentProcessing) ? <Loader2 className="h-5 w-5 mr-2 animate-spin" /> : <CreditCard className="h-5 w-5 mr-2" />}
-        {paymentProcessing
-          ? 'Confirming Payment...'
-          : isBalanceMode
-            ? `Pay Remaining Balance - ${formatCurrency(remainingBalance)}`
-            : paymentType === 'full'
-              ? `Pay in Full - ${formatCurrency(pricing.total)}`
-              : `Pay Deposit - ${formatCurrency(pricing.deposit)}`}
-      </Button>
-      <div className="text-center">
-        <Button variant="link" onClick={() => verifyPayment(false)} disabled={checking} className="text-sm">
-          {checking ? (<><Loader2 className="h-3 w-3 mr-1 animate-spin" /> Checking...</>) : "Already paid? Click here to verify"}
-        </Button>
-      </div>
+      {isBalanceMode && cashSelected ? (
+        <Card className="border-emerald-200 bg-emerald-50/60 dark:bg-emerald-950/30 dark:border-emerald-800">
+          <CardContent className="py-6 text-center space-y-3">
+            <CheckCircle2 className="h-10 w-10 text-emerald-600 mx-auto" />
+            <h3 className="font-semibold text-emerald-800 dark:text-emerald-300">Cash Payment Arranged</h3>
+            <p className="text-sm text-muted-foreground">
+              We'll collect your remaining balance of <strong>{formatCurrency(remainingBalance)}</strong> in cash at your event. Your coordinator will confirm receipt.
+            </p>
+            <Button variant="link" size="sm" onClick={() => setCashSelected(false)} className="text-xs text-muted-foreground">
+              Pay online instead
+            </Button>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="space-y-3">
+          <Button onClick={onPayDeposit} size="lg" className="w-full h-14 text-lg" disabled={submitting || checking || paymentProcessing}>
+            {(submitting || paymentProcessing) ? <Loader2 className="h-5 w-5 mr-2 animate-spin" /> : <CreditCard className="h-5 w-5 mr-2" />}
+            {paymentProcessing
+              ? 'Confirming Payment...'
+              : isBalanceMode
+                ? `Pay Remaining Balance Online — ${formatCurrency(remainingBalance)}`
+                : paymentType === 'full'
+                  ? `Pay in Full - ${formatCurrency(pricing.total)}`
+                  : `Pay Deposit - ${formatCurrency(pricing.deposit)}`}
+          </Button>
+          {isBalanceMode && (
+            <Button
+              variant="outline"
+              size="lg"
+              className="w-full h-12 text-base border-emerald-300 text-emerald-700 hover:bg-emerald-50 dark:border-emerald-700 dark:text-emerald-400 dark:hover:bg-emerald-950"
+              onClick={() => setCashSelected(true)}
+              disabled={submitting || paymentProcessing}
+            >
+              <Banknote className="h-5 w-5 mr-2" />
+              Pay Remainder in Cash at Event
+            </Button>
+          )}
+          <div className="text-center">
+            <Button variant="link" onClick={() => verifyPayment(false)} disabled={checking} className="text-sm">
+              {checking ? (<><Loader2 className="h-3 w-3 mr-1 animate-spin" /> Checking...</>) : "Already paid? Click here to verify"}
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
