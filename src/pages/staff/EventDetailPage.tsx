@@ -312,7 +312,7 @@ const EventDetailPage: React.FC = () => {
                   : null
               );
               return paymentReadiness ? (
-                <EventPaymentSection readiness={paymentReadiness} />
+                <EventPaymentSection readiness={paymentReadiness} balancePaymentMethod={ev.balance_payment_method ?? null} />
               ) : (
                 <Card><CardContent className="py-6 text-center text-sm text-muted-foreground">No payment data available</CardContent></Card>
               );

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DollarSign, CheckCircle2, Circle, ToggleLeft, ToggleRight, Loader2, RefreshCw, Bell } from 'lucide-react';
+import { DollarSign, CheckCircle2, Circle, ToggleLeft, ToggleRight, Loader2, RefreshCw, Bell, Banknote } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { EventReadiness } from '@/hooks/useEventReadiness';
@@ -11,14 +11,16 @@ import { toast } from 'sonner';
 
 interface EventPaymentSectionProps {
   readiness: EventReadiness;
+  balancePaymentMethod?: string | null;
 }
 
-export const EventPaymentSection: React.FC<EventPaymentSectionProps> = ({ readiness }) => {
+export const EventPaymentSection: React.FC<EventPaymentSectionProps> = ({ readiness, balancePaymentMethod }) => {
   const { isAdmin } = useUserRole();
   const queryClient = useQueryClient();
   const [toggling, setToggling] = useState<string | null>(null);
   const [verifying, setVerifying] = useState(false);
   const [sendingReminder, setSendingReminder] = useState(false);
+  const [markingCash, setMarkingCash] = useState(false);
 
   const handleVerify = async () => {
     setVerifying(true);
@@ -56,6 +58,28 @@ export const EventPaymentSection: React.FC<EventPaymentSectionProps> = ({ readin
       toast.error(`Failed to send reminder: ${err.message || 'Unknown error'}`);
     } finally {
       setSendingReminder(false);
+    }
+  };
+
+  const handleMarkCash = async () => {
+    setMarkingCash(true);
+    try {
+      const { error } = await supabase
+        .from('event_notification_history')
+        .update({
+          balance_paid: true,
+          balance_paid_at: new Date().toISOString(),
+          balance_payment_method: 'cash',
+        })
+        .eq('id', readiness.event_id);
+      if (error) throw error;
+      await queryClient.invalidateQueries({ queryKey: ['event-readiness'] });
+      await queryClient.invalidateQueries({ queryKey: ['event-detail', readiness.event_id] });
+      toast.success('Balance marked as paid in cash');
+    } catch (err: any) {
+      toast.error(`Failed: ${err.message || 'Unknown error'}`);
+    } finally {
+      setMarkingCash(false);
     }
   };
 
@@ -155,9 +179,23 @@ export const EventPaymentSection: React.FC<EventPaymentSectionProps> = ({ readin
               </div>
             </div>
           ))}
-          {/* Balance reminder — shows only when deposit paid but balance still owed */}
+          {/* Cash payment + reminder — shows when deposit paid but balance still owed */}
           {isAdmin && readiness.deposit_paid && !readiness.balance_paid && (
-            <div className="pt-1">
+            <div className="pt-1 space-y-2">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={handleMarkCash}
+                disabled={markingCash}
+                className="w-full text-emerald-700 border-emerald-300 hover:bg-emerald-50 dark:text-emerald-400 dark:border-emerald-700 dark:hover:bg-emerald-950"
+              >
+                {markingCash ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <Banknote className="w-4 h-4 mr-2" />
+                )}
+                Mark Remainder Paid in Cash
+              </Button>
               <Button
                 size="sm"
                 variant="outline"
@@ -172,6 +210,13 @@ export const EventPaymentSection: React.FC<EventPaymentSectionProps> = ({ readin
                 )}
                 Send Balance Reminder
               </Button>
+            </div>
+          )}
+          {/* Cash payment badge — shows after marked paid in cash */}
+          {readiness.balance_paid && (balancePaymentMethod === 'cash') && (
+            <div className="flex items-center gap-1.5 text-xs text-emerald-700 dark:text-emerald-400 pt-1">
+              <Banknote className="w-3.5 h-3.5" />
+              <span>Collected in cash day-of</span>
             </div>
           )}
           {readiness.stripe_payment_intent_id && (
