@@ -25,7 +25,7 @@ import { EventActivityTimeline } from '@/components/staff/event-detail/EventActi
 import { VenuePartnerInvoiceCard } from '@/components/staff/event-detail/VenuePartnerInvoiceCard';
 import { WeddingMessagesPanel } from '@/components/staff/messaging/WeddingMessagesPanel';
 import { VibeSheetReview } from '@/components/staff/event-detail/VibeSheetReview';
-import { useEventReadiness } from '@/hooks/useEventReadiness';
+import { useEventReadiness, EventReadiness } from '@/hooks/useEventReadiness';
 import { getEventStartTime, formatEventTime } from '@/utils/eventTimeHelpers';
 
 const EventDetailPage: React.FC = () => {
@@ -278,11 +278,45 @@ const EventDetailPage: React.FC = () => {
             {event.booking_source === 'venue_partner' && (
               <VenuePartnerInvoiceCard eventId={event.id} venueName={event.venue} />
             )}
-            {readiness ? (
-              <EventPaymentSection readiness={readiness} />
-            ) : (
-              <Card><CardContent className="py-6 text-center text-sm text-muted-foreground">No payment data available</CardContent></Card>
-            )}
+            {(() => {
+              const ev = event as any;
+              const paymentReadiness: EventReadiness | null = readiness ?? (
+                (ev.deposit_amount || ev.balance_due)
+                  ? {
+                      event_id: event.id,
+                      couple_name: event.couple_name ?? '',
+                      event_date: event.event_date ?? '',
+                      event_type: event.event_type ?? '',
+                      venue: event.venue ?? null,
+                      package_type: event.package_type ?? null,
+                      coordinator_name: event.coordinator_name ?? null,
+                      contact_email: event.contact_email ?? '',
+                      contact_phone: event.contact_phone ?? null,
+                      guest_count: event.guest_count ?? null,
+                      notes: event.notes ?? null,
+                      contract_signed: event.contract_signed ?? null,
+                      contract_signed_at: ev.contract_signed_at ?? null,
+                      deposit_paid: ev.deposit_paid ?? null,
+                      deposit_amount: ev.deposit_amount ?? null,
+                      deposit_paid_at: ev.deposit_paid_at ?? null,
+                      balance_paid: ev.balance_paid ?? null,
+                      balance_due: ev.balance_due ?? null,
+                      balance_paid_at: ev.balance_paid_at ?? null,
+                      stripe_payment_intent_id: ev.stripe_payment_intent_id ?? null,
+                      assignment_id: null, vendor_user_id: null, vendor_status: null,
+                      vendor_confirmed: null, vendor_confirmed_at: null, vendor_files_uploaded: null,
+                      vendor_first_name: null, vendor_last_name: null, vendor_company: null,
+                      vendor_type: null, music_sheet_id: null, music_sheet_submitted: null,
+                      first_dance: null, last_dance: null, fully_ready: null, days_until_event: null,
+                    } as EventReadiness
+                  : null
+              );
+              return paymentReadiness ? (
+                <EventPaymentSection readiness={paymentReadiness} />
+              ) : (
+                <Card><CardContent className="py-6 text-center text-sm text-muted-foreground">No payment data available</CardContent></Card>
+              );
+            })()}
           </div>
         </TabsContent>
 
