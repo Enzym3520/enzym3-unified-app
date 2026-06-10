@@ -42,7 +42,7 @@ serve(async (req) => {
       );
     }
 
-    console.log('Authenticated user:', user.id, user.email);
+    console.log('Authenticated user:', user.id);
 
     // Create a service role client to check roles and perform deletion
     const adminClient = createClient(supabaseUrl, supabaseServiceKey);

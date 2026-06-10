@@ -13,7 +13,8 @@ interface FixedGridInputProps {
  * A fixed-count grid of name inputs (e.g., 4 grandparents in a 2x2 grid).
  */
 export const FixedGridInput = ({ label, placeholder, values, count, onChange }: FixedGridInputProps) => {
-  const list = values.length >= count ? values : Array(count).fill('').map((_, i) => values[i] || '');
+  const normalize = (v: unknown): string => typeof v === 'string' ? v : (v && typeof v === 'object' ? ((v as any).name || '') : '');
+  const list = Array(count).fill('').map((_, i) => normalize(values[i]));
 
   // Pair them into rows of 2
   const rows: [number, number][] = [];

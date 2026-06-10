@@ -1,8 +1,12 @@
+import React from 'react';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useEffect, useRef, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
+import { ToastAction } from '@/components/ui/toast';
 import { playNotificationSound } from '@/utils/notificationSound';
+import { buildNotificationHref } from '@/components/staff/notifications/notificationTypeMap';
 
 export interface InAppNotification {
   id: string;
@@ -19,6 +23,9 @@ export interface InAppNotification {
 export const useInAppNotifications = () => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const navigateRef = useRef(navigate);
+  navigateRef.current = navigate;
   const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
 
   // Fetch notifications
@@ -131,9 +138,19 @@ export const useInAppNotifications = () => {
             if (!isMounted) return;
             const newNotification = payload.new as InAppNotification;
             playNotificationSound();
+            const href = buildNotificationHref({
+              type: newNotification.type,
+              wedding_id: newNotification.wedding_id,
+              metadata: newNotification.metadata,
+            });
             toastRef.current({
               title: newNotification.title,
               description: newNotification.content,
+              action: href ? (
+                <ToastAction altText="View" onClick={() => navigateRef.current(href)}>
+                  View
+                </ToastAction>
+              ) : undefined,
             });
             queryClient.invalidateQueries({ queryKey: ['in-app-notifications'] });
           }

@@ -397,19 +397,70 @@ const NotesPanel: React.FC<{ vs: Record<string, unknown> }> = ({ vs }) => {
   );
 };
 
+// ── Print-all view (hidden on screen, expands every section for PDF) ──────────
+
+const PrintSection: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
+  <section className="mb-6 break-inside-avoid">
+    <h3 className="font-semibold text-sm uppercase tracking-wide border-b pb-1 mb-3">{title}</h3>
+    {children}
+  </section>
+);
+
+const PrintAllView: React.FC<{
+  vs: Record<string, unknown>;
+  isWedding: boolean;
+  submittedAt: string | null;
+}> = ({ vs, isWedding, submittedAt }) => (
+  <div className="hidden print:block text-sm">
+    {isWedding ? (
+      <>
+        <PrintSection title="Ceremony"><CeremonyPanel vs={vs} /></PrintSection>
+        <PrintSection title="Reception"><ReceptionPanel vs={vs} /></PrintSection>
+        <PrintSection title="Music Style"><MusicStylePanel vs={vs} /></PrintSection>
+        <PrintSection title="Additional Songs"><AdditionalSongsPanel vs={vs} /></PrintSection>
+        <PrintSection title="Grand Introduction"><GrandIntroPanel vs={vs} /></PrintSection>
+      </>
+    ) : (
+      <>
+        <PrintSection title="Songs"><SongsPanel vs={vs} /></PrintSection>
+        <PrintSection title="Music Style"><MusicStylePanel vs={vs} /></PrintSection>
+        <PrintSection title="Notes"><NotesPanel vs={vs} /></PrintSection>
+      </>
+    )}
+  </div>
+);
+
 // ── Main component ─────────────────────────────────────────────────────────────
 
 export const VibeSheetReview: React.FC<VibeSheetReviewProps> = ({ eventId, eventType, clientEmail }) => {
   const { data: vibeSheet, isLoading } = useQuery({
     queryKey: ['vibe-sheet-staff', eventId],
     queryFn: async () => {
-      const { data, error } = await supabase
+      // Step 1: direct match (eventId is already vibe_sheets.wedding_id)
+      const { data: direct, error } = await supabase
         .from('vibe_sheets')
         .select('*')
         .eq('wedding_id', eventId)
         .maybeSingle();
       if (error) throw error;
-      return data;
+      if (direct) return direct;
+
+      // Step 2: eventId might be event_notification_history.id — resolve to weddings.id
+      const { data: enh } = await supabase
+        .from('event_notification_history')
+        .select('wedding_id')
+        .eq('id', eventId)
+        .maybeSingle();
+      if (enh?.wedding_id) {
+        const { data: viaEnh } = await supabase
+          .from('vibe_sheets')
+          .select('*')
+          .eq('wedding_id', enh.wedding_id)
+          .maybeSingle();
+        if (viaEnh) return viaEnh;
+      }
+
+      return null;
     },
     enabled: !!eventId,
   });
@@ -464,7 +515,7 @@ export const VibeSheetReview: React.FC<VibeSheetReviewProps> = ({ eventId, event
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between flex-wrap gap-2">
+      <div className="flex items-center justify-between flex-wrap gap-2 print:hidden">
         <div>
           <h3 className="font-semibold text-base">Vibe Sheet</h3>
           {submittedAt ? (
@@ -475,10 +526,12 @@ export const VibeSheetReview: React.FC<VibeSheetReviewProps> = ({ eventId, event
         </div>
         <Button variant="outline" size="sm" onClick={() => window.print()} className="gap-2 print:hidden">
           <Printer className="w-4 h-4" />
-          Print
+          Export PDF
         </Button>
       </div>
 
+      {/* Screen: tabbed view */}
+      <div className="print:hidden">
       {isWedding ? (
         <Tabs defaultValue="ceremony" className="space-y-3">
           <TabsList className="flex-wrap h-auto gap-1">
@@ -499,21 +552,25 @@ export const VibeSheetReview: React.FC<VibeSheetReviewProps> = ({ eventId, event
           </Card>
         </Tabs>
       ) : (
-        <Tabs defaultValue="music-style" className="space-y-3">
+        <Tabs defaultValue="songs" className="space-y-3">
           <TabsList className="flex-wrap h-auto gap-1">
-            <TabsTrigger value="music-style">Music Style</TabsTrigger>
             <TabsTrigger value="songs">Songs</TabsTrigger>
+            <TabsTrigger value="music-style">Music Style</TabsTrigger>
             <TabsTrigger value="notes">Notes</TabsTrigger>
           </TabsList>
           <Card>
             <CardContent className="py-4">
-              <TabsContent value="music-style" className="mt-0"><MusicStylePanel vs={vs} /></TabsContent>
               <TabsContent value="songs" className="mt-0"><SongsPanel vs={vs} /></TabsContent>
+              <TabsContent value="music-style" className="mt-0"><MusicStylePanel vs={vs} /></TabsContent>
               <TabsContent value="notes" className="mt-0"><NotesPanel vs={vs} /></TabsContent>
             </CardContent>
           </Card>
         </Tabs>
       )}
+      </div>
+
+      {/* Print: all sections expanded */}
+      <PrintAllView vs={vs} isWedding={isWedding} submittedAt={submittedAt} />
     </div>
   );
 };

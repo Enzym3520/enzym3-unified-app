@@ -79,7 +79,6 @@ export default function LiveConsolePage() {
       } else {
         // Create a new draft session with a unique short code
         const shortCode = generateShortCode();
-        const { data: { session: authSession } } = await supabase.auth.getSession();
 
         // Get event name + dj name
         const { data: event } = await supabase

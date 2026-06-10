@@ -8,6 +8,10 @@ export function toVendorNotificationRoute(route: string | null): string | null {
   if (route === "/") return "/vendor/dashboard";
   // Root with query params like /?event=xxx → /vendor/dashboard?event=xxx
   if (route.startsWith("/?")) return `/vendor/dashboard${route.slice(1)}`;
+  // Client-only routes (/app/*) have no vendor equivalent — fall back to notifications
+  if (route.startsWith("/app/")) return "/vendor/notifications";
+  // Staff-only routes (/staff/*) have no vendor equivalent
+  if (route.startsWith("/staff/")) return "/vendor/notifications";
   return route.replace(/^\//, "/vendor/");
 }
 
@@ -66,7 +70,7 @@ export function getNotificationRoute(
       return "/app/review";
 
     case "review_submitted":
-      return "/staff/reviews";
+      return "/staff/admin-dashboard?tab=reviews";
 
     default:
       return "/notifications";

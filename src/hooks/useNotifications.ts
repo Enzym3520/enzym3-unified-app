@@ -109,7 +109,15 @@ export function useNotifications() {
           toast(String(n.title ?? 'New Notification'), {
             description: n.content ? String(n.content) : undefined,
             duration: 5000,
-            action: route ? { label: 'View', onClick: () => navigate(route) } : undefined,
+            action: route ? {
+              label: 'View',
+              onClick: () => {
+                navigate(route);
+                supabase.from('notifications').update({ is_read: true } as any).eq('id', String(n.id)).then(() => {
+                  setUnreadCount(c => Math.max(0, c - 1));
+                });
+              },
+            } : undefined,
           });
         }
       )

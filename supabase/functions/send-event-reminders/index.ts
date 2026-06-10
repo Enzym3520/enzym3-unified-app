@@ -137,16 +137,20 @@ serve(async (req: Request) => {
     return new Response("ok", { headers: corsHeaders });
   }
 
-  // Auth: check x-cron-secret if CRON_SECRET is configured
+  // Auth: CRON_SECRET must be set — fail closed if missing
   const cronSecret = Deno.env.get("CRON_SECRET");
-  if (cronSecret) {
-    const providedSecret = req.headers.get("x-cron-secret");
-    if (providedSecret !== cronSecret) {
-      return new Response(
-        JSON.stringify({ error: "Unauthorized" }),
-        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-      );
-    }
+  if (!cronSecret) {
+    return new Response(
+      JSON.stringify({ error: "Server misconfiguration" }),
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+    );
+  }
+  const providedSecret = req.headers.get("x-cron-secret");
+  if (providedSecret !== cronSecret) {
+    return new Response(
+      JSON.stringify({ error: "Unauthorized" }),
+      { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+    );
   }
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL");

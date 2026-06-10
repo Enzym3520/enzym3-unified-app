@@ -153,7 +153,7 @@ export const FormWizardProvider = ({ children, initialStep = 1 }: FormWizardProv
       localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
     });
     return () => subscription.unsubscribe();
-  }, [form]);
+  }, [form, currentStep]);
 
   // Warn before leaving if there are unsaved changes
   useEffect(() => {

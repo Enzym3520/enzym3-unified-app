@@ -55,14 +55,13 @@ serve(async (req) => {
 
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
-    const { ipAddress, endpoint = 'default' } = await req.json();
+    const { endpoint = 'default' } = await req.json();
 
-    if (!ipAddress) {
-      return new Response(
-        JSON.stringify({ allowed: false, error: 'IP address required' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
+    // Use real IP from trusted request headers — never accept client-supplied IP
+    const realIp = req.headers.get('CF-Connecting-IP')
+      ?? req.headers.get('X-Forwarded-For')?.split(',')[0]?.trim()
+      ?? req.headers.get('X-Real-IP')
+      ?? 'unknown';
 
     const config = RATE_LIMITS[endpoint] || RATE_LIMITS.default;
     const windowStart = new Date();
@@ -72,7 +71,7 @@ serve(async (req) => {
     const { data: existingLimit, error: fetchError } = await supabase
       .from('rate_limits')
       .select('*')
-      .eq('ip_address', ipAddress)
+      .eq('ip_address', realIp)
       .eq('endpoint', endpoint)
       .gte('window_start', windowStart.toISOString())
       .order('window_start', { ascending: false })
@@ -112,7 +111,7 @@ serve(async (req) => {
       await supabase
         .from('rate_limits')
         .insert({
-          ip_address: ipAddress,
+          ip_address: realIp,
           endpoint: endpoint,
           request_count: 1,
           window_start: new Date().toISOString()

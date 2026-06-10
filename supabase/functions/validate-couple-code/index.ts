@@ -87,13 +87,15 @@ Deno.serve(async (req) => {
     // Normalize: strip any known event-type prefix and match by suffix.
     // Accepts WED-, QCE-, SW16-, BDY-, BNQ-, GRD-, or bare codes (case-insensitive).
     const rawCode = code.trim().toUpperCase();
-    const codeSuffix = rawCode.replace(/^(WED|QCE|SW16|BDY|BNQ|GRD)-/, '');
+    // Sanitize: only alphanumeric and hyphens allowed to prevent .or() injection
+    const safeCode = rawCode.replace(/[^A-Z0-9-]/g, '');
+    const codeSuffix = safeCode.replace(/^(WED|QCE|SW16|BDY|BNQ|GRD)-/, '');
 
-    // Match either the exact raw input or any stored code ending with -<suffix>
+    // Match either the exact sanitized input or any stored code ending with -<suffix>
     const { data: coupleCode, error: codeError } = await supabase
       .from("couple_codes")
       .select(`id, code, wedding_id, expires_at, used_at, active`)
-      .or(`code.eq.${rawCode},code.ilike.%-${codeSuffix}`)
+      .or(`code.eq.${safeCode},code.ilike.%-${codeSuffix}`)
       .maybeSingle();
 
     if (codeError) {

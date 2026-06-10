@@ -101,8 +101,10 @@ export const useUserRole = (): UserRoles => {
 
     // Subscribe to auth changes and invalidate cache
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'USER_UPDATED') {
-        // Clear cache on auth changes
+      if (event === 'SIGNED_OUT') {
+        roleCache.clear();
+        fetchRoles();
+      } else if (event === 'SIGNED_IN' || event === 'USER_UPDATED') {
         if (session?.user) {
           roleCache.delete(session.user.id);
         }

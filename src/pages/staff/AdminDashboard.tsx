@@ -188,7 +188,7 @@ export default function AdminDashboard() {
             <div className="space-y-1">
               <p className="text-xs text-muted-foreground uppercase tracking-wide">Awaiting Deposit</p>
               <p className="text-2xl font-bold text-yellow-700">
-                {revenueSummary.total - revenueSummary.depositsCollected - revenueSummary.venuePartnerGigs}
+                {paymentEvents.filter(n => !n.deposit_paid && n.booking_source !== 'venue_partner').length}
               </p>
               <Badge className="bg-yellow-500/10 text-yellow-700 border-yellow-300 text-xs">
                 Awaiting Deposit

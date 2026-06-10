@@ -23,7 +23,7 @@ export default function LiveRequestsPage() {
   const upcomingEvents = [
     ...assignedEvents
       .filter(e => e.event_date && e.event_date >= today && e.status !== 'declined')
-      .map(e => ({ id: e.id, name: e.couple_name, date: e.event_date, type: e.event_type })),
+      .map(e => ({ id: e.event_id, name: e.couple_name, date: e.event_date, type: e.event_type })),
     ...bookingRequests
       .filter(b => b.event_date && b.event_date >= today && b.status !== 'declined')
       .map(b => ({ id: b.id, name: b.client_name ?? 'Event', date: b.event_date, type: b.event_type })),

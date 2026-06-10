@@ -154,7 +154,7 @@ const Settings = () => {
 
       if (error) throw error;
 
-      const link = `${window.location.origin}/join?token=${(data as any).token}`;
+      const link = `${window.location.origin}/join/${(data as any).token}`;
       setInviteLink(link);
       toast.success('Invite link generated!');
     } catch (err: any) {
@@ -327,12 +327,14 @@ const Settings = () => {
           <div>
             <Label className="text-muted-foreground">Event Date</Label>
             <p className="font-medium">
-              {parseLocalDate(wedding.event_date).toLocaleDateString('en-US', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-              })}
+              {wedding.event_date
+                ? parseLocalDate(wedding.event_date).toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })
+                : 'TBD'}
             </p>
           </div>
           {wedding.venue && (

@@ -216,7 +216,17 @@ export const useVibeSheet = () => {
         setQuinceReceptionEvents(Array.isArray(vs.quince_reception_events) ? vs.quince_reception_events : DEFAULT_QUINCE_RECEPTION_EVENTS);
         setAgendaItems(Array.isArray(vs.agenda_items) ? vs.agenda_items : DEFAULT_AGENDA_ITEMS);
         setAnnouncements(Array.isArray(vs.announcements) ? vs.announcements : []);
-        setPreferences((vs.preferences as MusicPreferences) || {});
+        // Normalize preferences — old saves may have stored array fields as JSON strings
+        const rawPrefs = (vs.preferences as MusicPreferences) || {};
+        const parseIfJsonString = (val: unknown): unknown => {
+          if (typeof val !== 'string') return val;
+          try { const p = JSON.parse(val); return Array.isArray(p) ? p : val; } catch { return val; }
+        };
+        setPreferences({
+          ...rawPrefs,
+          dislikes: parseIfJsonString(rawPrefs.dislikes ?? rawPrefs.do_not_play) as MusicPreferences['dislikes'],
+          other_styles: parseIfJsonString(rawPrefs.other_styles) as MusicPreferences['other_styles'],
+        });
         setGroupDances((vs.group_dances as GroupDances) || {});
         setAdditionalSongs(Array.isArray(vs.additional_songs) ? vs.additional_songs : []);
         setGrandIntro((vs.grand_intro as GrandIntroEntry) || {});

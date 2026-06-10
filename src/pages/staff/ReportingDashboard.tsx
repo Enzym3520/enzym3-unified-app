@@ -93,7 +93,7 @@ function EventIntelligencePanel() {
           <h3 className="text-lg font-semibold mb-2">No Post-Event Reports Yet</h3>
           <p className="text-muted-foreground max-w-md mx-auto">
             Intelligence builds up as coordinators file post-event reports. Reports can be filed from the{' '}
-            <Link to="/notifications" className="text-primary underline-offset-2 hover:underline">Notification History</Link>{' '}
+            <Link to="/staff/notification-history" className="text-primary underline-offset-2 hover:underline">Notification History</Link>{' '}
             page after an event has passed.
           </p>
         </CardContent>

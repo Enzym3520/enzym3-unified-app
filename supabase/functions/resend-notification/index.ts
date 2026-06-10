@@ -468,8 +468,13 @@ Deno.serve(async (req) => {
       updateData.edit_count = newEditCount;
       updateData.edited_at = new Date().toISOString();
       if (body.updatedData) {
-        // Persist edited fields
-        Object.assign(updateData, body.updatedData);
+        // Allowlist — only permit safe, known event fields to be persisted
+        const ALLOWED_UPDATE_FIELDS = ['music_sheet', 'timeline', 'notes', 'additional_notes', 'special_requests', 'start_time', 'end_time', 'venue'];
+        const safeUpdate: Record<string, unknown> = {};
+        for (const key of ALLOWED_UPDATE_FIELDS) {
+          if (key in (body.updatedData ?? {})) safeUpdate[key] = body.updatedData[key];
+        }
+        Object.assign(updateData, safeUpdate);
       }
     }
 

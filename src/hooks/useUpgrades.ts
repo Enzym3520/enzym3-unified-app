@@ -121,7 +121,7 @@ export function useUpgrades() {
   useEffect(() => {
     if (!wedding?.id) return;
     const channel = supabase
-      .channel('upgrade-orders-changes')
+      .channel(`upgrade-orders-${wedding.id}`)
       .on('postgres_changes', {
         event: '*', schema: 'public', table: 'upgrade_orders',
         filter: `wedding_id=eq.${wedding.id}`
