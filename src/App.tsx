@@ -44,6 +44,7 @@ import UpgradesManagement from '@/pages/staff/UpgradesManagement';
 import AdminDashboard from '@/pages/staff/AdminDashboard';
 import ReportingDashboard from '@/pages/staff/ReportingDashboard';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { NiaChatBubble } from '@/components/NiaChatBubble';
 import VendorDashboard from '@/pages/vendor/DashboardPage';
 import VendorCalendar from '@/pages/vendor/CalendarPage';
 import VendorMeetings from '@/pages/vendor/MeetingsPage';
@@ -150,6 +151,7 @@ export default function App() {
                 </Route>
               </Routes>
             </BrowserRouter>
+            <NiaChatBubble />
             </AuthProvider>
           </KeyboardShortcutsProvider>
         </CartProvider>
