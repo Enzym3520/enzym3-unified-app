@@ -8,10 +8,13 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { useInAppNotifications } from '@/hooks/useInAppNotifications';
+import { useNotificationRealtime } from '@/hooks/useNotificationRealtime';
 import { NotificationDropdown } from './NotificationDropdown';
 
 export const NotificationBell = () => {
   const { unreadCount } = useInAppNotifications();
+  // Single realtime subscription for the whole staff app (bell is always mounted).
+  useNotificationRealtime();
   const [open, setOpen] = useState(false);
 
   return (

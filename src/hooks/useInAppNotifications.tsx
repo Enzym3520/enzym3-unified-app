@@ -1,12 +1,6 @@
-import React from 'react';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { useEffect, useRef, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
-import { ToastAction } from '@/components/ui/toast';
-import { playNotificationSound } from '@/utils/notificationSound';
-import { buildNotificationHref } from '@/components/staff/notifications/notificationTypeMap';
 
 export interface InAppNotification {
   id: string;
@@ -23,10 +17,6 @@ export interface InAppNotification {
 export const useInAppNotifications = () => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const navigate = useNavigate();
-  const navigateRef = useRef(navigate);
-  navigateRef.current = navigate;
-  const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
 
   // Fetch notifications
   const { data: notifications = [], isLoading } = useQuery({
@@ -112,81 +102,10 @@ export const useInAppNotifications = () => {
     },
   });
 
-  // Stable ref for toast so it doesn't cause channel re-subscription
-  const toastRef = useRef(toast);
-  toastRef.current = toast;
-
-  // Real-time subscription with proper cleanup
-  useEffect(() => {
-    let isMounted = true;
-
-    const setup = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user || !isMounted) return;
-
-      const channel = supabase
-        .channel('notifications-channel')
-        .on(
-          'postgres_changes',
-          {
-            event: 'INSERT',
-            schema: 'public',
-            table: 'notifications',
-            filter: `user_id=eq.${user.id}`,
-          },
-          (payload) => {
-            if (!isMounted) return;
-            const newNotification = payload.new as InAppNotification;
-            playNotificationSound();
-            const href = buildNotificationHref({
-              type: newNotification.type,
-              wedding_id: newNotification.wedding_id,
-              metadata: newNotification.metadata,
-            });
-            toastRef.current({
-              title: newNotification.title,
-              description: newNotification.content,
-              action: href ? (
-                <ToastAction altText="View" onClick={() => navigateRef.current(href)}>
-                  View
-                </ToastAction>
-              ) : undefined,
-            });
-            queryClient.invalidateQueries({ queryKey: ['in-app-notifications'] });
-          }
-        )
-        .on(
-          'postgres_changes',
-          {
-            event: 'UPDATE',
-            schema: 'public',
-            table: 'notifications',
-            filter: `user_id=eq.${user.id}`,
-          },
-          () => {
-            if (!isMounted) return;
-            queryClient.invalidateQueries({ queryKey: ['in-app-notifications'] });
-          }
-        )
-        .subscribe((status, err) => {
-          if (import.meta.env.DEV && (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT')) {
-            console.warn('In-app notifications channel error:', status, err);
-          }
-        });
-
-      channelRef.current = channel;
-    };
-
-    setup();
-
-    return () => {
-      isMounted = false;
-      if (channelRef.current) {
-        supabase.removeChannel(channelRef.current);
-        channelRef.current = null;
-      }
-    };
-  }, [queryClient]);
+  // NOTE: the realtime subscription + toast/sound side-effect lives in
+  // useNotificationRealtime (mounted once in NotificationBell). Keeping it out of
+  // this data hook is what lets the bell, dropdown, and every NotificationItem row
+  // call useInAppNotifications without each opening its own duplicate channel.
 
   const unreadCount = notifications.filter(n => !n.is_read).length;
 

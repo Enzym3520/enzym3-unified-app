@@ -112,7 +112,10 @@ export const buildNotificationHref = (notification: {
   }
   if (cfg.staticRoute) return cfg.staticRoute;
 
-  return null;
+  // Fallback: a notification with no event scope and no static route should still
+  // take the user somewhere on click. Land them on the notifications page rather
+  // than silently doing nothing (the old behavior for unmapped/metadata-less types).
+  return '/staff/notifications';
 };
 
 export const isFromVibePlanner = (notification: {
