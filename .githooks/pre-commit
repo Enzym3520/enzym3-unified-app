@@ -1,0 +1,29 @@
+#!/bin/sh
+# Pre-commit guard for enzym3-unified-app.
+#
+# Blocks a commit only on real failures:
+#   - ESLint ERRORS (warnings are allowed — we keep a small cosmetic backlog)
+#   - TypeScript errors (these also block the Lovable deploy, so catch them here)
+#
+# Skip in a pinch with:  git commit --no-verify
+set -e
+cd "$(git rev-parse --show-toplevel)"
+
+# Only the staged TS/TSX files (fast); skip entirely if none are staged.
+STAGED=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(ts|tsx)$' || true)
+[ -z "$STAGED" ] && exit 0
+
+echo "▶ pre-commit: eslint (errors block; warnings ok)…"
+# --max-warnings=-1 => unlimited warnings allowed; eslint still exits non-zero on errors.
+if ! npx eslint $STAGED --max-warnings=-1; then
+  echo "✖ ESLint errors above. Fix them, or 'git commit --no-verify' to skip."
+  exit 1
+fi
+
+echo "▶ pre-commit: tsc --noEmit (TS errors block the Lovable deploy)…"
+if ! npx tsc --noEmit; then
+  echo "✖ TypeScript errors above. These block the Lovable build. Fix, or --no-verify."
+  exit 1
+fi
+
+echo "✓ pre-commit checks passed"
