@@ -4,7 +4,6 @@ import { SidebarProvider, SidebarTrigger, SidebarInset } from '@/components/ui/s
 import { AppSidebar } from '@/components/staff/AppSidebar';
 import { ThemeToggle } from '@/components/staff/ThemeToggle';
 import { NotificationBell } from '@/components/staff/notifications/NotificationBell';
-import { useIsMobile } from '@/hooks/use-mobile';
 
 import { LogOut, HelpCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -12,9 +11,7 @@ import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { usePushNotifications } from '@/hooks/usePushNotifications';
-import { useUserRole } from '@/hooks/useUserRole';
 import { FeedbackButton } from '@/components/staff/feedback/FeedbackButton';
-import { useLocation } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 
 export function StaffShell() {
@@ -24,14 +21,10 @@ export function StaffShell() {
     return () => document.documentElement.classList.remove('portal-staff');
   }, []);
 
-  const isMobile = useIsMobile();
   const navigate = useNavigate();
-  const location = useLocation();
   const { toast } = useToast();
-  const { isSupported } = usePushNotifications();
-  const { isAdmin, isVendor } = useUserRole();
+  usePushNotifications(); // keep the call (registers push); return value unused here
   const queryClient = useQueryClient();
-  const isVendorRoute = location.pathname.startsWith('/staff/vendor');
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();

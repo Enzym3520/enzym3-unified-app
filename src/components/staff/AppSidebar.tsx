@@ -1,7 +1,7 @@
 import React from 'react';
 import logoRed from '@/assets/logo-red.png';
-import { NavLink, useLocation, useSearchParams } from 'react-router-dom';
-import { Home, FileText, History, Users, X, Calendar, Ban, User, Package, Bell, BarChart3, Shield, MessageSquare, Settings, Video, Download, Sparkles } from 'lucide-react';
+import { NavLink, useLocation } from 'react-router-dom';
+import { Home, FileText, History, Users, X, Calendar, Package, Bell, BarChart3, Shield, MessageSquare, Settings, Download, Sparkles } from 'lucide-react';
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, useSidebar } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -9,13 +9,11 @@ import { useUserRole } from '@/hooks/useUserRole';
 import { useInstallPrompt } from '@/hooks/useInstallPrompt';
 
 export function AppSidebar() {
-  const { state, setOpenMobile } = useSidebar();
+  const { setOpenMobile } = useSidebar();
   const location = useLocation();
-  const [searchParams] = useSearchParams();
   const currentPath = location.pathname;
-  const currentTab = searchParams.get('tab');
   const isMobile = useIsMobile();
-  const { isAdmin, isSuperAdmin, isModerator, isVendor, isLoading: rolesLoading } = useUserRole();
+  const { isAdmin, isSuperAdmin, isModerator } = useUserRole();
   const { canInstall, promptInstall, isInstalled } = useInstallPrompt();
 
   const isActive = (url: string) => {
