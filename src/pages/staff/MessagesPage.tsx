@@ -38,7 +38,7 @@ const MessagesPage: React.FC = () => {
   const [selectedName, setSelectedName] = useState('');
   const [search, setSearch] = useState('');
   const [newDMOpen, setNewDMOpen] = useState(false);
-  const [mobileDirection, setMobileDirection] = useState<'forward' | 'back'>('forward');
+  const [, setMobileDirection] = useState<'forward' | 'back'>('forward');
   const isMobile = useIsMobile();
 
   // Event threads

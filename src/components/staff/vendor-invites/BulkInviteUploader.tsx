@@ -36,8 +36,7 @@ export function BulkInviteUploader() {
     reader.onload = (event) => {
       const text = event.target?.result as string;
       const lines = text.split('\n').filter(line => line.trim());
-      const headers = lines[0].split(',').map(h => h.trim());
-      
+
       const data: BulkInviteRow[] = lines.slice(1).map(line => {
         const values = line.split(',').map(v => v.trim());
         return {

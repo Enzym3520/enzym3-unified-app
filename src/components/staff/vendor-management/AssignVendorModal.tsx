@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useCreateAssignment } from '@/hooks/useAdminAssignments';
-import { useForm } from 'react-hook-form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -34,13 +33,6 @@ const AssignVendorModal = ({ isOpen, onClose, eventId, eventDate, vendorType }: 
   const [selectedVendorId, setSelectedVendorId] = useState<string>('');
   const [notes, setNotes] = useState('');
   const createAssignment = useCreateAssignment();
-
-  const form = useForm({
-    defaultValues: {
-      vendorId: '',
-      notes: '',
-    },
-  });
 
   // Fetch available vendors
   const { data: vendors, isLoading } = useQuery({

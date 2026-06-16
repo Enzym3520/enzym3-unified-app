@@ -103,8 +103,6 @@ const ContactsTableView = ({ contacts, filters, onContactUpdate, selectedContact
   const handleSelectAll = () => {
     if (selectedContacts.length === paginatedContacts.length) {
       // Deselect all on current page
-      const currentPageIds = paginatedContacts.map(c => c.id);
-      const remainingSelected = selectedContacts.filter(c => !currentPageIds.includes(c.id));
       paginatedContacts.forEach(contact => {
         onSelectionChange?.(contact.id, false);
       });

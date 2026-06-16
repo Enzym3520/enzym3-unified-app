@@ -188,8 +188,6 @@ export const getPopularTags = (contacts: Contact[], limit: number = 10): Array<{
 };
 
 export const suggestTagsForContact = (contact: Contact, allContacts: Contact[]): string[] => {
-  const suggestions: string[] = [];
-  
   // Suggest tags based on similar contacts
   const similarContacts = allContacts.filter(c => 
     c.id !== contact.id && 

@@ -84,7 +84,7 @@ export const WeddingMessagesPanel = ({ weddingId, coupleName }: WeddingMessagesP
   const [showScrollBtn, setShowScrollBtn] = useState(false);
   const isMobile = useIsMobile();
 
-  const { messages, isLoading, sendMessage, isSending, markAsRead, currentUserRole, currentUserId } = useWeddingMessages({ weddingId, enabled: !!weddingId });
+  const { messages, isLoading, sendMessage, isSending, markAsRead, currentUserId } = useWeddingMessages({ weddingId, enabled: !!weddingId });
 
   const scrollToBottom = useCallback(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;

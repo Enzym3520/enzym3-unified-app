@@ -80,7 +80,6 @@ export const useKeyboardShortcuts = (shortcuts: KeyboardShortcut[]) => {
           const ctrlMatches = shortcut.ctrlKey ? event.ctrlKey : true;
           const metaMatches = shortcut.metaKey ? (isMac ? event.metaKey : event.ctrlKey) : true;
           const shiftMatches = shortcut.shiftKey ? event.shiftKey : !event.shiftKey;
-          const altMatches = shortcut.altKey ? event.altKey : !event.altKey;
 
           // For modifier shortcuts, require the modifier
           const requiresModifier = shortcut.ctrlKey || shortcut.metaKey;

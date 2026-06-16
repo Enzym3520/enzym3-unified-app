@@ -181,7 +181,7 @@ const Uploads = () => {
   const handleSendNotification = async (itemId: string, itemType: 'file' | 'link') => {
     setSendingNotification(itemId);
     try {
-      const { data, error } = await supabase.functions.invoke('send-file-notification', {
+      const { error } = await supabase.functions.invoke('send-file-notification', {
         body: { item_id: itemId, item_type: itemType }
       });
 

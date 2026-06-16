@@ -76,11 +76,11 @@ const Upgrades = () => {
     loading, wedding, eventType, upgradeOrders,
     checkoutOpen, setCheckoutOpen,
     emeraldDialogOpen, setEmeraldDialogOpen, emeraldChoice, setEmeraldChoice,
-    notes, setNotes, submitting, payingWithCard,
-    deleteDialogOpen, setDeleteDialogOpen, orderToDelete, deleteReason, setDeleteReason, deleting,
+    notes, setNotes, payingWithCard,
+    deleteDialogOpen, setDeleteDialogOpen, deleteReason, setDeleteReason, deleting,
     selectedColors, colorNotes, setColorNotes, monogramNumber, setMonogramNumber,
     handleColorToggle, openEmeraldDialog, handleEmeraldSelection,
-    handleSubmitOrder, handlePayWithCard, handleDeleteRequest, openDeleteDialog,
+    handlePayWithCard, handleDeleteRequest, openDeleteDialog,
     cart, addToCart, cartTotal, isInCart,
   } = useUpgrades();
 

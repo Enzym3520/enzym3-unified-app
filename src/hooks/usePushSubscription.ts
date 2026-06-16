@@ -26,11 +26,6 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
   return outputArray;
 }
 
-function uint8ArrayToBase64Url(arr: Uint8Array): string {
-  let binary = '';
-  for (const byte of arr) binary += String.fromCharCode(byte);
-  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-}
 
 export function getPushPref(): boolean {
   try {

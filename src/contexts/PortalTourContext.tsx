@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef, ReactNode } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { driver, DriveStep, Driver } from 'driver.js';
 import 'driver.js/dist/driver.css';
 import { getTourSteps, getTourSections, TourStep } from '@/config/portalTourSteps';
@@ -50,7 +50,6 @@ export const PortalTourProvider = ({ children }: { children: ReactNode }) => {
   const [hasCompletedTour, setHasCompletedTour] = useState(false);
   const [eventType, setEventType] = useState<string | undefined>(undefined);
   const navigate = useNavigate();
-  const location = useLocation();
   const driverRef = useRef<Driver | null>(null);
   const currentStepsRef = useRef<TourStep[]>([]);
   const isNavigatingRef = useRef(false);
