@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
@@ -22,21 +22,17 @@ export const TimeSlotPicker = ({ selectedDate, onTimeSelect, selectedTime, vendo
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
-  useEffect(() => {
-    loadAvailableSlots();
-  }, [selectedDate]);
-
-  const loadAvailableSlots = async () => {
+  const loadAvailableSlots = useCallback(async () => {
     setLoading(true);
     try {
       const dateStr = selectedDate.toISOString().split('T')[0];
-      
+
       const { data, error } = await supabase.functions.invoke('get-available-slots', {
         body: { date: dateStr, vendor_id: vendorId }
       });
 
       if (error) throw error;
-      
+
       setSlots(data.slots || []);
     } catch (error) {
       console.error('Error loading slots:', error);
@@ -48,7 +44,13 @@ export const TimeSlotPicker = ({ selectedDate, onTimeSelect, selectedTime, vendo
     } finally {
       setLoading(false);
     }
-  };
+    // Reload whenever the date OR the vendor changes — previously vendorId changes
+    // were missed, leaving stale slots from the prior vendor.
+  }, [selectedDate, vendorId, toast]);
+
+  useEffect(() => {
+    loadAvailableSlots();
+  }, [loadAvailableSlots]);
 
   if (loading) {
     return (

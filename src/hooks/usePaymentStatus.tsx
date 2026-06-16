@@ -51,6 +51,9 @@ export function usePaymentStatus(): PaymentStatusResult {
     checkedRef.current = true;
 
     checkDepositStatus();
+    // checkDepositStatus reads only the deps already listed; the checkedRef guard
+    // above makes it run once per mount/user, so adding it as a dep is unnecessary.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, authLoading, isContractPage, hasPaymentParam]);
 
   const checkDepositStatus = async () => {

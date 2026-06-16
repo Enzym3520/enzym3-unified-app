@@ -56,6 +56,8 @@ export const FormSubmissionsList: React.FC = () => {
 
   useEffect(() => {
     fetchSubmissions();
+    // Runs once on mount; fetchSubmissions has no reactive inputs.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const filteredSubmissions = submissions.filter(submission => {
