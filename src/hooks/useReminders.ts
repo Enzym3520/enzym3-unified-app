@@ -114,10 +114,13 @@ export const useReminders = () => {
     };
   };
 
-  // Real-time subscription
+  // Real-time subscription. Unique channel name per mount: this hook is used by
+  // more than one component (RemindersView + CoordinatorApproval), and a shared
+  // static name would let them collide / tear down each other's subscription.
   useEffect(() => {
+    const suffix = Math.random().toString(36).slice(2);
     const channel = supabase
-      .channel('reminders-realtime')
+      .channel(`reminders-realtime-${suffix}`)
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'reminders' },

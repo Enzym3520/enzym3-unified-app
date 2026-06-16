@@ -217,10 +217,13 @@ export const useContactsImproved = () => {
     [queryClient]
   );
 
-  // Real-time subscription with optimistic updates
+  // Real-time subscription with optimistic updates.
+  // Unique channel name per mount to avoid collisions if this hook is ever used
+  // by more than one component (the shared static name was a latent footgun).
   useEffect(() => {
+    const suffix = Math.random().toString(36).slice(2);
     const channel = supabase
-      .channel('contacts-realtime')
+      .channel(`contacts-realtime-${suffix}`)
       .on(
         'postgres_changes',
         {

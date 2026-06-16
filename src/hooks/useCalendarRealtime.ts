@@ -6,8 +6,9 @@ export function useCalendarRealtime() {
   const queryClient = useQueryClient();
 
   useEffect(() => {
+    const suffix = Math.random().toString(36).slice(2);
     const channel = supabase
-      .channel('calendar-realtime')
+      .channel(`calendar-realtime-${suffix}`)
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'event_notification_history' },
