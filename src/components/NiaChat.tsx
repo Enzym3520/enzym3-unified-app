@@ -56,12 +56,6 @@ export function NiaChat({ onClose }: NiaChatProps) {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Show welcome message on first open
-  useEffect(() => {
-    if (messages.length === 0) {
-      // Handled via empty state below
-    }
-  }, []);
 
   const handleSend = async () => {
     const text = input.trim();

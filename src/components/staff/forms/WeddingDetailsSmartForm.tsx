@@ -82,7 +82,7 @@ const WeddingDetailsSmartForm: React.FC<WeddingDetailsSmartFormProps> = ({ initi
 
   useEffect(() => {
     form.reset(mapInitialToSmartSchema(initialData));
-  }, [initialData]);
+  }, [initialData, form]);
 
   const { submit } = useWeddingDetailsSubmission();
 

@@ -68,6 +68,11 @@ export const SignaturePad: React.FC<SignaturePadProps> = ({
       window.removeEventListener("resize", resize);
       endEvents.forEach((evt) => canvas.removeEventListener(evt, exportData));
     };
+    // Intentionally only re-init on height change. Adding `value` would recreate
+    // the pad on every stroke (stroke → onChange → parent updates value → re-run);
+    // `value` is read once for the initial redraw, and external clears are handled
+    // by the separate effect below.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [height]);
 
   useEffect(() => {
