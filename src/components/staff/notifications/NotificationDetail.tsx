@@ -14,11 +14,8 @@ import { Badge } from '@/components/ui/badge';
 import { InAppNotification } from '@/hooks/useInAppNotifications';
 import { MusicSheetChangelog } from './MusicSheetChangelog';
 import { ExternalLink } from 'lucide-react';
-import {
-  getNotificationConfig,
-  buildNotificationHref,
-  isFromVibePlanner,
-} from './notificationTypeMap';
+import { getNotificationConfig, isFromVibePlanner } from './notificationTypeMap';
+import { resolveNotificationRoute } from '@/utils/notificationRouting';
 
 interface NotificationDetailProps {
   notification: InAppNotification;
@@ -32,11 +29,8 @@ export const NotificationDetail = ({ notification, open, onOpenChange }: Notific
   const fromVibePlanner = isFromVibePlanner(notification);
 
   const handleNavigate = () => {
-    const href = buildNotificationHref(notification);
-    if (href) {
-      navigate(href);
-      onOpenChange(false);
-    }
+    navigate(resolveNotificationRoute(notification, 'staff'));
+    onOpenChange(false);
   };
 
   return (
@@ -128,15 +122,11 @@ export const NotificationDetail = ({ notification, open, onOpenChange }: Notific
               </>
             )}
 
-          {buildNotificationHref(notification) && (
-            <>
-              <Separator />
-              <Button onClick={handleNavigate} className="w-full">
-                <ExternalLink className="w-4 h-4 mr-2" />
-                View Full Details
-              </Button>
-            </>
-          )}
+          <Separator />
+          <Button onClick={handleNavigate} className="w-full">
+            <ExternalLink className="w-4 h-4 mr-2" />
+            View Full Details
+          </Button>
         </div>
       </SheetContent>
     </Sheet>

@@ -5,11 +5,8 @@ import { cn } from '@/lib/utils';
 import { useInAppNotifications, InAppNotification } from '@/hooks/useInAppNotifications';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import {
-  getNotificationConfig,
-  buildNotificationHref,
-  isFromVibePlanner,
-} from './notificationTypeMap';
+import { getNotificationConfig, isFromVibePlanner } from './notificationTypeMap';
+import { resolveNotificationRoute } from '@/utils/notificationRouting';
 
 interface NotificationItemProps {
   notification: InAppNotification;
@@ -28,8 +25,7 @@ export const NotificationItem = ({ notification, compact = false, onNavigate }: 
     if (!notification.is_read) {
       markAsRead(notification.id);
     }
-    const href = buildNotificationHref(notification);
-    if (href) navigate(href);
+    navigate(resolveNotificationRoute(notification, 'staff'));
     onNavigate?.();
   };
 

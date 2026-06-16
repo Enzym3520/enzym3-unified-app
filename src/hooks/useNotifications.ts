@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import type { RealtimePostgresInsertPayload } from '@supabase/supabase-js';
-import { getNotificationRoute } from '@/utils/notificationRoutes';
+import { resolveNotificationRoute } from '@/utils/notificationRouting';
 
 interface Notification {
   id: string;
@@ -101,10 +101,13 @@ export function useNotifications() {
           const n = payload.new;
           setUnreadCount((c) => c + 1);
           playSound();
-          const route = getNotificationRoute(
-            String(n.type ?? ''),
-            (n.metadata as Record<string, any>) ?? null,
-            n.wedding_id ? String(n.wedding_id) : null,
+          const route = resolveNotificationRoute(
+            {
+              type: String(n.type ?? ''),
+              metadata: (n.metadata as Record<string, any>) ?? null,
+              wedding_id: n.wedding_id ? String(n.wedding_id) : null,
+            },
+            'client',
           );
           toast(String(n.title ?? 'New Notification'), {
             description: n.content ? String(n.content) : undefined,

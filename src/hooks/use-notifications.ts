@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import { getNotificationRoute } from "@/utils/notificationRoutes";
+import { resolveNotificationRoute } from "@/utils/notificationRouting";
 import { playNotificationSound } from "@/utils/notificationSound";
 
 export interface Notification {
@@ -54,7 +54,7 @@ export function useNotifications() {
           const n = payload.new as any;
           if (n) {
             playNotificationSound();
-            const route = getNotificationRoute(n.type, n.metadata, n.wedding_id);
+            const route = resolveNotificationRoute(n, "vendor");
             toast(n.title || "New notification", {
               description: n.content || undefined,
               action: route ? { label: "View", onClick: () => navigate(route) } : undefined,

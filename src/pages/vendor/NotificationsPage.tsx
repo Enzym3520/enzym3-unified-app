@@ -12,7 +12,7 @@ import {
   useDeleteNotification, useClearAllRead, type Notification,
 } from "@/hooks/use-notifications";
 import { EmptyState } from "@/components/vendor/EmptyState";
-import { getNotificationRoute, toVendorNotificationRoute } from "@/utils/notificationRoutes";
+import { resolveNotificationRoute } from "@/utils/notificationRouting";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem,
@@ -89,9 +89,7 @@ export default function NotificationsPage() {
 
   const handleNotificationClick = (n: Notification) => {
     if (!n.is_read) markRead.mutate(n.id);
-    const rawRoute = getNotificationRoute(n.type, n.metadata, n.wedding_id);
-    const route = toVendorNotificationRoute(rawRoute);
-    if (route) navigate(route);
+    navigate(resolveNotificationRoute(n, "vendor"));
   };
 
   const unreadCount = notifications.filter((n) => !n.is_read).length;

@@ -67,56 +67,9 @@ export const getNotificationConfig = (type: string): NotificationTypeConfig => {
   return NOTIFICATION_TYPE_MAP[type] || { Icon: Package };
 };
 
-/**
- * Build the destination URL for a notification. Prefers metadata.wedding_id
- * + metadata.target_tab, falls back to the type's default tab or static route.
- */
-export const buildNotificationHref = (notification: {
-  type: string;
-  wedding_id?: string | null;
-  metadata?: Record<string, any> | null;
-}): string | null => {
-  const cfg = getNotificationConfig(notification.type);
-  const meta = notification.metadata || {};
-  // Vibe Planner sometimes stores the wedding reference as enh_id or event_id
-  // in metadata, with the top-level column left null. Honor all of them.
-  const weddingId =
-    meta.wedding_id || notification.wedding_id || meta.enh_id || meta.event_id;
-  // Vibe Planner's target_tab vocabulary doesn't match this app's modal tabs.
-  // Normalize to existing TabsTrigger values; fall back to type's defaultTab.
-  const TAB_ALIAS: Record<string, string> = {
-    payments: 'upgrades',
-    payment: 'upgrades',
-    contract: 'forms',
-    contracts: 'forms',
-    files: 'forms',
-    file: 'forms',
-    documents: 'forms',
-    'vibe-sheet': 'music',
-    vibesheet: 'music',
-    vibe_sheet: 'music',
-    music_sheet: 'music',
-    'music-sheet': 'music',
-    meetings: 'overview',
-    meeting: 'overview',
-  };
-  const rawTab = meta.target_tab || cfg.defaultTab;
-  const tab = rawTab ? (TAB_ALIAS[rawTab] || rawTab) : undefined;
-
-  if (weddingId) {
-    if (cfg.eventRoute) {
-      return `/staff/event/${weddingId}`;
-    }
-    const qs = tab ? `&tab=${encodeURIComponent(tab)}` : '';
-    return `/staff/contacts?wedding_id=${weddingId}${qs}`;
-  }
-  if (cfg.staticRoute) return cfg.staticRoute;
-
-  // Fallback: a notification with no event scope and no static route should still
-  // take the user somewhere on click. Land them on the notifications page rather
-  // than silently doing nothing (the old behavior for unmapped/metadata-less types).
-  return '/staff/notifications';
-};
+// NOTE: notification deep-link routing now lives in a single portal-aware source
+// of truth at src/utils/notificationRouting.ts (resolveNotificationRoute). This
+// file only owns icon/config + Vibe Planner detection for the staff UI.
 
 export const isFromVibePlanner = (notification: {
   metadata?: Record<string, any> | null;

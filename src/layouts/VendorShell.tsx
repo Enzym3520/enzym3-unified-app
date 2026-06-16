@@ -10,7 +10,7 @@ import { NotificationBadge } from "@/components/vendor/notifications/Notificatio
 import { OfflineBanner } from "@/components/vendor/OfflineBanner";
 import { unlockNotificationSound, playNotificationSound } from "@/utils/notificationSound";
 import { supabase } from "@/integrations/supabase/client";
-import { getNotificationRoute, toVendorNotificationRoute } from "@/utils/notificationRoutes";
+import { resolveNotificationRoute } from "@/utils/notificationRouting";
 import { toast } from "sonner";
 
 export function VendorShell() {
@@ -33,11 +33,13 @@ export function VendorShell() {
           const n = payload.new as { title?: string; content?: string; type?: string; metadata?: Record<string, unknown>; wedding_id?: string } | null;
           if (!n) return;
           playNotificationSound();
-          const rawRoute = getNotificationRoute(n.type ?? "", n.metadata ?? null, n.wedding_id);
-          const route = toVendorNotificationRoute(rawRoute);
+          const route = resolveNotificationRoute(
+            { type: n.type ?? "", metadata: (n.metadata as Record<string, any>) ?? null, wedding_id: n.wedding_id ?? null },
+            "vendor",
+          );
           toast(n.title || "New notification", {
             description: n.content || undefined,
-            action: route ? { label: "View", onClick: () => navigate(route) } : undefined,
+            action: { label: "View", onClick: () => navigate(route) },
           });
         }
       )

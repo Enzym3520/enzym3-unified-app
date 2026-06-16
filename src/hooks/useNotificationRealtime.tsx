@@ -5,7 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { ToastAction } from '@/components/ui/toast';
 import { playNotificationSound } from '@/utils/notificationSound';
-import { buildNotificationHref } from '@/components/staff/notifications/notificationTypeMap';
+import { resolveNotificationRoute } from '@/utils/notificationRouting';
 import type { InAppNotification } from '@/hooks/useInAppNotifications';
 
 /**
@@ -57,19 +57,15 @@ export const useNotificationRealtime = () => {
             if (!isMounted) return;
             const newNotification = payload.new as InAppNotification;
             playNotificationSound();
-            const href = buildNotificationHref({
-              type: newNotification.type,
-              wedding_id: newNotification.wedding_id,
-              metadata: newNotification.metadata,
-            });
+            const href = resolveNotificationRoute(newNotification, 'staff');
             toastRef.current({
               title: newNotification.title,
               description: newNotification.content,
-              action: href ? (
+              action: (
                 <ToastAction altText="View" onClick={() => navigateRef.current(href)}>
                   View
                 </ToastAction>
-              ) : undefined,
+              ),
             });
             queryClient.invalidateQueries({ queryKey: ['in-app-notifications'] });
           }
