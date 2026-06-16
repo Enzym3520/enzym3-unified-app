@@ -58,7 +58,7 @@ export const VenuePartnerInvoiceCard: React.FC<VenuePartnerInvoiceCardProps> = (
   const { data: invoice, isLoading } = useQuery<InvoiceRow | null>({
     queryKey: ['invoices', eventId],
     queryFn: async () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       const { data, error } = await (supabase as any)
         .from('invoices')
         .select('*')
@@ -106,7 +106,7 @@ export const VenuePartnerInvoiceCard: React.FC<VenuePartnerInvoiceCardProps> = (
       ...overrides,
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     const { error } = await (supabase as any)
       .from('invoices')
       .upsert(payload, { onConflict: 'event_id,invoice_type' });

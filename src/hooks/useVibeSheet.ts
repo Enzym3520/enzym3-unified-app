@@ -27,7 +27,7 @@ export interface CeremonyDetails {
   recessional?: { song?: string; artist?: string };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 export interface MusicPreferences {
   dislikes?: string[] | string;
   favorite_style?: string;
@@ -38,12 +38,12 @@ export interface MusicPreferences {
   [key: string]: any;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 export interface GroupDances {
   [key: string]: any;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 export interface GrandIntroEntry {
   [key: string]: any;
 }

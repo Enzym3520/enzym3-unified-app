@@ -51,7 +51,7 @@ export const generateAutomaticReminders = (contact: Contact): CreateReminderData
 
   REMINDER_TEMPLATES.forEach(template => {
     let scheduledDate: Date;
-    let eventContext: Record<string, any> = {
+    const eventContext: Record<string, any> = {
       contact_email: contact.email,
       event_type: contact.primaryEventType,
       event_date: contact.primaryEventDate,

@@ -8,7 +8,7 @@ export function useNiaVoice() {
   const [isListening, setIsListening] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   const recognitionRef = useRef<any>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -22,7 +22,7 @@ export function useNiaVoice() {
 
       const SpeechRecognitionAPI =
         (window as any).SpeechRecognition ?? (window as any).webkitSpeechRecognition;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       const recognition = new SpeechRecognitionAPI() as any;
       recognition.lang = "en-US";
       recognition.interimResults = false;
