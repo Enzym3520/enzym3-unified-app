@@ -25,10 +25,9 @@ interface AssignmentCostEditorProps {
 }
 
 export const AssignmentCostEditor = ({ 
-  assignmentId, 
-  vendorId, 
-  eventType,
-  onSave 
+  assignmentId,
+  vendorId,
+  onSave
 }: AssignmentCostEditorProps) => {
   const { data: existingCost } = useAssignmentCost(assignmentId);
   const { data: vendorServices = [] } = useVendorServices(vendorId);

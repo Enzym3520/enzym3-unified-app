@@ -117,7 +117,7 @@ export const findBestFieldMatch = (targetField: string, availableFields: string[
   }
   
   // Check variations
-  for (const [category, variations] of Object.entries(fieldNameVariations)) {
+  for (const [, variations] of Object.entries(fieldNameVariations)) {
     if (variations.includes(targetField)) {
       for (const variation of variations) {
         if (availableFields.includes(variation)) {

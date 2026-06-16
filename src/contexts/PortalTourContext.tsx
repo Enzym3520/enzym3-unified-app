@@ -152,7 +152,7 @@ export const PortalTourProvider = ({ children }: { children: ReactNode }) => {
       stageRadius: 8,
       animate: true,
       allowClose: true,
-      onHighlightStarted: async (element, step) => {
+      onHighlightStarted: async (_element, _step) => {
         // Get the current step index
         const currentIndex = driverObj.getActiveIndex() || 0;
         const tourStep = currentStepsRef.current[currentIndex];

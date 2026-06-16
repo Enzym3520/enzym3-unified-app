@@ -144,7 +144,7 @@ export const TagAnalytics = ({ contacts, className }: TagAnalyticsProps) => {
                 />
                 <YAxis />
                 <Tooltip 
-                  formatter={(value, name) => [value, 'Count']}
+                  formatter={(value) => [value, 'Count']}
                   labelFormatter={(label) => getTagDisplayName(label as string)}
                 />
                 <Bar dataKey="count" fill="hsl(var(--primary))" />

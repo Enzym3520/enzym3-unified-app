@@ -55,7 +55,7 @@ const DMBubble = ({ message, isOwn, isGrouped }: { message: DirectMessage; isOwn
   </div>
 );
 
-export const DirectMessagesPanel = ({ partnerId, partnerName }: DirectMessagesPanelProps) => {
+export const DirectMessagesPanel = ({ partnerId }: DirectMessagesPanelProps) => {
   const [newMessage, setNewMessage] = useState('');
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);

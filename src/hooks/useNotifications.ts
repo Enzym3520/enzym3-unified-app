@@ -6,17 +6,6 @@ import { toast } from 'sonner';
 import type { RealtimePostgresInsertPayload } from '@supabase/supabase-js';
 import { resolveNotificationRoute } from '@/utils/notificationRouting';
 
-interface Notification {
-  id: string;
-  user_id: string;
-  type: string;
-  title: string;
-  content: string | null;
-  read: boolean;
-  created_at: string;
-  wedding_id: string | null;
-  metadata: Record<string, unknown> | null;
-}
 
 const SOUND_PREF_KEY = 'enzym3_notification_sound';
 

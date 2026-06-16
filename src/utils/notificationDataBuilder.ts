@@ -213,7 +213,7 @@ export const buildNotificationData = (
           
           // Include all other form fields that might be useful for pre-population
           ...Object.fromEntries(
-            Object.entries(data).filter(([key, value]) => 
+            Object.entries(data).filter(([, value]) =>
               value !== undefined && value !== null && value !== ''
             )
           )

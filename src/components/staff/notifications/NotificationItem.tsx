@@ -14,7 +14,7 @@ interface NotificationItemProps {
   onNavigate?: () => void;
 }
 
-export const NotificationItem = ({ notification, compact = false, onNavigate }: NotificationItemProps) => {
+export const NotificationItem = ({ notification, onNavigate }: NotificationItemProps) => {
   const navigate = useNavigate();
   const { markAsRead, deleteNotification } = useInAppNotifications();
 

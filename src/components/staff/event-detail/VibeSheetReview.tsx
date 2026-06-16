@@ -410,7 +410,7 @@ const PrintAllView: React.FC<{
   vs: Record<string, unknown>;
   isWedding: boolean;
   submittedAt: string | null;
-}> = ({ vs, isWedding, submittedAt }) => (
+}> = ({ vs, isWedding }) => (
   <div className="hidden print:block text-sm">
     {isWedding ? (
       <>

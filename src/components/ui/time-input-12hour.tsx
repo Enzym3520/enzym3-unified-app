@@ -27,7 +27,6 @@ export const TimeInput12Hour = ({
   value = '',
   onChange,
   label,
-  placeholder = 'Select time',
   tooltip,
   required = false,
   disabled = false,

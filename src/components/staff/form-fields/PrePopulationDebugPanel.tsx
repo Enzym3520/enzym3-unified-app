@@ -15,7 +15,6 @@ interface PrePopulationDebugPanelProps {
 const PrePopulationDebugPanel = ({
   prePopData,
   selectedCoupleData,
-  mergedData,
   formValues
 }: PrePopulationDebugPanelProps) => {
   const [isOpen, setIsOpen] = useState(false);

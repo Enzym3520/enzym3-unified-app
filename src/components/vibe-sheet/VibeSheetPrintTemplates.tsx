@@ -274,7 +274,7 @@ export const FullPrintTemplate = (props: PrintTemplateProps) => {
 
 /** Current-tab print template */
 export const CurrentTabPrintTemplate = (props: PrintTemplateProps) => {
-  const { wedding, eventType, activeTabValue, ceremony, ceremonyEvents, receptionEvents, quinceReceptionEvents, preferences, groupDances, additionalSongs, songRequests, playlistLinks, toasts, grandIntro, announcements, agendaItems } = props;
+  const { wedding, eventType, activeTabValue, ceremony, ceremonyEvents, receptionEvents, quinceReceptionEvents, preferences, groupDances, additionalSongs, songRequests, playlistLinks, toasts, grandIntro, announcements } = props;
 
   const tabLabel = activeTabValue === 'ceremony' ? 'Ceremony' :
     activeTabValue === 'reception' ? 'Reception Timeline' :

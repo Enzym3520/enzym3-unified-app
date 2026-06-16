@@ -28,7 +28,7 @@ interface ContactsTableViewProps {
 type SortField = 'name' | 'email' | 'totalEvents' | 'primaryEventDate' | 'primaryEventType';
 type SortDirection = 'asc' | 'desc';
 
-const ContactsTableView = ({ contacts, filters, onContactUpdate, selectedContacts = [], onSelectionChange }: ContactsTableViewProps) => {
+const ContactsTableView = ({ contacts, onContactUpdate, selectedContacts = [], onSelectionChange }: ContactsTableViewProps) => {
   const isMobile = useIsMobile();
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [currentPage, setCurrentPage] = useState(1);

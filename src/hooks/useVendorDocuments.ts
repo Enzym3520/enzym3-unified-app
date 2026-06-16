@@ -104,7 +104,6 @@ export function useUpdateVendorDocument() {
   return useMutation({
     mutationFn: async ({
       documentId,
-      vendorId,
       expiresAt,
       notes,
     }: {
@@ -137,7 +136,7 @@ export function useDeleteVendorDocument() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ documentId, vendorId, filePath }: { documentId: string; vendorId: string; filePath: string }) => {
+    mutationFn: async ({ documentId, filePath }: { documentId: string; vendorId: string; filePath: string }) => {
       // Delete from storage
       const { error: storageError } = await supabase.storage
         .from('vendor-uploads')

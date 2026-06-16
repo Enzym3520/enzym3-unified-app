@@ -10,7 +10,7 @@ interface VendorDashboardStatsProps {
   vendorId: string;
 }
 
-export function VendorDashboardStats({ vendorId }: VendorDashboardStatsProps) {
+export function VendorDashboardStats(_props: VendorDashboardStatsProps) {
   const { data: assignments } = useAssignments();
   const { data: documents } = useDocuments();
   const { data: earnings = [] } = useEarnings();
