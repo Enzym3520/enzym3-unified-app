@@ -454,6 +454,8 @@ export const useFormPrePopulation = () => {
     if (context) {
       populateFromContext(context);
     }
+    // Runs once on mount to read URL context.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {

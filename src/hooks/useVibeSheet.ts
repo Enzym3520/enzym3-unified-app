@@ -349,6 +349,10 @@ export const useVibeSheet = () => {
     if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
     autoSaveTimerRef.current = setTimeout(async () => { await handleSaveRef.current(false, true); }, 3000);
     return () => { if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current); };
+    // Auto-save fires on CONTENT changes only (the fields below). loading/wedding
+    // are read through the guard above as gates, not triggers — including them
+    // would re-arm the save timer when the sheet loads, not when the user edits.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ceremony, ceremonyEvents, receptionEvents, quinceCeremonyEvents, quinceReceptionEvents, agendaItems, announcements, preferences, groupDances, additionalSongs, grandIntro, songRequests, playlistLinks, djEmail, venueEmail, toasts]);
 
   const handlePrint = useCallback((scope: 'full' | 'current' = 'full') => {

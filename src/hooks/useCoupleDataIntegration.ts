@@ -174,7 +174,9 @@ export const useCoupleDataIntegration = ({
     // Apply to form
     form.reset(finalFormData as FormData);
     setLastAppliedCoupleId(selectedCoupleData.id);
-    
+
+    // mapCoupleDataToFormFields is a pure derivation of the inputs already listed.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCoupleData, form, prePopulationData, lastAppliedCoupleId]);
 
   return {

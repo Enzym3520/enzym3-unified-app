@@ -161,6 +161,10 @@ export function ClientShell() {
     return () => {
       unregisterShortcuts(shortcuts);
     };
+    // navItems is static and handleLockedClick/isItemLocked are derived; the effect
+    // re-registers on the state that actually matters (isLocked, panel toggles).
+    // Adding the inline fns/array would re-register shortcuts on every render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate, setCartOpen, cartOpen, setHelpModalOpen, mobileMenuOpen, sidebarOpen, registerShortcuts, unregisterShortcuts, isLocked]);
 
   const NavLink = ({ item }: { item: typeof navItems[0] }) => {

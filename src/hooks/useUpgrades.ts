@@ -103,6 +103,9 @@ export function useUpgrades() {
       searchParams.delete('payment');
       setSearchParams(searchParams, { replace: true });
     }
+    // Reacts to the payment query param + wedding id; loadOrders and setSearchParams
+    // are stable/derived and intentionally don't re-trigger this effect.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, wedding?.id]);
 
   // Keyboard shortcuts

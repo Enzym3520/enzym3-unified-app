@@ -54,6 +54,9 @@ export const SpotifyPlaylistCreator = ({
       });
       window.history.replaceState({}, '', window.location.pathname);
     }
+    // Handles the Spotify OAuth callback on mount/weddingId change; checkConnection
+    // and toast are stable/derived and intentionally not re-triggering this.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [weddingId]);
 
   const checkConnection = async () => {

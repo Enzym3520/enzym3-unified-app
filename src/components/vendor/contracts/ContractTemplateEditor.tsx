@@ -29,6 +29,9 @@ export function ContractTemplateEditor({ open, onOpenChange, template, onSave, s
       setBody(template?.body_html ?? "");
       setIsDefault(template?.is_default ?? false);
     }
+    // Reset the editor only when it opens or the template id changes — not when
+    // individual template fields change, which would discard in-progress edits.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, template?.id]);
 
   const insertPlaceholder = (key: string) => {
