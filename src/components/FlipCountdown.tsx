@@ -13,7 +13,7 @@ interface TimeLeft {
   seconds: number;
 }
 
-const FlipCountdown = ({ targetDate, eventType }: FlipCountdownProps) => {
+const FlipCountdown = ({ targetDate }: FlipCountdownProps) => {
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [isPast, setIsPast] = useState(false);
 
@@ -48,7 +48,6 @@ const FlipCountdown = ({ targetDate, eventType }: FlipCountdownProps) => {
     return num.toString().padStart(digits, '0').split('');
   };
 
-  const isToday = timeLeft.days === 0 && timeLeft.hours === 0 && timeLeft.minutes === 0 && timeLeft.seconds === 0 && !isPast;
 
   if (isPast) {
     return (

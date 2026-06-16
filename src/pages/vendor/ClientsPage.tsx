@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -86,7 +85,6 @@ function ClientCard({ client, onViewVibeSheet }: { client: UnifiedClient; onView
 }
 
 export default function ClientsPage() {
-  const { user } = useAuth();
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [vibeSheetClient, setVibeSheetClient] = useState<UnifiedClient | null>(null);

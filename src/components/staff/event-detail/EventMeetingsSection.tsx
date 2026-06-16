@@ -31,7 +31,6 @@ export const EventMeetingsSection: React.FC<EventMeetingsSectionProps> = ({ wedd
 
   if (isLoading) return <Card><CardContent className="py-6"><Skeleton className="h-20" /></CardContent></Card>;
 
-  const bookingIds = (meetings || []).map((m: any) => m.id);
 
   return <EventMeetingsContent meetings={meetings || []} />;
 };

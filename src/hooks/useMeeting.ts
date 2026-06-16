@@ -51,7 +51,7 @@ export interface ActionItem {
 export type UpcomingState = "none" | "upcoming" | "today";
 
 export function useMeeting() {
-  const { event: weddingData, loading: eventLoading, user } = useClientEvent<WeddingData>(
+  const { event: weddingData, loading: eventLoading } = useClientEvent<WeddingData>(
     "id, couple_name, event_date, event_type, venue, guest_count, hours_booked, package_type, coordinator_name, contract_signed, deposit_paid, file_uploaded, primary_contact_name"
   );
   const navigate = useNavigate();

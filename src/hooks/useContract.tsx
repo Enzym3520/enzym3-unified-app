@@ -42,7 +42,7 @@ const CONTRACT_SELECT = 'id, couple_name, event_date, event_type, venue, contact
 export function useContract() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { event: wedding, setEvent: setWedding, loading, refetch, user } = useClientEvent<WeddingDetails>(CONTRACT_SELECT);
+  const { event: wedding, setEvent: setWedding, loading, refetch } = useClientEvent<WeddingDetails>(CONTRACT_SELECT);
 
   const [hours, setHours] = useState(0);
   const [hourlyRate, setHourlyRate] = useState(0);

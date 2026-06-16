@@ -35,15 +35,6 @@ const CoupleSelector = ({ onCoupleSelect }: CoupleSelectorProps) => {
     return new Date(dateString).toLocaleDateString();
   };
 
-  const getEventTypeBadgeColor = (source: string) => {
-    switch (source) {
-      case 'wedding': return 'default';
-      case 'event_notification': return 'secondary';
-      case 'form_submission': return 'outline';
-      default: return 'secondary';
-    }
-  };
-
   const getEventTypeFromCouple = (couple: CoupleData): string => {
     if (couple.source === 'wedding') return 'Wedding';
     if (couple.additional_data?.event_type) return couple.additional_data.event_type;

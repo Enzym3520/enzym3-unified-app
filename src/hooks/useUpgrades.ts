@@ -7,7 +7,7 @@ import { useKeyboardShortcutsContext } from "@/contexts/KeyboardShortcutsContext
 import { toast } from "sonner";
 
 export function useUpgrades() {
-  const { event: wedding, loading: eventLoading, user } = useClientEvent<any>(
+  const { event: wedding, loading: eventLoading } = useClientEvent<any>(
     'id, couple_name, event_date, event_type, contact_email, primary_contact_name'
   );
   const { cart, addToCart, removeFromCart, clearCart, cartTotal, isInCart, setCartOpen } = useCart();

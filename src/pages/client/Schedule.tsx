@@ -10,7 +10,6 @@ import { StaffSelectionCards, StaffMember } from "@/components/StaffSelectionCar
 import { supabase } from "@/integrations/supabase/client";
 import { useClientEvent } from "@/hooks/useClientEvent";
 import { logAction } from "@/lib/activityLogger";
-import { useToast } from "@/hooks/use-toast";
 
 const Schedule = () => {
   const navigate = useNavigate();
@@ -21,7 +20,6 @@ const Schedule = () => {
   const [staffMembers, setStaffMembers] = useState<StaffMember[]>([]);
   const [selectedStaff, setSelectedStaff] = useState<StaffMember>();
   const [loadingStaff, setLoadingStaff] = useState(true);
-  const { toast } = useToast();
 
   const eventId = eventData?.id;
 

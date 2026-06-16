@@ -45,7 +45,7 @@ interface ComprehensiveWeddingFormProps {
 const ComprehensiveWeddingForm = ({ initialData, onSuccess, selectedCoupleData }: ComprehensiveWeddingFormProps) => {
   const { toast } = useToast();
   const { submitForm, isSubmitting } = useFormSubmission();
-  const { data: prePopData, loading: prePopLoading } = useFormPrePopulation();
+  const { data: prePopData } = useFormPrePopulation();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),

@@ -71,8 +71,6 @@ export const ImportReviewDialog: React.FC<ImportReviewDialogProps> = ({
   onClose,
   onImport,
   searchResults,
-  importMode,
-  existingEvents,
   targetTimeline
 }) => {
   const [editedResults, setEditedResults] = useState<SearchResult[]>([]);

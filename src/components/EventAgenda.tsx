@@ -23,7 +23,7 @@ interface EventAgendaProps {
   eventType?: string;
 }
 
-export const EventAgenda = ({ items, onChange, eventType }: EventAgendaProps) => {
+export const EventAgenda = ({ items, onChange }: EventAgendaProps) => {
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
   const addItem = () => {

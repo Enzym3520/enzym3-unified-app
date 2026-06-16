@@ -23,7 +23,7 @@ const ContactsView = ({ contacts, onRefresh }: ContactsViewProps) => {
   const isMobile = useIsMobile();
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [, setRefreshTrigger] = useState(0);
   const [searchResults, setSearchResults] = useState<Contact[] | null>(null);
   const [selectedContacts, setSelectedContacts] = useState<Contact[]>([]);
   const [filters, setFilters] = useState({

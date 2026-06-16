@@ -38,7 +38,7 @@ import PwaInstallBanner from "@/components/PwaInstallBanner";
 import { toast } from "sonner";
 
 const Dashboard = () => {
-  const { event: wedding, loading: eventLoading, user, refetch } = useClientEvent<any>(
+  const { event: wedding, loading: eventLoading, refetch } = useClientEvent<any>(
     'id, couple_name, event_date, venue, event_type, contact_email, contact_phone, guest_count, package_type, booking_source, payment_required, deposit_paid, contract_signed, file_uploaded, coordinator_name, primary_contact_name'
   );
   const navigate = useNavigate();
@@ -47,7 +47,7 @@ const Dashboard = () => {
   const [upgradeOrders, setUpgradeOrders] = useState<any[]>([]);
   const [daysUntilWedding, setDaysUntilWedding] = useState<number | null>(null);
   const [coordinatorUploads, setCoordinatorUploads] = useState<any[]>([]);
-  const [hasBooking, setHasBooking] = useState(false);
+  const [, setHasBooking] = useState(false);
   const [todayMeeting, setTodayMeeting] = useState<{ time: string; link: string | null } | null>(null);
 
   const [searchParams] = useSearchParams();

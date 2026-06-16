@@ -26,7 +26,7 @@ export const CoordinatorApproval: React.FC = () => {
   const { reminders, updateReminder, loading } = useReminders();
   const { toast } = useToast();
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('pending');
-  const [selectedReminder, setSelectedReminder] = useState<PendingApproval | null>(null);
+  const [, setSelectedReminder] = useState<PendingApproval | null>(null);
   const [approvalNote, setApprovalNote] = useState('');
 
   const pendingReminders = reminders.filter(reminder => 
