@@ -45,7 +45,8 @@ export const CoordinatorDashboard: React.FC = () => {
   }, [loading]);
 
   const showSkeleton = loading && !timedOut;
-  const safeNotifications = notifications ?? [];
+  // Stable reference so the downstream useMemo hooks don't recompute every render.
+  const safeNotifications = useMemo(() => notifications ?? [], [notifications]);
 
   // Memoize dashboard stats calculation
   const dashboardStats = useMemo(() => {

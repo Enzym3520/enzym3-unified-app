@@ -113,7 +113,7 @@ export default function LiveConsolePage() {
       setLoading(false);
     };
     load();
-  }, [eventId]);
+  }, [eventId, navigate]);
 
   // Load requests + realtime
   useEffect(() => {
@@ -141,6 +141,10 @@ export default function LiveConsolePage() {
       .subscribe();
 
     return () => { supabase.removeChannel(channel); };
+    // Intentionally keyed on session?.id only: we re-subscribe when the session
+    // id changes, not on every session-object update (e.g. status changes from
+    // goLive), which would needlessly tear down and rebuild the channel.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session?.id]);
 
   const goLive = async () => {

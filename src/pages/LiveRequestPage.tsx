@@ -151,6 +151,10 @@ export default function LiveRequestPage() {
       supabase.removeChannel(channel);
       supabase.removeChannel(sessionChannel);
     };
+    // Keyed on session id/status only by design: depending on the whole session
+    // object would re-subscribe on every update, including the setSession call
+    // above (line ~146), causing a subscribe/teardown loop.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session?.id, session?.status]);
 
   // Spotify search with debounce
