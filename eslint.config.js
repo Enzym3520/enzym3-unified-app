@@ -45,7 +45,14 @@ export default tseslint.config(
       'unused-imports/no-unused-imports': 'warn',
       'unused-imports/no-unused-vars': [
         'warn',
-        { vars: 'all', varsIgnorePattern: '^_', args: 'after-used', argsIgnorePattern: '^_', ignoreRestSiblings: true },
+        {
+          vars: 'all',
+          varsIgnorePattern: '^_',
+          args: 'after-used',
+          argsIgnorePattern: '^_',
+          ignoreRestSiblings: true,
+          caughtErrors: 'none', // unused `catch (error)` bindings are a fine pattern
+        },
       ],
       // Bare expression statements are flagged, but allow the codebase's ternary/&&
       // call style (e.g. `cond ? renderA() : renderB();`) which has real side effects.
@@ -71,5 +78,11 @@ export default tseslint.config(
       // Vite fast-refresh correctness (warn only — shadcn ui files trip this)
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
     },
+  },
+  {
+    // ui primitives and context providers legitimately co-export variants/hooks
+    // alongside components — react-refresh's one-export rule is a false positive here.
+    files: ['src/components/ui/**/*.{ts,tsx}', 'src/contexts/**/*.{ts,tsx}'],
+    rules: { 'react-refresh/only-export-components': 'off' },
   },
 );
