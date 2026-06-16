@@ -1,6 +1,5 @@
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import { EnhancedInput } from '@/components/ui/enhanced-input';
 import { PhoneInput } from '@/components/ui/phone-input';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { FieldTooltip } from '@/components/ui/field-tooltip';

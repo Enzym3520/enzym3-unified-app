@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useFormWizard } from '@/contexts/FormWizardContext';
 
 const FormAnalytics = () => {

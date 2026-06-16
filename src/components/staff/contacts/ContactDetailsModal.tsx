@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { format, formatDistanceToNow } from 'date-fns';
 import { parseLocalDate, safeFormatDate } from '@/utils/dateHelpers';
-import { 
-  X, Mail, Phone, Calendar, MapPin, Tag, User, 
+import { Mail, Phone, Calendar, MapPin, User, 
   Clock, Music, Package, FileText, Edit, Printer, RotateCcw, Download, MessageSquare, Upload, Loader2, CalendarPlus
 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';

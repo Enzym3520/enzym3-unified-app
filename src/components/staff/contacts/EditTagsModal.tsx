@@ -6,7 +6,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Contact } from '@/types/contact';
 import { EnhancedTag, getSmartTagConfig } from '@/components/ui/enhanced-tag';
 import { getTagDisplayName } from '@/utils/tagHelpers';
-import { Plus, X } from 'lucide-react';
+import { Plus } from 'lucide-react';
 
 interface EditTagsModalProps {
   contact: Contact | null;

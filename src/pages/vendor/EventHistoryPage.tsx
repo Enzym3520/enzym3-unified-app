@@ -1,6 +1,6 @@
-import { useState, useMemo } from "react";
-import { useEventHistory, type VendorEventHistory } from "@/hooks/use-event-history";
-import { useBookingRequests, type BookingRequest } from "@/hooks/use-booking-requests";
+import { useState } from "react";
+import { useEventHistory } from "@/hooks/use-event-history";
+import { useBookingRequests } from "@/hooks/use-booking-requests";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";

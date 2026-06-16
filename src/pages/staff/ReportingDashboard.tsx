@@ -17,7 +17,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import { Star, MapPin, Music, ClipboardCheck, AlertCircle, TrendingUp } from 'lucide-react';
+import { Star, MapPin, Music, ClipboardCheck, TrendingUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 function StarDisplay({ value, max = 5 }: { value: number; max?: number }) {

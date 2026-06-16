@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { useVendorPageApprovals } from '@/hooks/useVendorPage';
 import { CheckCircle, XCircle, ExternalLink, Loader2 } from 'lucide-react';

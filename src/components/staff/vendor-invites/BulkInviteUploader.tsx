@@ -4,7 +4,7 @@ import { Card } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Download, Upload, Loader2, CheckCircle2, XCircle, AlertTriangle } from 'lucide-react';
+import { Download, Upload, Loader2, CheckCircle2, XCircle } from 'lucide-react';
 import { useProcessBulkInvites } from '@/hooks/useBulkInvites';
 import { BulkInviteRow } from '@/types/vendorInvite';
 import { useIsMobile } from '@/hooks/use-mobile';

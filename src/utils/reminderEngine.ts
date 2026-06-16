@@ -1,6 +1,6 @@
 import { Contact } from '@/types/contact';
 import { Reminder, ReminderTemplate, CreateReminderData } from '@/types/reminder';
-import { addDays, subDays, addYears, format } from 'date-fns';
+import { addDays, addYears, format } from 'date-fns';
 import { parseLocalDate } from '@/utils/dateHelpers';
 
 export const REMINDER_TEMPLATES: ReminderTemplate[] = [

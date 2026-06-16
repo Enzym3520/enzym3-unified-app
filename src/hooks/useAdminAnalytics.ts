@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { startOfMonth, endOfMonth, subMonths, format } from 'date-fns';
+import { subMonths, format } from 'date-fns';
 import { parseLocalDate } from '@/utils/dateHelpers';
 
 export interface RevenueData {

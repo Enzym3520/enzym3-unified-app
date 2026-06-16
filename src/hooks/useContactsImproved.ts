@@ -3,7 +3,6 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Contact, FormSubmission, UploadedDetailsForm } from '@/types/contact';
 import { EventNotification } from '@/types/notification';
-import { CreateReminderData } from '@/types/reminder';
 import { generateAutomaticReminders } from '@/utils/reminderEngine';
 import { transformNotificationsToContacts } from '@/utils/contactHelpers';
 import { contactManager } from '@/utils/contactManager';

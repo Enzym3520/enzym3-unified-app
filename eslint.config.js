@@ -2,6 +2,7 @@ import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
+import unusedImports from 'eslint-plugin-unused-imports';
 import globals from 'globals';
 
 export default tseslint.config(
@@ -25,6 +26,7 @@ export default tseslint.config(
     plugins: {
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
+      'unused-imports': unusedImports,
     },
     rules: {
       // --- Real-bug rules (errors = block; these catch actual defects) ---
@@ -35,10 +37,15 @@ export default tseslint.config(
       'no-unsafe-negation': 'error',
       'no-constant-binary-expression': 'error',
       'no-self-compare': 'error',
-      'no-unused-vars': 'off', // handled by the TS-aware version below
-      '@typescript-eslint/no-unused-vars': [
+      'no-unused-vars': 'off',
+      // unused-imports autofixes dead imports (safe — imports have no side effects);
+      // the TS rule still flags unused locals/args (NOT autofixed — those can hide
+      // side-effectful calls, so they're cleaned by hand).
+      '@typescript-eslint/no-unused-vars': 'off',
+      'unused-imports/no-unused-imports': 'warn',
+      'unused-imports/no-unused-vars': [
         'warn',
-        { argsIgnorePattern: '^_', varsIgnorePattern: '^_', ignoreRestSiblings: true, caughtErrors: 'none' },
+        { vars: 'all', varsIgnorePattern: '^_', args: 'after-used', argsIgnorePattern: '^_', ignoreRestSiblings: true },
       ],
       // Bare expression statements are flagged, but allow the codebase's ternary/&&
       // call style (e.g. `cond ? renderA() : renderB();`) which has real side effects.

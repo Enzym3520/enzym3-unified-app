@@ -1,4 +1,4 @@
-import { LayoutDashboard, Calendar, Upload, Settings, Ban, FileText, DollarSign, Video, Users, Bell, Globe, MessageSquare, Package, BarChart3, History, Shield } from 'lucide-react';
+import { LayoutDashboard, Calendar, Upload, Settings, Ban, FileText, DollarSign, Video, Users, Bell, Globe, MessageSquare, Package, BarChart3, History } from 'lucide-react';
 
 export const TOUR_VERSION = 3;
 

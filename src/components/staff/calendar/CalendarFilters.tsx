@@ -1,8 +1,7 @@
-import { Search, Calendar, Grid3x3, List, Layout, Clock } from 'lucide-react';
+import { Search, Grid3x3, List, Layout, Clock } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
 import { useEventTypes, useMeetingTypes } from '@/hooks/useAppConfig';
 
 interface CalendarFiltersProps {

@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAllAssignments, useAssignmentStats } from '@/hooks/useAdminAssignments';
-import { Calendar, CheckCircle, Clock, Users, XCircle, Search, Eye, DollarSign } from 'lucide-react';
+import { CheckCircle, Clock, Users, XCircle, Search, Eye, DollarSign } from 'lucide-react';
 import { formatVendorType } from '@/utils/vendorTypeFormatter';
 import { formatEventType } from '@/utils/notificationHelpers';
 import { capitalizeNames } from '@/utils/contactHelpers';

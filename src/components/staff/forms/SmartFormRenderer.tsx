@@ -1,5 +1,5 @@
 import React from "react";
-import { UseFormReturn, Controller } from "react-hook-form";
+import { UseFormReturn } from "react-hook-form";
 import { SmartFormSchema, SmartFormField } from "@/types/weddingSmartForm";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { EnhancedInput } from "@/components/ui/enhanced-input";

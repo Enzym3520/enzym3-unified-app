@@ -1,11 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useVendorStatsWithProfile } from "@/hooks/use-vendor-stats";
-import { useAchievements, ACHIEVEMENT_ICONS, ACHIEVEMENT_COLORS } from "@/hooks/use-achievements";
+import { useAchievements } from "@/hooks/use-achievements";
 import { AchievementBadgeList } from "./AchievementBadge";
 import { Star, Calendar, Flame, Trophy, ThumbsUp, Clock, TrendingUp } from "lucide-react";
 import { format } from "date-fns";
-import { cn } from "@/lib/utils";
 
 interface VendorStatCardProps {
   vendorId: string;

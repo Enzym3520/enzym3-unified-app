@@ -5,7 +5,7 @@ import { useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Award, Download, CheckCircle, FileText, Palette, CalendarOff, UserCircle, Package, Bell, X, Plus, Radio, Inbox, Users } from "lucide-react";
+import { Award, Download, CheckCircle, Palette, CalendarOff, UserCircle, Package, Bell, X, Plus, Radio, Inbox, Users } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useInstallPrompt } from "@/hooks/vendor-use-install-prompt";
 import { usePushNotifications } from "@/hooks/use-push-notifications";

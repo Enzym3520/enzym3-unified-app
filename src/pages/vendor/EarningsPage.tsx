@@ -4,9 +4,9 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/vendor/EmptyState";
 import { DollarSign, TrendingUp, Clock, CheckCircle } from "lucide-react";
-import { format, parseISO } from "date-fns";
+import { format } from "date-fns";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import { useEarnings, type EarningRecord } from "@/hooks/use-earnings";
+import { useEarnings } from "@/hooks/use-earnings";
 import { formatEventType, parseEventDate } from "@/utils/vendorHelpers";
 
 function EarningsSkeleton() {

@@ -9,7 +9,6 @@ import { MeetingDetailModal } from './MeetingDetailModal';
 import type { CalendarEvent } from '@/hooks/useCalendarEvents';
 import type { CalendarMeeting } from '@/types/calendarItem';
 import { format, isSameDay, addDays, subDays, parseISO, isToday } from 'date-fns';
-import { cn } from '@/lib/utils';
 import ContactDetailsModal from '@/components/staff/contacts/ContactDetailsModal';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';

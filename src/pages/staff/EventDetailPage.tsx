@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Calendar, MapPin, Users, Mail, Phone, User, Package, Clock, FileText } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import ContractViewer from '@/components/ContractViewer';
-import { calculatePricing, isVenuePartner, VENUE_PARTNER_OVERTIME_RATE, INDEPENDENT_OVERTIME_RATE } from '@/lib/venueUtils';
+import { isVenuePartner, VENUE_PARTNER_OVERTIME_RATE, INDEPENDENT_OVERTIME_RATE } from '@/lib/venueUtils';
 import type { PricingType } from '@/lib/venueUtils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';

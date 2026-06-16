@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { Paperclip, X, FileText, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { Paperclip, FileText, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';

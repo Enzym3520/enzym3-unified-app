@@ -1,11 +1,10 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { CoordinatorApproval } from '@/components/staff/coordinator-approval/CoordinatorApproval';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Clock, CheckCircle, TrendingUp, FileText, Users, Upload, List, Calendar, MapPin, Archive } from 'lucide-react';
+import { Clock, TrendingUp, FileText, Users, Upload, List, Calendar, MapPin, Archive } from 'lucide-react';
 import { UploadedFormsTable } from '@/components/staff/admin/UploadedFormsTable';
 import { EventReadinessOverview } from '@/components/staff/dashboard/EventReadinessOverview';
 import { EventListTab } from '@/components/staff/dashboard/EventListTab';

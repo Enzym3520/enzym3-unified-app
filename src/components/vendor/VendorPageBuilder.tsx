@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
@@ -9,7 +8,7 @@ import { VendorPagePreview } from './VendorPagePreview';
 import { DraggableBlock } from './DraggableBlock';
 import { BlockPicker } from './BlockPicker';
 import { Section, sectionsFromPage, sectionsToPageFields } from './blockTypes';
-import { useVendorPage, useSaveVendorPage, useSubmitForReview, type VendorPage } from '@/hooks/use-vendor-page';
+import { useVendorPage, useSaveVendorPage, useSubmitForReview } from '@/hooks/use-vendor-page';
 
 interface VendorPageBuilderProps {
   vendorProfile?: {

@@ -1,5 +1,4 @@
 import * as React from "react"
-import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import { X, Calendar, Users, MapPin, Music, Package, FileText, Sparkles, Star, Heart, Cake } from "lucide-react"
 import { cva, type VariantProps } from "class-variance-authority"

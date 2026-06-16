@@ -11,7 +11,7 @@ import ContactExport from './ContactExport';
 import ContactBulkActions from './ContactBulkActions';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Grid, List, RefreshCw, Users } from 'lucide-react';
+import { Grid, List, RefreshCw } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 interface ContactsViewProps {

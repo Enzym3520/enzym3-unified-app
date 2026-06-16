@@ -12,7 +12,7 @@ import { CompleteEventModal } from "@/components/vendor/CompleteEventModal";
 import { StatusBadge } from "@/components/vendor/StatusBadge";
 import { Check, X, Eye, MapPin, Calendar, Users, CalendarDays, CheckCircle2, Clock, Package, Shirt, Phone, UserCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { format, isPast, parseISO } from "date-fns";
+import { format, isPast } from "date-fns";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { formatEventType, parseEventDate } from "@/utils/vendorHelpers";
 

@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { format, parseISO } from 'date-fns';
-import { Calendar as CalendarIcon, Clock, MapPin, Video, Loader2, CheckCircle, XCircle, RotateCcw, Save, ExternalLink, Trash2, Mic } from 'lucide-react';
+import { Calendar as CalendarIcon, Clock, MapPin, Video, Loader2, CheckCircle, RotateCcw, Save, ExternalLink, Trash2, Mic } from 'lucide-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';

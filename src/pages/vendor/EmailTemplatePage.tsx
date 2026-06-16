@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import DOMPurify from "dompurify";
-import { useEmailTemplate, useSaveEmailTemplate, EmailTemplate } from "@/hooks/use-email-template";
+import { useEmailTemplate, useSaveEmailTemplate } from "@/hooks/use-email-template";
 import { useProfile } from "@/hooks/use-profile";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";

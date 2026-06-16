@@ -1,5 +1,5 @@
 import jsPDF from "jspdf";
-import { calculatePricing, formatCurrency } from "@/lib/venueUtils";
+import { calculatePricing } from "@/lib/venueUtils";
 import type { PricingType } from "@/lib/venueUtils";
 import type { WeddingDetails } from "@/hooks/useContract";
 import { toast } from "sonner";

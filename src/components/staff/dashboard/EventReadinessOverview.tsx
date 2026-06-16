@@ -4,7 +4,7 @@ import { AlertCircle, CheckCircle2, Clock, ArrowRight } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useUpcomingReadiness, getReadinessLevel, EventReadiness } from '@/hooks/useEventReadiness';
+import { useUpcomingReadiness, getReadinessLevel } from '@/hooks/useEventReadiness';
 import { safeFormatDate } from '@/utils/dateHelpers';
 
 const levelIcons = {

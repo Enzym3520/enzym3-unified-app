@@ -18,7 +18,7 @@ import {
   useSaveService, useDeleteService,
   useSavePackage, useDeletePackage,
   useSaveAddOn, useDeleteAddOn,
-  type VendorService, type VendorPackage,
+  type VendorService,
 } from "@/hooks/use-services";
 
 const SERVICE_TYPES = ["dj", "mc", "lighting", "photo_booth", "photography", "videography", "other"];

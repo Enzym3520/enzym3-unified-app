@@ -1,13 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import { Contact } from '@/types/contact';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ArrowUpDown, ArrowUp, ArrowDown, Mail, Phone, Calendar, MapPin } from 'lucide-react';
+import { ArrowUpDown, ArrowUp, ArrowDown, Mail, Phone, Calendar } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { parseLocalDate, safeFormatDate } from '@/utils/dateHelpers';
 import ContactDetailsModal from './ContactDetailsModal';

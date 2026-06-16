@@ -3,7 +3,6 @@ import { Search, Filter, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Contact } from '@/types/contact';
 import { EnhancedTag, getSmartTagConfig } from '@/components/ui/enhanced-tag';
 import { getTagDisplayName } from '@/utils/tagHelpers';

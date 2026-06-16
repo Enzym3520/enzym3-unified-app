@@ -1,4 +1,4 @@
-import { useBookingWizard, deriveCoupleNameFromData, derivePrimaryEmail } from "@/contexts/BookingWizardContext";
+import { useBookingWizard, deriveCoupleNameFromData } from "@/contexts/BookingWizardContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { User, Mail, Phone, Calendar, MapPin, Users, FileText, Heart, Crown, PartyPopper, Clock } from "lucide-react";

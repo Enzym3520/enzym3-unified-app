@@ -1,4 +1,4 @@
-import { Clock, MapPin, Video, Users, Link2 } from 'lucide-react';
+import { Clock, MapPin, Video, Link2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import type { CalendarMeeting } from '@/types/calendarItem';

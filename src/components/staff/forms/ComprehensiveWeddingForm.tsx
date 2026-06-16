@@ -16,12 +16,10 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/comp
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { EnhancedCalendar } from '@/components/ui/enhanced-calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar, CalendarDays } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 import { format } from 'date-fns';
-import { PhoneInput } from '@/components/ui/phone-input';
 import { Textarea } from '@/components/ui/textarea';
 import WeddingContactFields from '../contact-fields/WeddingContactFields';
-import { PACKAGE_TYPE_OPTIONS } from '@/config/packageTypes';
 import DressCodeField from '@/components/staff/form-fields/DressCodeField';
 import PrePopulationDebugPanel from '@/components/staff/form-fields/PrePopulationDebugPanel';
 

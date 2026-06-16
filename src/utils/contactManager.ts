@@ -1,5 +1,4 @@
 import { Contact } from '@/types/contact';
-import { EventNotification } from '@/types/notification';
 
 export class ContactManager {
   private contactIndex = new Map<string, Contact>();

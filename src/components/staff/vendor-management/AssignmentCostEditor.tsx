@@ -12,7 +12,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { useVendorServices } from '@/hooks/useVendorServices';
 import { useAssignmentCost, useCreateAssignmentCost, useUpdateAssignmentCost } from '@/hooks/useAssignmentCosts';

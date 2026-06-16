@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { useBookingWizard, derivePrimaryEmail } from "@/contexts/BookingWizardContext";
+import { useBookingWizard } from "@/contexts/BookingWizardContext";
 import { ArrowLeft, ArrowRight, Send, Loader2 } from "lucide-react";
 
 interface Props {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { FormData } from '@/types/eventForm';
-import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
+import { FormField } from '@/components/ui/form';
 import { TimeInput12Hour } from '@/components/ui/time-input-12hour';
 
 interface TimingSectionProps {

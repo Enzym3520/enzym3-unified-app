@@ -5,7 +5,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { useCart } from "@/contexts/CartContext";
 import { usePaymentStatus } from "@/hooks/usePaymentStatus";
 import logoBlue from "@/assets/logo-blue.png";
-import { supabase } from "@/integrations/supabase/client";
 import {
   LayoutDashboard,
   Music,
@@ -13,7 +12,6 @@ import {
   Calendar,
   Upload,
   Settings,
-  HelpCircle,
   LogOut,
   ShoppingCart,
   Keyboard,

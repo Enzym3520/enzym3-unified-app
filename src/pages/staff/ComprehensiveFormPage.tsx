@@ -19,7 +19,6 @@ import { Upload, FileText } from 'lucide-react';
 import { formatEventType } from '@/utils/notificationHelpers';
 import { capitalizeNames } from '@/utils/contactHelpers';
 import { safeFormatDate } from '@/utils/dateHelpers';
-import { format } from 'date-fns';
 
 interface CoupleOption {
   id: string;

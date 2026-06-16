@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from 'next-themes';
 import { Toaster } from 'sonner';
-import { RoleRouter } from '@/components/RoleRouter';
 import HomePage from '@/pages/HomePage';
 import { RequireRole } from '@/components/RequireRole';
 import { ClientShell } from '@/layouts/ClientShell';

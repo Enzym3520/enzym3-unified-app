@@ -10,7 +10,7 @@ import { Save, Mail, Phone, User, Lock, UserPlus, Copy, CheckCheck, Loader2, Sun
 import { Switch } from "@/components/ui/switch";
 import { getNotificationSoundPref, setNotificationSoundPref } from "@/hooks/useNotifications";
 import { usePushSubscription } from "@/hooks/usePushSubscription";
-import { getEventLabel, getClientLabel, getRegistrationFieldConfig, getDetailsCardTitle, normalizeEventType } from "@/lib/eventUtils";
+import { getClientLabel, getRegistrationFieldConfig, getDetailsCardTitle, normalizeEventType } from "@/lib/eventUtils";
 import { formatPackageType, parseLocalDate } from "@/lib/formatters";
 import { logAction } from "@/lib/activityLogger";
 import { useTheme } from "next-themes";

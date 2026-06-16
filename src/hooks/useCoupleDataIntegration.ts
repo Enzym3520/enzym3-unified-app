@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { FormData } from '@/types/eventForm';
-import { validatePrePopulationData, findBestFieldMatch, fieldNameVariations } from '@/utils/prePopulationHelpers';
+import { validatePrePopulationData, findBestFieldMatch } from '@/utils/prePopulationHelpers';
 import { parseLocalDate } from '@/utils/dateHelpers';
 
 interface CoupleData {
