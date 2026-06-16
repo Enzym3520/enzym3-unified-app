@@ -123,6 +123,7 @@ export const useFormRateLimit = () => {
   // Check rate limit on mount
   useEffect(() => {
     checkRateLimit();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {

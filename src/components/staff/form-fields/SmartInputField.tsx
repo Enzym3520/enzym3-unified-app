@@ -80,6 +80,9 @@ const SmartInputField = ({
     } else {
       setShowSuggestions(false);
     }
+    // getRelevantSuggestions derives only from the inputs already listed below;
+    // adding the inline function itself would re-run this on every render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputValue, suggestions, smartSuggestions, suggestionType]);
 
   // Hide suggestions when field loses focus permanently

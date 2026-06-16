@@ -41,6 +41,9 @@ export default function QuickMessageDialog({ open, onOpenChange, contextLabel }:
           }
         });
     }
+    // Prefill the message only when the dialog opens. Depending on contextLabel
+    // would overwrite whatever the user has typed if the label changes mid-edit.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, user]);
 
   const handleSend = async () => {
