@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { useEventAssignments, useCancelAssignment, useReassignVendor } from '@/hooks/useAdminAssignments';
+import { useEventAssignments, useCancelAssignment } from '@/hooks/useAdminAssignments';
 import { UserPlus, Phone, Mail, AlertCircle, Trash2, RefreshCw, CheckCircle, XCircle, Clock } from 'lucide-react';
 import { format } from 'date-fns';
 import { formatVendorType } from '@/utils/vendorTypeFormatter';
@@ -31,7 +31,6 @@ const EventAssignmentsView = ({ eventId, eventDate, vendorType }: EventAssignmen
 
   const { data: assignments, isLoading } = useEventAssignments(eventId);
   const cancelAssignment = useCancelAssignment();
-  const reassignVendor = useReassignVendor();
 
   const getStatusBadge = (status: string) => {
     const config = {

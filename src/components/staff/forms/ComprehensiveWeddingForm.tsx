@@ -71,7 +71,9 @@ const ComprehensiveWeddingForm = ({ initialData, onSuccess, selectedCoupleData }
   });
 
   // Integrate couple data with pre-population
-  const { mapCoupleDataToFormFields } = useCoupleDataIntegration({
+  // Called for its side effect (auto-applies couple data to the form); the returned
+  // mapper isn't used here.
+  useCoupleDataIntegration({
     form,
     selectedCoupleData,
     prePopulationData: prePopData?.fieldMappings

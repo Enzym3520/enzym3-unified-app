@@ -11,14 +11,6 @@ export function useNia() {
   const [resolvedEventId, setResolvedEventId] = useState<string | null>(null);
   const typewriterRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const appendMessage = useCallback((msg: NiaMessage) => {
-    setMessages((prev) => [...prev]);
-    setMessages((prev) => {
-      const exists = prev.find((m) => m.id === msg.id);
-      return exists ? prev.map((m) => (m.id === msg.id ? msg : m)) : [...prev, msg];
-    });
-  }, []);
-
   const typewriterAppend = useCallback(
     (id: string, fullText: string) => {
       let i = 0;

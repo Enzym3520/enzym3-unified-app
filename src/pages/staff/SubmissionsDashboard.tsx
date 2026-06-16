@@ -203,9 +203,6 @@ export default function SubmissionsDashboard() {
   const getCoupleName = (s: Submission) =>
     s.type === 'event' ? s.couple_name : s.wedding.couple_name;
 
-  const getContactEmail = (s: Submission) =>
-    s.type === 'event' ? s.contact_email : s.wedding.contact_email;
-
   // Filter
   const filteredSubmissions = allSubmissions.filter(s => {
     const matchesType = submissionType === 'all' || s.type === submissionType ||
