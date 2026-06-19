@@ -22,6 +22,7 @@ import Uploads from '@/pages/client/Uploads';
 import Messages from '@/pages/client/Messages';
 import Review from '@/pages/client/Review';
 import Settings from '@/pages/client/Settings';
+import { useThemeColorSync } from '@/hooks/useThemeColorSync';
 import { CartProvider } from '@/contexts/CartContext';
 import { KeyboardShortcutsProvider } from '@/contexts/KeyboardShortcutsContext';
 import { PortalTourProvider } from '@/contexts/PortalTourContext';
@@ -71,6 +72,7 @@ import LiveRequestsPage from '@/pages/vendor/LiveRequestsPage';
 
 const queryClient = new QueryClient();
 export default function App() {
+  useThemeColorSync();
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
