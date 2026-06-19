@@ -16,7 +16,12 @@ export function useClientEvent<T = any>(select: string) {
   const fetchEvent = useCallback(async () => {
     if (authLoading || !user?.email) return;
     try {
-      const data = await resolveClientEvent<T>(user.id, user.email!, select);
+      const data = await resolveClientEvent<T>(
+        user.id,
+        user.email!,
+        select,
+        (user.user_metadata as any)?.invite_code ?? null
+      );
       setEvent(data);
     } catch (error) {
       console.error("useClientEvent fetch error:", error);

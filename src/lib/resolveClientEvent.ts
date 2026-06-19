@@ -12,11 +12,41 @@ import { supabase } from "@/integrations/supabase/client";
 export async function resolveClientEvent<T = any>(
   userId: string,
   userEmail: string,
-  select: string
+  select: string,
+  inviteCode?: string | null
 ): Promise<T | null> {
   // Normalize — auth.users emails are always lowercase, but legacy event/couple_code
   // rows may contain mixed-case emails. Use ilike for case-insensitive matching.
   const emailLower = userEmail.toLowerCase();
+
+  // Step 0: bind by invite code (typo-proof, account-id based)
+  // 0a) already redeemed by this user?
+  let { data: redeemed } = await supabase
+    .from('couple_codes')
+    .select('wedding_id')
+    .eq('used_by', userId)
+    .eq('active', true)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  // 0b) not yet bound but the user carries an invite code → redeem now (self-heal)
+  if (!redeemed?.wedding_id && inviteCode) {
+    const { data: weddingId } = await supabase.rpc('redeem_couple_code', { p_code: inviteCode });
+    if (weddingId) redeemed = { wedding_id: weddingId as string };
+  }
+
+  if (redeemed?.wedding_id) {
+    const { data } = await supabase
+      .from('event_notification_history')
+      .select(select)
+      .eq('id', redeemed.wedding_id)
+      .maybeSingle();
+    if (data) {
+      if (import.meta.env.DEV) console.log('[resolveClientEvent] Resolved via redeemed couple code');
+      return data as T;
+    }
+  }
 
   // Step 1: Check couple_codes for partner-invited users (case-insensitive)
   const { data: coupleCode } = await supabase

@@ -152,11 +152,9 @@ export default function ClientOnboarding() {
 
       const source = valid.source as 'couple_codes' | 'dj_codes';
       if (source === 'couple_codes') {
-        await supabase
-          .from('couple_codes')
-          .update({ used_at: new Date().toISOString(), used_by: userId })
-          .eq('code', code)
-          .is('used_at', null);
+        // Server-side redeem stamps used_by reliably (clients cannot UPDATE couple_codes via RLS).
+        const { error: redeemErr } = await supabase.rpc('redeem_couple_code', { p_code: code });
+        if (redeemErr) console.error('redeem_couple_code failed (non-fatal):', redeemErr);
       } else {
         await supabase
           .from('dj_codes')
