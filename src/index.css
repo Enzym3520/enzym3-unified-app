@@ -37,7 +37,7 @@
     --background:30 18% 8%;--foreground:43 20% 88%;--card:38 12% 12%;--card-foreground:43 20% 88%;
     --popover:38 12% 12%;--popover-foreground:43 20% 88%;--primary:200 65% 70%;--primary-foreground:30 18% 8%;
     --secondary:38 10% 18%;--secondary-foreground:43 20% 88%;--muted:38 8% 20%;--muted-foreground:43 10% 55%;
-    --accent:38 12% 22%;--accent-foreground:43 20% 88%;--border:38 10% 22%;--input:38 10% 22%;--ring:200 65% 70%;
+    --accent:38 12% 22%;--accent-foreground:43 20% 88%;--border:38 10% 16%;--input:38 10% 22%;--ring:200 65% 70%;
     --sidebar-background:30 15% 6%;--sidebar-foreground:43 20% 88%;--sidebar-primary:200 65% 70%;
     --sidebar-primary-foreground:30 18% 8%;--sidebar-accent:38 12% 18%;--sidebar-accent-foreground:43 20% 88%;
     --sidebar-border:38 10% 18%;--sidebar-ring:200 65% 70%;
@@ -47,7 +47,7 @@
     --background:30 18% 8%;--foreground:43 20% 88%;--card:38 12% 12%;--card-foreground:43 20% 88%;
     --popover:38 12% 12%;--popover-foreground:43 20% 88%;--primary:0 72% 51%;--primary-foreground:0 0% 100%;
     --secondary:38 10% 18%;--secondary-foreground:43 20% 88%;--muted:38 8% 20%;--muted-foreground:43 10% 55%;
-    --accent:38 12% 22%;--accent-foreground:43 20% 88%;--border:38 10% 22%;--input:38 10% 22%;--ring:0 72% 51%;
+    --accent:38 12% 22%;--accent-foreground:43 20% 88%;--border:38 10% 16%;--input:38 10% 22%;--ring:0 72% 51%;
     --sidebar-background:30 15% 6%;--sidebar-foreground:43 20% 88%;--sidebar-primary:0 72% 51%;
     --sidebar-primary-foreground:0 0% 100%;--sidebar-accent:38 12% 18%;--sidebar-accent-foreground:43 20% 88%;
     --sidebar-border:38 10% 18%;--sidebar-ring:0 72% 51%;
@@ -57,7 +57,7 @@
     --background:30 18% 8%;--foreground:43 20% 88%;--card:38 12% 12%;--card-foreground:43 20% 88%;
     --popover:38 12% 12%;--popover-foreground:43 20% 88%;--primary:0 72% 51%;--primary-foreground:0 0% 100%;
     --secondary:38 10% 18%;--secondary-foreground:43 20% 88%;--muted:38 8% 20%;--muted-foreground:43 10% 55%;
-    --accent:38 12% 22%;--accent-foreground:43 20% 88%;--border:38 10% 22%;--input:38 10% 22%;--ring:0 72% 51%;
+    --accent:38 12% 22%;--accent-foreground:43 20% 88%;--border:38 10% 16%;--input:38 10% 22%;--ring:0 72% 51%;
     --sidebar-background:30 15% 6%;--sidebar-foreground:43 20% 88%;--sidebar-primary:0 72% 51%;
     --sidebar-primary-foreground:0 0% 100%;--sidebar-accent:38 12% 18%;--sidebar-accent-foreground:43 20% 88%;
     --sidebar-border:38 10% 18%;--sidebar-ring:0 72% 51%;

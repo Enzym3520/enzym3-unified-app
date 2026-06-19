@@ -12,13 +12,6 @@ import { useEffect } from 'react';
  */
 export function useThemeColorSync() {
   useEffect(() => {
-    let meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
-    if (!meta) {
-      meta = document.createElement('meta');
-      meta.name = 'theme-color';
-      document.head.appendChild(meta);
-    }
-
     const sync = () => {
       const bg = getComputedStyle(document.documentElement)
         .getPropertyValue('--background')
@@ -27,7 +20,15 @@ export function useThemeColorSync() {
       // --background is an HSL triple like "43 18% 90%". Use comma syntax for the
       // widest browser support in the theme-color parser.
       const parts = bg.split(/\s+/);
-      meta!.setAttribute('content', `hsl(${parts.join(', ')})`);
+      const color = `hsl(${parts.join(', ')})`;
+      // Re-insert the meta tag (rather than just mutating content): mobile Safari
+      // often won't repaint the status-bar tint on an in-place content change, but
+      // does when the theme-color meta is removed and re-added.
+      document.querySelectorAll('meta[name="theme-color"]').forEach((m) => m.remove());
+      const meta = document.createElement('meta');
+      meta.name = 'theme-color';
+      meta.setAttribute('content', color);
+      document.head.appendChild(meta);
     };
 
     sync();

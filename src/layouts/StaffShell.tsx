@@ -45,7 +45,7 @@ export function StaffShell() {
       <div className="min-h-screen min-h-[100dvh] md:min-h-screen h-[100dvh] md:h-auto flex w-full bg-background">
         <AppSidebar />
         <SidebarInset className="flex-1 flex flex-col overflow-hidden bg-background">
-          <header className="sticky top-0 z-40 border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60 pt-[env(safe-area-inset-top)]">
+          <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 pt-[env(safe-area-inset-top)]">
             <div className="px-2 md:px-6 h-16 landscape:h-12 flex items-center justify-between w-full">
               <div className="flex items-center gap-1 md:gap-3 min-w-0 flex-1">
                 <SidebarTrigger className="-ml-1 hover:bg-accent/50 transition-colors" />
