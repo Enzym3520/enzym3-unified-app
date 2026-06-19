@@ -22,7 +22,15 @@ vi.mock('@/integrations/supabase/client', () => {
     chain.then = (res: any, rej: any) => terminal().then(res, rej);
     return chain;
   };
-  return { supabase: { from: (t: string) => makeChain(t) } };
+  return {
+    supabase: {
+      from: (t: string) => makeChain(t),
+      rpc: () => {
+        const q = h.state.queues['rpc'] || [];
+        return Promise.resolve(q.length ? q.shift()! : { data: null, error: null });
+      },
+    },
+  };
 });
 
 import { resolveClientEvent } from './resolveClientEvent';
@@ -79,7 +87,10 @@ describe('resolveClientEvent — 3-step fallback', () => {
 
   it('a couple_code with a stale wedding_id still falls through to email match', async () => {
     setQueues({
-      couple_codes: [{ data: { wedding_id: 'gone' }, error: null }],
+      couple_codes: [
+        { data: null, error: null }, // step 0 used_by lookup misses (no inviteCode)
+        { data: { wedding_id: 'gone' }, error: null }, // step 1 by-email
+      ],
       event_notification_history: [
         { data: null, error: null }, // step 1 by-id lookup misses (stale)
         { data: { id: 'w5' }, error: null }, // step 2 email match
@@ -87,5 +98,24 @@ describe('resolveClientEvent — 3-step fallback', () => {
     });
     const r = await resolveClientEvent('u1', 'a@b.com', 'id');
     expect(r).toEqual({ id: 'w5' });
+  });
+
+  it('resolves via a couple_code already redeemed by the user', async () => {
+    setQueues({
+      couple_codes: [{ data: { wedding_id: 'wid-1' }, error: null }], // step 0 used_by lookup hits
+      event_notification_history: [{ data: { id: 'wid-1', couple_name: 'A & B' }, error: null }],
+    });
+    const result = await resolveClientEvent('user-1', 'x@y.com', 'id, couple_name', null);
+    expect(result).toEqual({ id: 'wid-1', couple_name: 'A & B' });
+  });
+
+  it('self-heals: redeems an unused code from metadata then resolves', async () => {
+    setQueues({
+      couple_codes: [{ data: null, error: null }], // step 0 used_by lookup misses
+      rpc: [{ data: 'wid-2', error: null }], // redeem_couple_code returns wedding id
+      event_notification_history: [{ data: { id: 'wid-2', couple_name: 'C & D' }, error: null }],
+    });
+    const result = await resolveClientEvent('user-2', 'typo@y.com', 'id, couple_name', 'WED-ABC123');
+    expect(result).toEqual({ id: 'wid-2', couple_name: 'C & D' });
   });
 });
