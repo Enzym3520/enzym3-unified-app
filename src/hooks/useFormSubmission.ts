@@ -86,6 +86,10 @@ export const useFormSubmission = () => {
         processing_invoked: false
       };
 
+      const assignedVendors = (data as any).assignedVendors as
+        Array<{ vendorId?: string; vendorName?: string; vendorType?: string }> | undefined;
+      notificationData.assigned_vendors = Array.isArray(assignedVendors) ? assignedVendors : [];
+
       const { data: createdId, error: createError } = await supabase
         .rpc('create_event_notification', { p_data: notificationData });
 
@@ -99,46 +103,20 @@ export const useFormSubmission = () => {
         console.log('Saved notification:', { id: notificationId, wedding_id_equals_id: true });
       }
 
-      // Create vendor assignments from the form's MultiVendorSelector
-      const assignedVendors = (data as any).assignedVendors as Array<{ vendorId?: string; vendorName?: string; vendorType?: string }> | undefined;
-      let assignedVendorNames: string[] = [];
-      if (Array.isArray(assignedVendors) && assignedVendors.length > 0 && user) {
-        // Deduplicate by vendorId in case the user added the same vendor twice
-        const seen = new Set<string>();
-        const validVendors = assignedVendors.filter(v => {
-          if (!v?.vendorId || seen.has(v.vendorId)) return false;
-          seen.add(v.vendorId);
-          return true;
+      // Vendor assignments are created inside create_event_notification (server-side).
+      // Fire vendor-assignment emails for whatever the RPC inserted (fire-and-forget).
+      const assignedVendorList = (data as any).assignedVendors as
+        Array<{ vendorId?: string; vendorName?: string }> | undefined;
+      if (Array.isArray(assignedVendorList) && assignedVendorList.some(v => v?.vendorId) && user) {
+        const { data: createdAssignments } = await supabase
+          .from('event_dj_assignments')
+          .select('id, dj_user_id')
+          .eq('event_id', notificationId);
+        (createdAssignments ?? []).forEach((a: { id: string; dj_user_id: string }) => {
+          supabase.functions.invoke('send-vendor-assignment-email', {
+            body: { assignment_id: a.id, dj_user_id: a.dj_user_id, event_id: notificationId },
+          }).catch((err) => console.error('vendor assignment email failed (non-fatal):', err));
         });
-        const rows = validVendors.map(v => ({
-          event_id: notificationId,
-          event_notification_id: notificationId,
-          dj_user_id: v.vendorId!,
-          assigned_by: user.id,
-          status: 'assigned',
-        }));
-        if (rows.length > 0) {
-          const { error: assignError } = await supabase
-            .from('event_dj_assignments')
-            .insert(rows);
-          if (assignError) {
-            console.error('Failed to create vendor assignments:', assignError);
-            toast({
-              title: "Vendor assignment failed",
-              description: `The event was saved, but assigning vendors failed: ${assignError.message}. Please assign them manually from the event notification.`,
-              variant: "destructive",
-            });
-          } else {
-            assignedVendorNames = validVendors.map(v => v.vendorName).filter(Boolean) as string[];
-            // Sync dj_name on the notification record so the assigned vendors show up in lists
-            if (assignedVendorNames.length > 0) {
-              await supabase
-                .from('event_notification_history')
-                .update({ dj_name: assignedVendorNames.join(', ') })
-                .eq('id', notificationId);
-            }
-          }
-        }
       }
 
       // Invoke Edge Function to process notification (email, optional webhook)
