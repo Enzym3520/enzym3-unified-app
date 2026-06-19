@@ -60,14 +60,26 @@ export const getEventCalendarColor = (eventType: string): string => {
   return STATIC_CALENDAR_COLORS[eventType.toLowerCase()] ?? 'primary';
 };
 
-/** Build Tailwind color classes from a calendar_color value like 'pink-500' */
+/**
+ * Build Tailwind color classes from a calendar_color value like 'pink-500'.
+ *
+ * IMPORTANT: classes must be complete LITERAL strings — Tailwind's compiler does
+ * not generate CSS for runtime-built names like `bg-${color}`, which left chips
+ * with no background (white text on the page background = invisible). Each entry
+ * is a tinted background + colored text with a `dark:` variant so chips read in
+ * both light and dark mode. Mirrors the pattern in vendorHelpers.ts.
+ */
 export const buildCalendarColorClasses = (color: string) => {
-  if (!color || color === 'primary') {
-    return { bg: 'bg-primary', text: 'text-primary-foreground', hover: 'hover:bg-primary/90' };
-  }
-  return {
-    bg: `bg-${color}`,
-    text: 'text-white',
-    hover: `hover:bg-${color.replace('-500', '-600')}`,
+  const map: Record<string, { bg: string; text: string; hover: string }> = {
+    pink:    { bg: 'bg-pink-500/20',    text: 'text-pink-700 dark:text-pink-300',       hover: 'hover:bg-pink-500/30' },
+    purple:  { bg: 'bg-purple-500/20',  text: 'text-purple-700 dark:text-purple-300',   hover: 'hover:bg-purple-500/30' },
+    blue:    { bg: 'bg-blue-500/20',    text: 'text-blue-700 dark:text-blue-300',       hover: 'hover:bg-blue-500/30' },
+    amber:   { bg: 'bg-amber-500/20',   text: 'text-amber-700 dark:text-amber-300',     hover: 'hover:bg-amber-500/30' },
+    emerald: { bg: 'bg-emerald-500/20', text: 'text-emerald-700 dark:text-emerald-300', hover: 'hover:bg-emerald-500/30' },
+    rose:    { bg: 'bg-rose-500/20',    text: 'text-rose-700 dark:text-rose-300',       hover: 'hover:bg-rose-500/30' },
+    primary: { bg: 'bg-primary/20',     text: 'text-primary',                           hover: 'hover:bg-primary/30' },
   };
+  if (!color) return map.primary;
+  const base = color.replace(/-\d+$/, ''); // 'pink-500' -> 'pink'
+  return map[base] ?? map.primary;
 };
