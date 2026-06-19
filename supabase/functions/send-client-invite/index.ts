@@ -96,7 +96,9 @@ serve(async (req: Request) => {
       const { data: codeRow } = await supabase
         .from("couple_codes")
         .select("code")
-        .eq("event_id", wedding_id)
+        .eq("wedding_id", wedding_id)
+        .eq("active", true)
+        .order("created_at", { ascending: false })
         .limit(1)
         .maybeSingle();
       inviteCode = codeRow?.code ?? undefined;
