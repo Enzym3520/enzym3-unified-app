@@ -198,7 +198,7 @@ export function ClientShell() {
   return (
     <div className="min-h-screen bg-background">
       {/* Top Navigation Bar */}
-      <header className="sticky top-0 z-[200] border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60 pt-[env(safe-area-inset-top)]">
+      <header className="sticky top-0 z-[200] border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 pt-[env(safe-area-inset-top)]">
         <div className="px-4 h-16 landscape:h-12 flex items-center justify-between w-full 2xl:max-w-screen-2xl 2xl:mx-auto">
           <div className="flex items-center gap-2">
             {/* Sidebar Toggle - Always visible */}

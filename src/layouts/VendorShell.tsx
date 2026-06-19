@@ -77,7 +77,7 @@ export function VendorShell() {
       <div className="flex h-screen w-full overflow-hidden">
         <AppSidebar />
         <div className="flex flex-1 flex-col min-w-0">
-          <header className="flex min-h-12 shrink-0 items-center gap-2 border-b bg-card/95 backdrop-blur px-4 pt-[env(safe-area-inset-top)]">
+          <header className="flex min-h-12 shrink-0 items-center gap-2 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 px-4 pt-[env(safe-area-inset-top)]">
             <SidebarTrigger />
             <div className="flex-1" />
             <Button variant="ghost" size="icon" className="relative h-8 w-8" asChild aria-label="Notifications">
