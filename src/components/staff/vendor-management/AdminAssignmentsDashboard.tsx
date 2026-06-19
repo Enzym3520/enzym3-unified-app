@@ -21,12 +21,12 @@ import {
 } from '@/components/ui/table';
 
 const AdminAssignmentsDashboard = () => {
-  const [statusFilter, setStatusFilter] = useState<string>('');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
   const { data: stats } = useAssignmentStats();
   const { data: assignments, isLoading } = useAllAssignments({
-    status: statusFilter || undefined,
+    status: statusFilter === 'all' ? undefined : statusFilter,
     search: searchQuery || undefined,
   });
   const { data: costsData } = useAllAssignmentCosts();
@@ -146,7 +146,7 @@ const AdminAssignmentsDashboard = () => {
                 <SelectValue placeholder="Filter by status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Statuses</SelectItem>
+                <SelectItem value="all">All Statuses</SelectItem>
                 <SelectItem value="assigned">Assigned</SelectItem>
                 <SelectItem value="confirmed">Confirmed</SelectItem>
                 <SelectItem value="completed">Completed</SelectItem>
@@ -245,7 +245,7 @@ const AdminAssignmentsDashboard = () => {
             </div>
           ) : (
             <div className="text-center py-8 text-muted-foreground">
-              {searchQuery || statusFilter ? 'No assignments found matching your filters.' : 'No assignments yet.'}
+              {searchQuery || statusFilter !== 'all' ? 'No assignments found matching your filters.' : 'No assignments yet.'}
             </div>
           )}
         </CardContent>
