@@ -1,5 +1,5 @@
-import { format } from 'date-fns';
 import { FormData } from '@/types/eventForm';
+import { toLocalDateString } from '@/lib/dateWrite';
 import { detectTestData, addTestDetectionMetadata } from '@/utils/testDataDetection';
 import { capitalizeNames } from '@/utils/contactHelpers';
 import { logger } from '@/utils/logger';
@@ -103,7 +103,7 @@ export const buildNotificationData = (
     total_price: data.totalPrice || null,
     deposit_amount: data.depositAmount || null,
     couple_name: getCoupleName(data),
-    event_date: format(data.weddingDate, 'yyyy-MM-dd'),
+    event_date: toLocalDateString(data.weddingDate),
     start_time: data.eventStartTime || null,
     end_time: data.eventEndTime || null,
     venue: data.venue,

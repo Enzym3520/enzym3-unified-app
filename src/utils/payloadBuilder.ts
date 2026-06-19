@@ -1,5 +1,6 @@
 import { format } from 'date-fns';
 import { FormData } from '@/types/eventForm';
+import { toLocalDateString } from '@/lib/dateWrite';
 
 export interface PayloadMetadata {
   timestamp: string;
@@ -127,7 +128,7 @@ export const buildEventPayload = (
     },
     event: {
       type: data.eventType,
-      date: format(data.weddingDate, 'yyyy-MM-dd'),
+      date: toLocalDateString(data.weddingDate),
       dateFormatted: format(data.weddingDate, 'PPP'),
       guestCount: data.numberOfGuests,
       contract: data.contract || null,
