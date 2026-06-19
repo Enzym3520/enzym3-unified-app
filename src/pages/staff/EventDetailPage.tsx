@@ -12,6 +12,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 import { safeFormatDate } from '@/utils/dateHelpers';
 import { capitalizeNames } from '@/utils/contactHelpers';
 import { formatEventType } from '@/utils/notificationHelpers';
@@ -31,6 +32,7 @@ import { getEventStartTime, formatEventTime } from '@/utils/eventTimeHelpers';
 const EventDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [contractDialogOpen, setContractDialogOpen] = useState(false);
+  const [resendingInvite, setResendingInvite] = useState(false);
 
   // Fetch the event notification record
   const { data: event, isLoading: eventLoading } = useQuery({
@@ -71,6 +73,31 @@ const EventDetailPage: React.FC = () => {
       </div>
     );
   }
+
+  // Re-send the client portal invite so the couple is nudged to log in and sign
+  // their (independent-booking) contract. Uses the existing client-invite function.
+  const resendClientInvite = async () => {
+    if (!event?.contact_email) {
+      toast.error('No client email on this event');
+      return;
+    }
+    setResendingInvite(true);
+    try {
+      const { error } = await supabase.functions.invoke('send-client-invite', {
+        body: {
+          wedding_id: event.id,
+          client_email: event.contact_email,
+          client_name: event.primary_contact_name || event.couple_name || 'Valued Client',
+        },
+      });
+      if (error) throw error;
+      toast.success(`Contract reminder sent to ${event.contact_email}`);
+    } catch (e: any) {
+      toast.error(e.message || 'Failed to send reminder');
+    } finally {
+      setResendingInvite(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -171,6 +198,21 @@ const EventDetailPage: React.FC = () => {
                             {contractSignedAt ? ` · ${safeFormatDate(contractSignedAt, 'PP', '')}` : ''}
                           </button>
                         )}
+                      </div>
+                    )}
+                    {!contractSigned && !contractUrl && event.booking_source !== 'venue_partner' && (
+                      <div className="flex items-center gap-2">
+                        <FileText className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                        <span className="text-amber-700 dark:text-amber-300">Contract: awaiting signature</span>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-6 px-2 text-xs"
+                          disabled={resendingInvite}
+                          onClick={resendClientInvite}
+                        >
+                          {resendingInvite ? 'Sending…' : 'Resend invite'}
+                        </Button>
                       </div>
                     )}
                 {event.guest_count && (
