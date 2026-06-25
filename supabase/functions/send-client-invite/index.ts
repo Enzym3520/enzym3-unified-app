@@ -62,11 +62,12 @@ serve(async (req: Request) => {
       );
     }
 
-    const { wedding_id, client_email, client_name, invite_code: providedCode } = await req.json() as {
+    const { wedding_id, client_email, client_name, invite_code: providedCode, is_venue_partner } = await req.json() as {
       wedding_id: string;
       client_email: string;
       client_name: string;
       invite_code?: string;
+      is_venue_partner?: boolean;
     };
 
     if (!wedding_id || !client_email || !client_name) {
@@ -114,16 +115,28 @@ serve(async (req: Request) => {
     const inviteLink = `https://plan.enzym3entertainment.vip/join/${encodeURIComponent(inviteCode)}`;
     const formattedDate = formatDate(event.event_date);
 
+    const venuePartner = is_venue_partner === true;
+
+    const portalItems = venuePartner
+      ? `<li style="padding:8px 0;border-bottom:1px solid #e5e0d8;font-size:14px;color:#4b4540;"><strong style="color:#2D2921;">Vibe Sheet</strong> — your must-plays, do-not-plays, and how you want each moment to feel</li>
+         <li style="padding:8px 0;border-bottom:1px solid #e5e0d8;font-size:14px;color:#4b4540;"><strong style="color:#2D2921;">Upgrades</strong> — Ruby ($250) · Emerald ($500) · Sapphire ($1,000) + à la carte options</li>
+         <li style="padding:8px 0;font-size:14px;color:#4b4540;"><strong style="color:#2D2921;">Schedule a call</strong> — book a planning meeting when you're ready</li>`
+      : `<li style="padding:8px 0;border-bottom:1px solid #e5e0d8;font-size:14px;color:#4b4540;"><strong style="color:#2D2921;">Vibe Sheet</strong> — your must-plays, do-not-plays, and how you want each moment to feel</li>
+         <li style="padding:8px 0;border-bottom:1px solid #e5e0d8;font-size:14px;color:#4b4540;"><strong style="color:#2D2921;">Contract</strong> — sign digitally, no printing needed</li>
+         <li style="padding:8px 0;border-bottom:1px solid #e5e0d8;font-size:14px;color:#4b4540;"><strong style="color:#2D2921;">Deposit</strong> — pay your 50% deposit securely online</li>
+         <li style="padding:8px 0;border-bottom:1px solid #e5e0d8;font-size:14px;color:#4b4540;"><strong style="color:#2D2921;">Upgrades</strong> — Ruby ($250) · Emerald ($500) · Sapphire ($1,000) + à la carte options</li>
+         <li style="padding:8px 0;font-size:14px;color:#4b4540;"><strong style="color:#2D2921;">Schedule a call</strong> — book a planning meeting when you're ready</li>`;
+
     const html = `<!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>You're invited to your Enzym3 Entertainment portal</title></head>
-<body style="margin:0;padding:0;background:#f5f5f5;font-family:Arial,Helvetica,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:40px 0;">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Your Enzym3 portal is ready</title></head>
+<body style="margin:0;padding:0;background:#DBD4C3;font-family:'Poppins',Arial,Helvetica,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#DBD4C3;padding:40px 20px;">
     <tr><td align="center">
-      <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border-radius:8px;overflow:hidden;">
-        <!-- Header -->
+      <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
+        <!-- Logo -->
         <tr>
-          <td style="background:#DBD4C3;padding:32px 40px;text-align:center;">
+          <td style="background:#DBD4C3;padding:36px 40px;text-align:center;">
             <img src="https://mcusercontent.com/ceda7c82a77b57df5ca0efccc/images/68f041cd-3568-14f6-bd6f-e7306c3f526f.png"
                  alt="Enzym3 Entertainment" width="200"
                  style="display:block;margin:0 auto;max-width:100%;height:auto;" />
@@ -131,46 +144,64 @@ serve(async (req: Request) => {
         </tr>
         <!-- Body -->
         <tr>
-          <td style="padding:40px;">
-            <p style="margin:0 0 16px;font-size:18px;color:#2D2921;font-weight:bold;">Welcome, ${esc(client_name)}!</p>
-            <p style="margin:0 0 24px;font-size:15px;color:#444;line-height:1.6;">
-              Your Enzym3 Entertainment client portal is ready. You can use it to sign your contract, make payments, and stay connected with your DJ team leading up to your event.
+          <td style="padding:36px 40px;">
+            <h1 style="font-size:22px;color:#2D2921;margin:0 0 6px;font-weight:600;">Your portal is ready</h1>
+            <div style="width:50px;height:3px;background:#85D4FA;margin:0 0 20px;"></div>
+
+            <p style="margin:0 0 8px;font-size:15px;color:#2D2921;">Hey <strong>${esc(client_name)}</strong>,</p>
+            <p style="margin:0 0 20px;font-size:15px;color:#4b4540;line-height:1.7;">
+              Your big day is getting closer and I want to make sure we have everything dialed in before we get there.
             </p>
-            <table cellpadding="0" cellspacing="0" style="background:#f9f6f2;border-radius:6px;padding:20px;margin-bottom:24px;width:100%;">
-              <tr><td style="padding:6px 0;">
-                <p style="margin:0;font-size:14px;color:#666;">Event Date</p>
-                <p style="margin:4px 0 0;font-size:15px;color:#2D2921;font-weight:bold;">${esc(formattedDate)}</p>
+
+            <p style="margin:0 0 12px;font-size:15px;color:#4b4540;">Here's what's waiting for you inside your portal:</p>
+
+            <ul style="list-style:none;padding:0;margin:0 0 24px;">
+              ${portalItems}
+            </ul>
+
+            <!-- Event info -->
+            <table cellpadding="0" cellspacing="0" style="background:#f9f6f2;border-radius:8px;padding:16px 20px;margin-bottom:24px;width:100%;">
+              <tr><td style="padding:4px 0;">
+                <p style="margin:0;font-size:13px;color:#888;">Event Date</p>
+                <p style="margin:4px 0 0;font-size:15px;color:#2D2921;font-weight:600;">${esc(formattedDate)}</p>
               </td></tr>
-              ${event.event_type ? `<tr><td style="padding:6px 0;">
-                <p style="margin:0;font-size:14px;color:#666;">Event Type</p>
-                <p style="margin:4px 0 0;font-size:15px;color:#2D2921;font-weight:bold;">${esc(event.event_type)}</p>
+              ${event.event_type ? `<tr><td style="padding:4px 0;">
+                <p style="margin:0;font-size:13px;color:#888;">Event Type</p>
+                <p style="margin:4px 0 0;font-size:15px;color:#2D2921;font-weight:600;">${esc(event.event_type)}</p>
               </td></tr>` : ""}
-              ${event.coordinator_name ? `<tr><td style="padding:6px 0;">
-                <p style="margin:0;font-size:14px;color:#666;">Your Coordinator</p>
-                <p style="margin:4px 0 0;font-size:15px;color:#2D2921;font-weight:bold;">${esc(event.coordinator_name)}</p>
+              ${event.coordinator_name ? `<tr><td style="padding:4px 0;">
+                <p style="margin:0;font-size:13px;color:#888;">Your Coordinator</p>
+                <p style="margin:4px 0 0;font-size:15px;color:#2D2921;font-weight:600;">${esc(event.coordinator_name)}</p>
               </td></tr>` : ""}
             </table>
-            <p style="margin:0 0 24px;font-size:15px;color:#444;line-height:1.6;">
-              Click the button below to create your account and access your portal:
+
+            <!-- CTA -->
+            <div style="text-align:center;margin-bottom:24px;">
+              <a href="${esc(inviteLink)}"
+                 style="display:inline-block;background:#85D4FA;color:#2D2921;padding:14px 36px;text-decoration:none;border-radius:30px;font-weight:600;font-size:15px;">
+                Access Your Portal →
+              </a>
+            </div>
+
+            <p style="margin:0 0 24px;font-size:13px;color:#888;line-height:1.6;text-align:center;">
+              Button not working? <a href="${esc(inviteLink)}" style="color:#2D2921;">${esc(inviteLink)}</a>
             </p>
-            <table cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
-              <tr>
-                <td style="background:#2D2921;border-radius:6px;padding:14px 28px;">
-                  <a href="${esc(inviteLink)}" style="color:#ffffff;text-decoration:none;font-size:15px;font-weight:bold;">Set Up Your Portal</a>
-                </td>
-              </tr>
-            </table>
-            <p style="margin:0;font-size:13px;color:#888;line-height:1.6;">
-              If the button doesn't work, copy and paste this link into your browser:<br>
-              <a href="${esc(inviteLink)}" style="color:#2D2921;">${esc(inviteLink)}</a>
-            </p>
+
+            <!-- Signature -->
+            <div style="border-top:1px solid #e5e0d8;padding-top:16px;">
+              <p style="margin:0;font-size:14px;color:#2D2921;line-height:1.8;">
+                <strong>JJ | DJ Enzym3</strong><br>
+                Enzym3 Entertainment · 520-406-8600<br>
+                <a href="mailto:booking@enzym3entertainment.vip" style="color:#85D4FA;text-decoration:none;">booking@enzym3entertainment.vip</a>
+              </p>
+              <p style="margin:10px 0 0;font-size:13px;color:#4b4540;">Questions? Just reply here.</p>
+            </div>
           </td>
         </tr>
         <!-- Footer -->
         <tr>
-          <td style="background:#f9f6f2;padding:24px 40px;text-align:center;">
-            <p style="margin:0;font-size:13px;color:#888;">(520) 406-8600 &bull; booking@enzym3entertainment.vip</p>
-            <p style="margin:8px 0 0;font-size:12px;color:#aaa;">&copy; 2026 Enzym3 Entertainment</p>
+          <td style="background:#f9f6f2;padding:20px 40px;text-align:center;">
+            <p style="margin:0;font-size:12px;color:#aaa;">&copy; 2026 Enzym3 Entertainment · Tucson, AZ</p>
           </td>
         </tr>
       </table>
