@@ -840,7 +840,7 @@ async function sendNotificationEmails(notification: any) {
         const clientResult = await resend.emails.send({
           from: FROM_EMAIL,
           to: validRecipients,
-          subject: `Let's Build Your Event, ${notification.couple_name}! 🎶`,
+          subject: `Let's set the vibe, ${notification.couple_name}! 🎶`,
           html: clientHtml,
           text: htmlToPlainText(clientHtml),
           headers: { 'X-Entity-Ref-ID': notification.id },

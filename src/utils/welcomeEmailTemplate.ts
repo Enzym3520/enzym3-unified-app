@@ -114,7 +114,7 @@ export function generateWelcomeEmailHtml(notification: EventNotification): strin
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Your ${escapeHtml(config.eventLabel)} is on my calendar</title>
+  <title>Let's set the vibe — your ${escapeHtml(config.eventLabel)} planning starts now</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
 <body style="margin:0;padding:0;background-color:#DBD4C3;font-family:'Poppins',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
@@ -136,7 +136,7 @@ export function generateWelcomeEmailHtml(notification: EventNotification): strin
           <tr>
             <td style="padding:32px 36px 0;">
               <h1 style="font-family:'Playfair Display',Georgia,serif;font-size:26px;color:#2D2921;margin:0 0 10px;font-weight:600;text-align:center;">
-                Your ${escapeHtml(config.eventLabel)} is on my calendar
+                Let's Set the Vibe ${escapeHtml(config.emoji)}
               </h1>
               <div style="width:60px;height:3px;background-color:#85D4FA;margin:0 auto 28px;"></div>
             </td>
