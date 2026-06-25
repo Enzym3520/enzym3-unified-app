@@ -397,38 +397,38 @@ function generateClientWelcomeEmail(notification: any, coupleCode: string): stri
               </p>
 
               <p style="color: #4b4540; font-size: 15px; line-height: 1.7; margin: 0 0 16px;">
-                I'm excited to be part of ${bodyEventPhrase} on <strong>${formatDate(notification.event_date)}</strong>${notification.venue ? ` at <strong>${escapeHtml(notification.venue)}</strong>` : ''}.
-                We've got you scheduled for <strong>${hoursText}</strong>, and now it's time to shape the vibe.${packageType ? ` <strong>(${escapeHtml(packageType)} Package)</strong>` : ''}
+                Congratulations — and welcome to the Enzym3 Entertainment family! Thank you so much for choosing us for your big day.
               </p>
 
               <p style="color: #4b4540; font-size: 15px; line-height: 1.7; margin: 0 0 24px;">
-                First step — let's get your music dialed in.
+                I'm JJ, and I'm excited to be part of it. I've set up your personal planning portal so we can start building your night together. Here's what's waiting for you:
+              </p>
+
+              <!-- Portal features -->
+              <ul style="list-style: none; padding: 0; margin: 0 0 20px;">
+                <li style="padding: 8px 0; border-bottom: 1px solid #e5e0d8; font-size: 15px; color: #4b4540;"><strong style="color: #2D2921;">Vibe Sheet</strong> — your must-plays, do-not-plays, and how you want each moment to feel</li>
+                ${isIndependent ? `
+                <li style="padding: 8px 0; border-bottom: 1px solid #e5e0d8; font-size: 15px; color: #4b4540;"><strong style="color: #2D2921;">Contract</strong> — sign digitally, no printing needed</li>
+                <li style="padding: 8px 0; border-bottom: 1px solid #e5e0d8; font-size: 15px; color: #4b4540;"><strong style="color: #2D2921;">Deposit</strong> — pay your 50% deposit securely online</li>
+                ` : ''}
+                <li style="padding: 8px 0; border-bottom: 1px solid #e5e0d8; font-size: 15px; color: #4b4540;"><strong style="color: #2D2921;">Upgrades</strong> — Ruby ($250) · Emerald ($500) · Sapphire ($1,000) + à la carte options</li>
+                <li style="padding: 8px 0; font-size: 15px; color: #4b4540;"><strong style="color: #2D2921;">Schedule a call</strong> — book a planning session whenever you're ready</li>
+              </ul>
+
+              <p style="color: #4b4540; font-size: 15px; line-height: 1.7; margin: 0 0 24px;">
+                Start with the Vibe Sheet first — the more I know about how you want your night to feel, the better I can make it.
               </p>
 
               <!-- CTA Button -->
-              <div style="text-align: center; margin: 0 0 28px;">
+              <div style="text-align: center; margin: 0 0 24px;">
                 <a href="${registrationLink}"
                    style="display: inline-block; background-color: #85D4FA; color: #2D2921; padding: 14px 36px; text-decoration: none; border-radius: 30px; font-weight: 600; font-size: 16px; letter-spacing: 0.3px;">
-                  Fill Out Your Vibe Planner
+                  Start Planning →
                 </a>
               </div>
 
-              <p style="color: #4b4540; font-size: 15px; line-height: 1.7; margin: 0 0 16px;">
-                Share your must-play songs, do-not-play list, special moments, and the overall energy you're going for.
-              </p>
-
-              ${isIndependent ? `
-              <p style="color: #4b4540; font-size: 15px; line-height: 1.7; margin: 0 0 16px;">
-                You'll receive a separate email shortly with your contract and deposit details so we can officially lock everything in.
-              </p>
-              ` : ''}
-
-              <p style="color: #4b4540; font-size: 15px; line-height: 1.7; margin: 0 0 16px;">
-                If you're interested in upgrades like uplighting, cold sparks, or a custom monogram, just let me know and I'll walk you through options.
-              </p>
-
-              <p style="color: #4b4540; font-size: 15px; line-height: 1.7; margin: 0 0 28px;">
-                Looking forward to making this one special.
+              <p style="color: #8a8278; font-size: 13px; line-height: 1.6; margin: 0 0 24px; text-align: center;">
+                Your event: ${formatDate(notification.event_date)}${notification.venue ? ` at ${escapeHtml(notification.venue)}` : ''}
               </p>
 
               <!-- Signature -->
@@ -438,6 +438,9 @@ function generateClientWelcomeEmail(notification: any, coupleCode: string): stri
                   Enzym3 Entertainment<br>
                   520-406-8600<br>
                   <a href="mailto:booking@enzym3entertainment.vip" style="color: #85D4FA; text-decoration: none;">booking@enzym3entertainment.vip</a>
+                </p>
+                <p style="color: #4b4540; font-size: 14px; line-height: 1.6; margin: 10px 0 0;">
+                  Can't wait to make your night one for the books. Reply anytime — I'm here.
                 </p>
               </div>
             </td>

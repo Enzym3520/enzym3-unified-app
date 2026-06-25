@@ -149,18 +149,18 @@ export function generateWelcomeEmailHtml(notification: EventNotification): strin
                 Hey <strong>${escapeHtml(greetingName)}</strong>,
               </p>
 
-              <p style="color:#4b4540;font-size:15px;line-height:1.7;margin:0 0 20px;">
-                Congrats — your date is locked in and I'm genuinely excited to be part of ${eventPhrase} on <strong>${formatDate(notification.event_date)}</strong>${notification.venue ? ` at <strong>${escapeHtml(notification.venue)}</strong>` : ''}.
+              <p style="color:#4b4540;font-size:15px;line-height:1.7;margin:0 0 16px;">
+                Congratulations — and welcome to the Enzym3 Entertainment family! Thank you so much for choosing us for your big day.
               </p>
 
               <p style="color:#4b4540;font-size:15px;line-height:1.7;margin:0 0 16px;">
-                I've set up your personal planning portal so we can start building the experience together. Here's what's inside:
+                I'm JJ, and I'm excited to be part of it. I've set up your personal planning portal so we can start building your night together. Here's what's waiting for you:
               </p>
 
               ${portalFeatures}
 
               <p style="color:#4b4540;font-size:15px;line-height:1.7;margin:0 0 24px;">
-                The vibe sheet is the most important piece — the more detail you give me, the better I can make your night.
+                Start with the Vibe Sheet first — the more I know about how you want your night to feel, the better I can make it.
               </p>
 
               ${ctaBlock}
@@ -178,7 +178,7 @@ export function generateWelcomeEmailHtml(notification: EventNotification): strin
                   <a href="mailto:booking@enzym3entertainment.vip" style="color:#85D4FA;text-decoration:none;">booking@enzym3entertainment.vip</a>
                 </p>
                 <p style="color:#4b4540;font-size:14px;line-height:1.6;margin:12px 0 0;">
-                  Reply anytime if you have questions.
+                  Can't wait to make your night legendary. Reply anytime — I'm here.
                 </p>
               </div>
             </td>
