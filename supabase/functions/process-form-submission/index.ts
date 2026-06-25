@@ -362,7 +362,7 @@ function generateClientWelcomeEmail(notification: any, coupleCode: string): stri
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Let's Build Your Event</title>
+  <title>Let's Set the Vibe</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
 <body style="margin: 0; padding: 0; background-color: #DBD4C3; font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
@@ -384,7 +384,7 @@ function generateClientWelcomeEmail(notification: any, coupleCode: string): stri
           <tr>
             <td style="padding: 32px 36px 0;">
               <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 28px; color: #2D2921; margin: 0 0 12px; font-weight: 600; text-align: center;">
-                Let's Build Your Event
+                Let's Set the Vibe 💍
               </h1>
               <div style="width: 60px; height: 3px; background-color: #85D4FA; margin: 0 auto 28px;"></div>
             </td>
@@ -875,7 +875,7 @@ async function sendNotificationEmails(notification: any) {
 async function sendOrchestrationWebhook(notification: any) {
   try {
     const coupleCode = notification.additional_metadata?.couple_code || '';
-    const registrationLink = coupleCode ? `${PORTAL_URL}/register?code=${coupleCode}` : '';
+    const registrationLink = coupleCode ? `${PORTAL_URL}/join/${coupleCode}` : '';
 
     const webhookData = {
       id: notification.id,
