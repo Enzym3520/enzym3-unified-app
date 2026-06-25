@@ -65,7 +65,7 @@ export function generateWelcomeEmailHtml(notification: EventNotification): strin
   const metadata = notification.additional_metadata || {};
 
   const coupleCode = metadata.couple_code || metadata.coupleCode || '';
-  const registrationLink = coupleCode ? `${PORTAL_URL}/register?code=${coupleCode}` : '';
+  const registrationLink = coupleCode ? `${PORTAL_URL}/join/${coupleCode}` : '';
 
   const isIndependent = metadata.booking_source === 'independent' || metadata.bookingSource === 'independent';
 
@@ -118,7 +118,7 @@ export function generateWelcomeEmailHtml(notification: EventNotification): strin
           <!-- Header: Logo -->
           <tr>
             <td align="center" style="padding: 40px 30px 24px; background-color: #DBD4C3;">
-              <img src="https://ytembomoyhuwdtrzlwbi.supabase.co/storage/v1/object/public/email-assets/logo-blue.png?v=1"
+              <img src="https://mcusercontent.com/ceda7c82a77b57df5ca0efccc/images/68f041cd-3568-14f6-bd6f-e7306c3f526f.png"
                    alt="Enzym3 Entertainment" width="200"
                    style="display: block; margin: 0 auto;" />
             </td>

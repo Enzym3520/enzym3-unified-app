@@ -33,7 +33,7 @@ export default function Register() {
     }
     // Capture the source from validation so we know which table to update
     const validationSource: 'dj_codes' | 'couple_codes' = valid?.source ?? 'dj_codes';
-    const { error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: window.location.origin, data: { invite_code: inviteCode } } });
+    const { error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: `${window.location.origin}/login`, data: { invite_code: inviteCode } } });
     if (error) {
       console.error('Sign up error:', error);
       toast.error('Something went wrong. Please try again.');

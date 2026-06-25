@@ -37,7 +37,7 @@ const brandColors = {
   border: '#e5e7eb'
 };
 
-const logoUrl = 'https://ytembomoyhuwdtrzlwbi.supabase.co/storage/v1/object/public/email-assets/logo-blue.png?v=1';
+const logoUrl = 'https://mcusercontent.com/ceda7c82a77b57df5ca0efccc/images/68f041cd-3568-14f6-bd6f-e7306c3f526f.png';
 
 /**
  * Dual auth: accepts either x-webhook-secret (n8n) or Supabase JWT with admin role.

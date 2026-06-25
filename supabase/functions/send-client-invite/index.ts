@@ -123,8 +123,10 @@ serve(async (req: Request) => {
       <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border-radius:8px;overflow:hidden;">
         <!-- Header -->
         <tr>
-          <td style="background:#2D2921;padding:32px 40px;text-align:center;">
-            <p style="margin:0;color:#ffffff;font-size:24px;font-weight:bold;letter-spacing:1px;">Enzym3 Entertainment</p>
+          <td style="background:#DBD4C3;padding:32px 40px;text-align:center;">
+            <img src="https://mcusercontent.com/ceda7c82a77b57df5ca0efccc/images/68f041cd-3568-14f6-bd6f-e7306c3f526f.png"
+                 alt="Enzym3 Entertainment" width="200"
+                 style="display:block;margin:0 auto;max-width:100%;height:auto;" />
           </td>
         </tr>
         <!-- Body -->

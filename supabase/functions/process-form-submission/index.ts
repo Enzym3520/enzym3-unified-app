@@ -328,7 +328,7 @@ function isYouthEvent(eventType: string): boolean {
 // Generate client welcome email HTML
 function generateClientWelcomeEmail(notification: any, coupleCode: string): string {
   const config = getEventConfig(notification.event_type);
-  const registrationLink = `${PORTAL_URL}/register?code=${coupleCode}`;
+  const registrationLink = `${PORTAL_URL}/join/${coupleCode}`;
   const isIndependent = notification.booking_source === 'independent';
   
   // Extract hours booked from additional_metadata
@@ -374,7 +374,7 @@ function generateClientWelcomeEmail(notification: any, coupleCode: string): stri
           <!-- Header: Logo -->
           <tr>
             <td align="center" style="padding: 40px 30px 24px; background-color: #DBD4C3;">
-              <img src="https://ytembomoyhuwdtrzlwbi.supabase.co/storage/v1/object/public/email-assets/logo-blue.png?v=1"
+              <img src="https://mcusercontent.com/ceda7c82a77b57df5ca0efccc/images/68f041cd-3568-14f6-bd6f-e7306c3f526f.png"
                    alt="Enzym3 Entertainment" width="200"
                    style="display: block; margin: 0 auto;" />
             </td>
