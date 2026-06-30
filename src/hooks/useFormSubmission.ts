@@ -88,7 +88,15 @@ export const useFormSubmission = () => {
 
       const assignedVendors = (data as any).assignedVendors as
         Array<{ vendorId?: string; vendorName?: string; vendorType?: string }> | undefined;
-      notificationData.assigned_vendors = Array.isArray(assignedVendors) ? assignedVendors : [];
+
+      // Bridge legacy single-vendor field (assignedVendorId from VendorSelector dropdown)
+      // into the assignedVendors array so the RPC always creates event_dj_assignments rows.
+      const legacyVendorId = (data as any).assignedVendorId as string | undefined;
+      let mergedVendors = Array.isArray(assignedVendors) ? assignedVendors : [];
+      if (legacyVendorId && !mergedVendors.some((v) => v.vendorId === legacyVendorId)) {
+        mergedVendors = [...mergedVendors, { vendorId: legacyVendorId }];
+      }
+      notificationData.assigned_vendors = mergedVendors;
 
       const { data: createdId, error: createError } = await supabase
         .rpc('create_event_notification', { p_data: notificationData });
@@ -105,9 +113,7 @@ export const useFormSubmission = () => {
 
       // Vendor assignments are created inside create_event_notification (server-side).
       // Fire vendor-assignment emails for whatever the RPC inserted (fire-and-forget).
-      const assignedVendorList = (data as any).assignedVendors as
-        Array<{ vendorId?: string; vendorName?: string }> | undefined;
-      if (Array.isArray(assignedVendorList) && assignedVendorList.some(v => v?.vendorId) && user) {
+      if (mergedVendors.some((v) => v?.vendorId) && user) {
         const { data: createdAssignments } = await supabase
           .from('event_dj_assignments')
           .select('id, dj_user_id')
