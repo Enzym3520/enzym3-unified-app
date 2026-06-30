@@ -11,30 +11,37 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+  const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+
+  const supabase = createClient(supabaseUrl, serviceKey);
+
+  // CRON_SECRET: try env var first, fall back to vault
+  let cronSecret: string | null = Deno.env.get("CRON_SECRET") ?? null;
+  if (!cronSecret) {
+    const { data } = await supabase.rpc("e3c_get_cron_secret");
+    cronSecret = data ?? null;
+  }
+
+  if (!cronSecret) {
+    return new Response(JSON.stringify({ error: "Server misconfiguration: CRON_SECRET not configured" }), {
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
+  const provided =
+    req.headers.get("x-cron-secret") ??
+    req.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
+
+  if (provided !== cronSecret) {
+    return new Response(JSON.stringify({ error: "unauthorized" }), {
+      status: 401,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
   try {
-    const cronSecret = Deno.env.get("CRON_SECRET");
-    if (!cronSecret) {
-      return new Response(JSON.stringify({ error: "Server misconfiguration" }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-    const provided =
-      req.headers.get("x-cron-secret") ??
-      req.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
-
-    if (provided !== cronSecret) {
-      return new Response(JSON.stringify({ error: "unauthorized" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-    );
-
     const { data: enqueueData, error: enqueueErr } = await supabase.rpc(
       "e3c_enqueue_post_event_reviews",
     );

@@ -32,7 +32,7 @@ Thank You Again
 </h1>
 <div style="width:60px;height:8px;background:#85D4FA;margin:0 auto 28px auto;"></div>
 <p style="margin:0 0 18px 0;font-size:16px;line-height:1.7;">
-Hi ${brideFirstName} & ${groomFirstName}, this is JJ from Enzym3 Entertainment.
+Hi ${brideFirstName} &amp; ${groomFirstName}, this is JJ from Enzym3 Entertainment.
 </p>
 <p style="margin:0 0 18px 0;font-size:16px;line-height:1.7;">
 I wanted to reach out and thank you again for having me at your wedding.
@@ -62,7 +62,7 @@ Leave a Review
 Thank you again, and I hope married life has been treating you well!
 </p>
 <p style="margin:0;font-size:16px;line-height:1.7;">
-– DJ JJ<br>
+&ndash; DJ JJ<br>
 Enzym3 Entertainment
 </p>
 </td>
@@ -83,9 +83,16 @@ Deno.serve(async (req) => {
   const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
   const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
   const resendKey = Deno.env.get("RESEND_API_KEY")!;
-  const cronSecret = Deno.env.get("CRON_SECRET");
 
-  // AuthN: accept x-cron-secret or service-role bearer only. Anon key is NOT accepted.
+  const supabase = createClient(supabaseUrl, serviceKey);
+
+  // CRON_SECRET: try env var first, fall back to vault
+  let cronSecret: string | null = Deno.env.get("CRON_SECRET") ?? null;
+  if (!cronSecret) {
+    const { data } = await supabase.rpc("e3c_get_cron_secret");
+    cronSecret = data ?? null;
+  }
+
   const providedCronSecret = req.headers.get("x-cron-secret");
   const authHeader = req.headers.get("Authorization") ?? "";
   const bearer = authHeader.replace(/^Bearer\s+/i, "");
@@ -102,8 +109,6 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const supabase = createClient(supabaseUrl, serviceKey);
-
     const { data: rows, error: fetchError } = await supabase
       .from("vp_scheduled_review_emails")
       .select("*")
